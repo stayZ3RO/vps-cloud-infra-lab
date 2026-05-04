@@ -1,5 +1,20 @@
 # Phase 1 - Step-by-Step Guide 🛠️
 
+---
+
+## Quick Navigation
+
+| Page | Link |
+|---|---|
+| Phase 1 Home | [README](README.md) |
+| Overview | [overview.md](overview.md) |
+| Step-by-Step Guide | [step-by-step.md](step-by-step.md) |
+| Validation Evidence | [validation.md](validation.md) |
+| Architecture Diagram | [Diagram](../../diagrams/phase-1-vps-baseline-security.md) |
+
+---
+
+
 ![Status](https://img.shields.io/badge/status-complete-brightgreen)
 ![Scope](https://img.shields.io/badge/scope-VPS%20Hardening-blue)
 ![Access](https://img.shields.io/badge/access-SSH%20%2B%20Tailscale-purple)

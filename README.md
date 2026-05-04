@@ -7,6 +7,21 @@
 ![Security](https://img.shields.io/badge/security-hardened-success)
 ![Access](https://img.shields.io/badge/private_access-Tailscale-purple)
 
+## Quick Links
+
+| Area | Link |
+|---|---|
+| Current Status | [CURRENT-STATUS.md](CURRENT-STATUS.md) |
+| Roadmap | [ROADMAP.md](ROADMAP.md) |
+| Lessons Learned | [LESSONS-LEARNED.md](LESSONS-LEARNED.md) |
+| Phase 1 Documentation | [Phase 1 - VPS Baseline & Security Hardening](docs/phase-1-vps-baseline-security/) |
+| Validation Evidence | [Phase 1 Validation](docs/phase-1-vps-baseline-security/validation.md) |
+| Architecture Diagrams | [diagrams/](diagrams/) |
+| Config Examples | [configs/](configs/) |
+| Screenshots | [screenshots/](screenshots/) |
+
+---
+
 ## Building a Production-Style VPS Cloud Lab
 
 This repository documents my process of building a real VPS-based cloud infrastructure lab using Linux, Docker, domain DNS, reverse proxying, HTTPS, monitoring, backups, and secure remote administration.

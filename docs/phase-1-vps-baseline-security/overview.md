@@ -1,5 +1,20 @@
 # Phase 1 - VPS Baseline & Security Hardening 🔐
 
+---
+
+## Quick Navigation
+
+| Page | Link |
+|---|---|
+| Phase 1 Home | [README](README.md) |
+| Overview | [overview.md](overview.md) |
+| Step-by-Step Guide | [step-by-step.md](step-by-step.md) |
+| Validation Evidence | [validation.md](validation.md) |
+| Architecture Diagram | [Diagram](../../diagrams/phase-1-vps-baseline-security.md) |
+
+---
+
+
 ![Status](https://img.shields.io/badge/status-complete-brightgreen)
 ![Provider](https://img.shields.io/badge/provider-Netcup-orange)
 ![OS](https://img.shields.io/badge/os-Ubuntu%20Linux-blue)
