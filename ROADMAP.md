@@ -1,86 +1,211 @@
 # Roadmap
 
+This roadmap tracks the planned buildout for the VPS Cloud Infrastructure Lab.
+
+The project starts with a secure Linux baseline, then layers on DNS, HTTPS, container hosting, monitoring, backups, a secondary VPS, and future AI-assisted infrastructure operations.
+
+---
+
+## Phase Overview
+
+| Phase | Status | Focus |
+|---|---:|---|
+| Phase 1 - VPS Baseline & Security Hardening | ✅ Complete | Secure the Netcup VPS before public hosting |
+| Phase 2 - Domain DNS & Public Routing | ⏳ Planned | Connect stayz3ro.dev to the VPS |
+| Phase 3 - Reverse Proxy & HTTPS | ⏳ Planned | Route services through HTTPS |
+| Phase 4 - Docker App Deployment | ⏳ Planned | Deploy public containerized services |
+| Phase 5 - Monitoring & Alerts | ⏳ Planned | Add uptime and service visibility |
+| Phase 6 - Backups & Disaster Recovery | ⏳ Planned | Build recovery and backup strategy |
+| Phase 7 - Secondary VPS / Staging | ⏳ Planned | Use RackNerd for staging, monitoring, and backups |
+| Phase 8 - AI Agent / Homelab Ops Bot | ⏳ Planned | Experiment with infrastructure assistant workflows |
+
+---
+
 ## Phase 1 - VPS Baseline & Security Hardening
 
-Status: Complete
+Status: ✅ Complete
 
-Focus:
+Purpose:
 
-- Secure Linux baseline
-- SSH hardening
-- Firewall configuration
-- Fail2Ban
-- Docker
-- Tailscale
-- Folder organization
+Establish a secure and validated Linux server baseline before exposing applications or services to the public internet.
+
+Completed:
+
+- Provisioned Netcup VPS
+- Configured hostname
+- Created non-root sudo user
+- Hardened SSH
+- Disabled root SSH login
+- Disabled password SSH login
+- Enabled UFW firewall
+- Allowed only SSH, HTTP, and HTTPS
+- Enabled Fail2Ban for SSH protection
+- Enabled unattended upgrades
+- Installed Docker and Docker Compose
+- Installed Tailscale
+- Created /opt/stayz3ro folder structure
+- Reviewed listening ports
+- Captured validation screenshots
+
+---
 
 ## Phase 2 - Domain DNS & Public Routing
 
-Status: Planned
+Status: ⏳ Planned
 
-Focus:
+Purpose:
 
-- Connect `stayz3ro.dev` to VPS
-- Configure DNS records
-- Validate public resolution
-- Prepare for reverse proxy
+Connect the stayz3ro.dev domain to the VPS and establish a clean DNS foundation for public services.
+
+Planned tasks:
+
+- Configure DNS provider settings
+- Add root domain record
+- Add www record
+- Plan app and service subdomains
+- Validate DNS propagation
+- Confirm records resolve to the correct VPS
+- Document DNS layout
+- Capture redacted DNS screenshots
+
+Example future subdomain plan:
+
+| Subdomain | Intended Purpose |
+|---|---|
+| stayz3ro.dev | Main landing page or portfolio |
+| www.stayz3ro.dev | Web alias |
+| apps.stayz3ro.dev | Public app entry point |
+| status.stayz3ro.dev | Status or uptime page |
+| lab.stayz3ro.dev | Lab services |
+| api.stayz3ro.dev | API services |
+
+---
 
 ## Phase 3 - Reverse Proxy & HTTPS
 
-Status: Planned
+Status: ⏳ Planned
 
-Focus:
+Purpose:
 
-- Deploy reverse proxy
-- Configure HTTPS
-- Route public services through domain/subdomains
+Deploy a reverse proxy to route public services securely through HTTPS.
+
+Planned tasks:
+
+- Choose reverse proxy platform
+- Configure HTTP to HTTPS routing
+- Issue TLS certificates
+- Route services through subdomains
+- Avoid exposing application ports directly
+- Document proxy design
+- Validate HTTPS externally
+
+Candidate tools:
+
+- Caddy
+- Nginx Proxy Manager
+- Traefik
+
+---
 
 ## Phase 4 - Docker App Deployment
 
-Status: Planned
+Status: ⏳ Planned
 
-Focus:
+Purpose:
 
-- Deploy first public Dockerized service
-- Document compose files
-- Validate service routing
+Deploy the first public Dockerized service on the VPS.
+
+Planned tasks:
+
+- Create Docker Compose service layout
+- Deploy first public app
+- Route app through reverse proxy
+- Validate external access
+- Document environment variables
+- Add .env.example files
+- Capture deployment screenshots
+
+---
 
 ## Phase 5 - Monitoring & Alerts
 
-Status: Planned
+Status: ⏳ Planned
 
-Focus:
+Purpose:
+
+Add visibility into service availability and VPS health.
+
+Planned tasks:
 
 - Add uptime monitoring
-- Add service checks
-- Add alerting
+- Monitor public endpoints
+- Monitor system health
+- Add alerts
+- Document response process
+- Capture monitoring screenshots
+
+Possible tools:
+
+- Uptime Kuma
+- Prometheus
+- Grafana
+- Beszel
+- Netdata
+
+---
 
 ## Phase 6 - Backups & Disaster Recovery
 
-Status: Planned
+Status: ⏳ Planned
 
-Focus:
+Purpose:
 
-- App backups
-- Database backups
-- Offsite backup strategy
+Create a backup and restore strategy for hosted services.
+
+Planned tasks:
+
+- Define backup targets
+- Back up Docker volumes
+- Back up app data
+- Back up databases
+- Test restore process
+- Document recovery steps
+- Plan offsite backups
+
+---
 
 ## Phase 7 - Secondary VPS / Staging
 
-Status: Planned
+Status: ⏳ Planned
 
-Focus:
+Purpose:
 
-- RackNerd VPS
-- Staging environment
-- Monitoring and backup node
+Use the RackNerd VPS as a secondary node for staging, monitoring, backups, and experiments.
+
+Planned tasks:
+
+- Provision RackNerd VPS
+- Apply same baseline security hardening
+- Configure staging services
+- Add monitoring responsibilities
+- Configure offsite backup target
+- Document role separation between VPS nodes
+
+---
 
 ## Phase 8 - AI Agent / Homelab Ops Bot
 
-Status: Planned
+Status: ⏳ Planned
 
-Focus:
+Purpose:
 
-- Infrastructure assistant
-- Quick system checks
-- Homelab/VPS status summaries
+Experiment with an AI-assisted infrastructure helper that can answer quick questions about VPS and homelab status.
+
+Planned capabilities:
+
+- Query uptime status
+- Summarize service health
+- Check documentation
+- Provide quick operational reminders
+- Support private access through secure channels
+- Avoid exposing privileged systems publicly
