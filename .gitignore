@@ -1,0 +1,48 @@
+# Environment files
+.env
+.env.*
+!.env.example
+
+# SSH keys and secrets
+*.pem
+*.key
+id_rsa
+id_rsa.pub
+id_ed25519
+id_ed25519.pub
+authorized_keys
+known_hosts
+
+# Certificates
+*.crt
+*.csr
+*.p12
+*.pfx
+
+# Logs
+*.log
+logs/
+
+# OS/editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Terraform / infrastructure state
+*.tfstate
+*.tfstate.*
+.terraform/
+
+# Backups and dumps
+*.bak
+*.backup
+*.sql
+*.dump
+*.tar
+*.tar.gz
+*.zip
+
+# Sensitive notes
+secrets/
+private/
