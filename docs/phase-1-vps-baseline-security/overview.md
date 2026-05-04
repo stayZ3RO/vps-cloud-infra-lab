@@ -1,48 +1,67 @@
 # Phase 1 - VPS Baseline & Security Hardening 🔐
 
+![Status](https://img.shields.io/badge/status-complete-brightgreen)
+![Provider](https://img.shields.io/badge/provider-Netcup-orange)
+![OS](https://img.shields.io/badge/os-Ubuntu%20Linux-blue)
+![Security](https://img.shields.io/badge/security-hardened-success)
+![Access](https://img.shields.io/badge/private_access-Tailscale-purple)
+
+## Overview
+
+Phase 1 established the secure foundation for the VPS Cloud Infrastructure Lab.
+
+Before connecting a domain, deploying a reverse proxy, or hosting public applications, the VPS needed to be configured as a hardened Linux server with controlled administrative access, limited public exposure, and documented validation evidence.
+
+This phase converted a fresh public VPS into a secure baseline host ready for future Docker-based services.
+
+---
+
 ## Objective
 
-Prepare the Netcup VPS as a secure, production-ready Linux server before adding domain DNS, reverse proxying, HTTPS, or public application hosting.
+Prepare the Netcup VPS as a secure, production-ready Linux server before adding:
 
-This phase focuses on establishing a clean baseline:
+- Domain DNS
+- Reverse proxy routing
+- HTTPS certificates
+- Public Docker applications
+- Monitoring
+- Backups
+- AI infrastructure assistant experiments
 
-- Secure administrative access
-- Reduced public attack surface
-- Host-level firewall protection
-- SSH brute-force protection
-- Automatic security updates
-- Docker runtime readiness
-- Private administrative access through Tailscale
-- Redacted validation evidence
+The focus of this phase was not to deploy applications yet. The focus was to make sure the server was safe and stable enough to host them later.
 
 ---
 
 ## Why This Phase Matters
 
-A public VPS is exposed to the internet immediately after provisioning.
+A newly provisioned VPS is immediately exposed to the public internet.
 
-Before hosting applications, the server needs a secure baseline so future services are deployed on top of a controlled foundation instead of a default installation.
+That means SSH scanning, login attempts, and general background noise from the internet begin almost immediately. Before running public services, the server needs a hardened baseline.
 
-This phase answers the basic operational question:
+This phase answers the question:
 
-**Is this VPS safe and ready to become a public services host?**
+> Is this VPS secure enough to become the public-facing foundation for future services?
 
 ---
 
-## Server Role
+## Phase 1 Outcome
 
-| Item | Value |
+| Area | Result |
 |---|---|
-| Provider | Netcup |
+| VPS provider | Netcup |
 | Hostname | netcup-prod-01 |
-| Role | Primary production/public services VPS |
-| Operating System | Ubuntu Linux |
-| Admin Model | Non-root sudo user |
-| Remote Access | SSH key authentication and Tailscale |
-| Firewall | UFW |
-| Intrusion Protection | Fail2Ban |
-| Container Runtime | Docker and Docker Compose |
-| Planned Domain | stayz3ro.dev |
+| Operating system | Ubuntu Linux |
+| Admin model | Non-root sudo user |
+| SSH access | Key-based authentication |
+| Root SSH login | Disabled |
+| Password SSH login | Disabled |
+| Firewall | UFW enabled |
+| Public ports | SSH, HTTP, HTTPS only |
+| Brute-force protection | Fail2Ban enabled |
+| Automatic updates | Unattended upgrades enabled |
+| Container runtime | Docker and Docker Compose |
+| Private admin access | Tailscale |
+| Service layout | /opt/stayz3ro |
 
 ---
 
@@ -77,71 +96,109 @@ This phase answers the basic operational question:
 
 ---
 
-## Completed Work
+## What Was Built
 
-### System Baseline
+### Secure Administrative Access
 
-- Verified operating system version
-- Configured hostname
-- Fixed local hostname resolution
-- Updated system packages
-- Installed baseline administration tools
-- Configured timezone
-- Added swap for additional stability
+The VPS was configured to avoid direct root-based administration.
 
-### User and Access Management
+Implemented:
 
-- Created a non-root sudo user
-- Confirmed sudo group membership
-- Confirmed sudo elevation works
-- Configured SSH key-based access
-- Disabled root SSH login
-- Disabled password-based SSH login
+- Non-root sudo user
+- SSH key-based access
+- Root SSH login disabled
+- Password-based SSH login disabled
+- SSH configuration validated before reload
 
-### SSH Hardening
+Why it matters:
 
-- Confirmed SSH service is active
-- Validated SSH configuration syntax
-- Reloaded SSH safely
-- Tested access from a second terminal session
+- Reduces exposure from direct root login attempts
+- Removes password authentication from the public internet
+- Creates a safer daily administration model
 
-### Firewall
+---
 
-- Enabled UFW
-- Set default incoming policy to deny
-- Set default outgoing policy to allow
-- Allowed SSH
-- Allowed HTTP
-- Allowed HTTPS
-- Verified active firewall rules
+### Host-Level Firewall Baseline
 
-### Intrusion Protection
+UFW was enabled with a minimal allowlist.
 
-- Installed Fail2Ban
-- Enabled SSH jail
-- Configured retry limits
-- Verified Fail2Ban status
+Current public exposure:
 
-### Updates
+| Port | Purpose |
+|---|---|
+| SSH | Server administration |
+| HTTP | Web traffic and certificate validation |
+| HTTPS | Secure public services |
 
-- Enabled unattended security upgrades
-- Verified unattended upgrades service
+All other incoming traffic is denied by default.
 
-### Container Runtime
+Why it matters:
 
-- Installed Docker
-- Installed Docker Compose
-- Verified Docker functionality
+- Keeps the attack surface small
+- Prevents accidental exposure of future app ports
+- Creates a clean baseline before reverse proxy deployment
 
-### Private Administration
+---
 
-- Installed Tailscale
-- Connected VPS to private tailnet
-- Verified Tailscale status
+### SSH Brute-Force Protection
 
-### Filesystem Organization
+Fail2Ban was enabled for SSH.
 
-Created a clean service directory layout:
+Purpose:
+
+- Monitor repeated failed login attempts
+- Temporarily ban abusive sources
+- Add an extra defensive layer on top of SSH hardening
+
+Fail2Ban does not replace SSH keys or firewalling, but it strengthens the baseline.
+
+---
+
+### Automatic Security Updates
+
+Unattended upgrades were enabled.
+
+Purpose:
+
+- Keep security patches flowing automatically
+- Reduce risk from outdated packages
+- Support a more production-minded server baseline
+
+---
+
+### Docker Runtime Readiness
+
+Docker and Docker Compose were installed and validated.
+
+Purpose:
+
+- Prepare for future containerized services
+- Support repeatable deployments
+- Enable future reverse proxy, application, monitoring, and automation stacks
+
+No public Docker applications were deployed in this phase.
+
+---
+
+### Private Admin Access
+
+Tailscale was installed and connected.
+
+Purpose:
+
+- Provide private administrative access
+- Reduce the need to expose dashboards publicly
+- Prepare for future private services such as Portainer, monitoring, or internal tools
+
+Design decision:
+
+> Public services should go through HTTPS and a reverse proxy. Admin services should stay private whenever possible.
+
+---
+
+### Service Directory Layout
+
+A clean service layout was created under /opt/stayz3ro.
 
     /opt/stayz3ro
     ├── apps
@@ -150,59 +207,71 @@ Created a clean service directory layout:
     ├── proxy
     └── scripts
 
+Purpose:
+
+- Keep services organized
+- Separate apps, proxy, monitoring, backups, and scripts
+- Make future documentation and operations cleaner
+
 ---
 
 ## Security Posture After Phase 1
 
 | Control | Status |
 |---|---:|
-| Non-root sudo user | Enabled |
-| Root SSH login | Disabled |
-| Password SSH login | Disabled |
-| SSH key authentication | Enabled |
-| UFW firewall | Enabled |
-| Fail2Ban SSH jail | Active |
-| Unattended upgrades | Enabled |
-| Tailscale private access | Connected |
-| Direct app port exposure | Not allowed |
-| Public database exposure | Not allowed |
-
----
-
-## Public Exposure Model
-
-Only the following ports are intended to be publicly reachable at this stage:
-
-| Port | Purpose |
-|---|---|
-| SSH | Administrative access |
-| HTTP | Web traffic and certificate validation |
-| HTTPS | Secure public services |
-
-Application ports, database ports, admin dashboards, Portainer, and monitoring tools should not be exposed directly to the public internet.
+| Non-root sudo user | ✅ Enabled |
+| Root SSH login | ✅ Disabled |
+| Password SSH login | ✅ Disabled |
+| SSH key authentication | ✅ Enabled |
+| UFW firewall | ✅ Enabled |
+| Fail2Ban SSH jail | ✅ Active |
+| Unattended upgrades | ✅ Enabled |
+| Tailscale private access | ✅ Connected |
+| Docker installed | ✅ Complete |
+| Direct app port exposure | ✅ Avoided |
+| Public database exposure | ✅ Avoided |
 
 ---
 
 ## Validation Evidence
 
-Validation screenshots are documented here:
+Phase 1 was validated with screenshots and command output covering:
 
-[View Phase 1 Validation Evidence](validation.md)
+- Hostname configuration
+- Operating system version
+- SSH service status
+- SSH config validation
+- UFW firewall rules
+- Fail2Ban status
+- Unattended upgrades
+- Swap and memory state
+- Docker and Docker Compose
+- Tailscale status
+- VPS folder structure
+- Listening ports
+
+View evidence:
+
+[Phase 1 Validation Evidence](validation.md)
 
 ---
 
-## Step-by-Step Guide
+## Related Documentation
 
-The implementation steps are documented here:
-
-[View Phase 1 Step-by-Step Guide](step-by-step.md)
+| Document | Purpose |
+|---|---|
+| [Step-by-Step Guide](step-by-step.md) | Commands and implementation flow |
+| [Validation Evidence](validation.md) | Screenshots and proof of completion |
+| [Architecture Diagram](../../diagrams/phase-1-vps-baseline-security.md) | Phase 1 infrastructure layout |
 
 ---
 
-## Next Phase
+## Key Takeaway
 
-Next phase:
+Phase 1 did not focus on deploying apps.
 
-**Phase 2 - Domain DNS & Public Routing**
+It focused on something more important:
 
-This will connect stayz3ro.dev to the VPS and prepare the environment for reverse proxy and HTTPS configuration.
+> Building a secure foundation before exposing services to the public internet.
+
+With this baseline complete, the VPS is ready for the next phase: domain DNS and public routing.

@@ -1,10 +1,32 @@
-# Phase 1 - Validation Evidence
+# Phase 1 - Validation Evidence 📸
+
+![Status](https://img.shields.io/badge/status-validated-brightgreen)
+![Evidence](https://img.shields.io/badge/evidence-screenshots-blue)
+![Security](https://img.shields.io/badge/security-baseline%20verified-success)
 
 ## Purpose
 
 This page documents the validation evidence for Phase 1: VPS Baseline & Security Hardening.
 
-The goal is to prove that the VPS was not only configured, but also verified through command output and screenshots.
+The goal is to show that the VPS was not only configured, but also verified through command output and redacted screenshots.
+
+---
+
+## Validation Summary
+
+| Area | Validation Result |
+|---|---|
+| Hostname | Configured and resolving cleanly |
+| OS | Ubuntu Linux documented |
+| SSH service | Active and running |
+| SSH config | Syntax validation passed |
+| Firewall | UFW enabled with limited exposure |
+| Brute-force protection | Fail2Ban active for SSH |
+| Updates | Unattended upgrades enabled |
+| Runtime | Docker and Docker Compose installed |
+| Private access | Tailscale connected |
+| Filesystem | /opt/stayz3ro structure created |
+| Ports | Listening services reviewed |
 
 ---
 
@@ -12,34 +34,36 @@ The goal is to prove that the VPS was not only configured, but also verified thr
 
 Phase 1 is complete because:
 
-- Hostname resolves correctly with no sudo warning
-- Non-root sudo user works
-- SSH service is active
-- SSH config validates successfully
-- Root SSH login is disabled
-- Password SSH login is disabled
-- UFW is enabled
-- Only SSH, HTTP, and HTTPS are allowed
-- Fail2Ban is active for SSH
-- Unattended upgrades are enabled
-- Docker and Docker Compose work
-- Tailscale is installed and connected
-- /opt/stayz3ro folder structure exists
-- Listening ports are understood and documented
+| Requirement | Status |
+|---|---:|
+| Hostname resolves correctly with no sudo warning | ✅ Complete |
+| Non-root sudo user works | ✅ Complete |
+| SSH service is active | ✅ Complete |
+| SSH config validates successfully | ✅ Complete |
+| Root SSH login is disabled | ✅ Complete |
+| Password SSH login is disabled | ✅ Complete |
+| UFW is enabled | ✅ Complete |
+| Only SSH, HTTP, and HTTPS are allowed | ✅ Complete |
+| Fail2Ban is active for SSH | ✅ Complete |
+| Unattended upgrades are enabled | ✅ Complete |
+| Docker and Docker Compose work | ✅ Complete |
+| Tailscale is installed and connected | ✅ Complete |
+| /opt/stayz3ro folder structure exists | ✅ Complete |
+| Listening ports are understood and documented | ✅ Complete |
 
 ---
 
-## Screenshot Evidence
+# Screenshot Evidence
 
-### 02 - Hostname Validation
+## 02 - Hostname Validation
 
-Confirms the VPS hostname is configured cleanly.
+Confirms the VPS hostname is configured cleanly as netcup-prod-01.
 
 ![Hostname validation](../../screenshots/phase-1-vps-baseline-security/02-hostnamectl.png)
 
 ---
 
-### 03 - OS Version
+## 03 - OS Version
 
 Documents the Ubuntu Linux version used for the VPS baseline.
 
@@ -47,7 +71,7 @@ Documents the Ubuntu Linux version used for the VPS baseline.
 
 ---
 
-### 05 - SSH Service Status
+## 05 - SSH Service Status
 
 Confirms the SSH service is active and running.
 
@@ -55,15 +79,15 @@ Confirms the SSH service is active and running.
 
 ---
 
-### 06 - SSH Config Validation
+## 06 - SSH Config Validation
 
-Confirms the SSH configuration syntax passed validation.
+Confirms the SSH configuration syntax passed validation before reload.
 
 ![SSH config validation](../../screenshots/phase-1-vps-baseline-security/06-ssh-config-validation.png)
 
 ---
 
-### 07 - UFW Firewall Status
+## 07 - UFW Firewall Status
 
 Confirms UFW is enabled and only the intended baseline ports are allowed.
 
@@ -71,7 +95,7 @@ Confirms UFW is enabled and only the intended baseline ports are allowed.
 
 ---
 
-### 08 - Fail2Ban Status
+## 08 - Fail2Ban Status
 
 Confirms Fail2Ban is active for SSH protection.
 
@@ -79,7 +103,7 @@ Confirms Fail2Ban is active for SSH protection.
 
 ---
 
-### 09 - Unattended Upgrades
+## 09 - Unattended Upgrades
 
 Confirms unattended upgrades are enabled for automatic security updates.
 
@@ -87,7 +111,7 @@ Confirms unattended upgrades are enabled for automatic security updates.
 
 ---
 
-### 10 - Swap and Memory Check
+## 10 - Swap and Memory Check
 
 Confirms system memory and swap status after baseline configuration.
 
@@ -95,7 +119,7 @@ Confirms system memory and swap status after baseline configuration.
 
 ---
 
-### 11 - Docker Validation
+## 11 - Docker Validation
 
 Confirms Docker and Docker Compose are installed and available.
 
@@ -103,7 +127,7 @@ Confirms Docker and Docker Compose are installed and available.
 
 ---
 
-### 12 - Tailscale Status
+## 12 - Tailscale Status
 
 Confirms the VPS is connected to Tailscale for private administrative access.
 
@@ -111,7 +135,7 @@ Confirms the VPS is connected to Tailscale for private administrative access.
 
 ---
 
-### 13 - VPS Folder Structure
+## 13 - VPS Folder Structure
 
 Confirms the /opt/stayz3ro folder structure was created for future services.
 
@@ -119,7 +143,7 @@ Confirms the /opt/stayz3ro folder structure was created for future services.
 
 ---
 
-### 14 - Listening Ports
+## 14 - Listening Ports
 
 Confirms listening services were reviewed before public app deployment.
 
@@ -128,8 +152,6 @@ Confirms listening services were reviewed before public app deployment.
 ---
 
 ## Optional Evidence Not Included
-
-The following evidence can be added later if needed:
 
 | Evidence | Reason |
 |---|---|
@@ -142,24 +164,25 @@ The following evidence can be added later if needed:
 
 The following information was redacted or excluded before committing screenshots:
 
-- Public IPv4 address
-- IPv6 address
-- Tailscale IPs
-- Tailscale device identifiers where needed
-- Netcup customer/account details
-- Email addresses
-- Authentication URLs
-- API keys or tokens
-- Billing details
-- SSH keys
-- Private credentials
+| Sensitive Item | Handling |
+|---|---|
+| Public IPv4 address | Redacted or excluded |
+| IPv6 address | Redacted or excluded |
+| Tailscale IPs | Redacted |
+| Tailscale device identifiers | Redacted where needed |
+| Netcup account details | Excluded |
+| Email addresses | Redacted or excluded |
+| Authentication URLs | Excluded |
+| API keys or tokens | Excluded |
+| SSH keys | Excluded |
+| Billing details | Excluded |
 
 ---
 
-## Validation Summary
+## Validation Result
 
-This phase confirms the VPS has a secure baseline before public application hosting begins.
+Phase 1 is validated.
 
-The server is ready for the next phase:
+The VPS has a secure baseline and is ready for the next phase:
 
 **Phase 2 - Domain DNS & Public Routing**

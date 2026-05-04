@@ -1,30 +1,55 @@
-# Phase 1 - Step-by-Step Guide
+# Phase 1 - Step-by-Step Guide 🛠️
 
-## Objective
+![Status](https://img.shields.io/badge/status-complete-brightgreen)
+![Scope](https://img.shields.io/badge/scope-VPS%20Hardening-blue)
+![Access](https://img.shields.io/badge/access-SSH%20%2B%20Tailscale-purple)
 
-Configure the Netcup VPS as a secure baseline Linux server before domain DNS, reverse proxy, HTTPS, or application hosting.
+## Purpose
 
-This guide documents the implementation flow used for Phase 1.
+This guide documents the implementation flow used to harden the Netcup VPS before deploying public services.
+
+The goal was to configure a secure Linux baseline with SSH hardening, firewall rules, brute-force protection, Docker, Tailscale, and validation evidence.
+
+---
+
+## Implementation Flow
+
+| Step | Task | Status |
+|---|---|---:|
+| 1 | Confirm server access | ✅ Complete |
+| 2 | Update operating system | ✅ Complete |
+| 3 | Configure hostname | ✅ Complete |
+| 4 | Confirm non-root sudo user | ✅ Complete |
+| 5 | Harden SSH | ✅ Complete |
+| 6 | Configure UFW firewall | ✅ Complete |
+| 7 | Enable Fail2Ban | ✅ Complete |
+| 8 | Enable unattended upgrades | ✅ Complete |
+| 9 | Configure timezone | ✅ Complete |
+| 10 | Add swap | ✅ Complete |
+| 11 | Install Docker and Docker Compose | ✅ Complete |
+| 12 | Install Tailscale | ✅ Complete |
+| 13 | Create VPS folder structure | ✅ Complete |
+| 14 | Review listening ports | ✅ Complete |
 
 ---
 
 ## Step 1 - Confirm Server Access
 
-Initial administrative access was established over SSH.
+Initial access was established over SSH.
 
-The VPS was accessed first with provider credentials, then moved toward a safer non-root administrative model.
+The VPS was first accessed using provider-provided credentials, then moved to a safer non-root administrative model.
 
-Validation goal:
+Validation goals:
 
+- Confirm the VPS is reachable
 - Confirm SSH access works
-- Confirm the server is reachable
-- Confirm commands can be run as an administrator
+- Confirm administrative commands can be executed
 
 ---
 
 ## Step 2 - Update the Operating System
 
-The system package index and installed packages were updated.
+The package index and installed packages were updated.
 
 Commands used:
 
@@ -37,9 +62,12 @@ Baseline tools were installed:
 
 Why this matters:
 
-- Ensures the VPS starts from a patched baseline
-- Adds tools needed for administration, validation, and documentation
-- Prepares the system for Docker, security tooling, and future services
+| Reason | Benefit |
+|---|---|
+| Patch current packages | Reduces risk from outdated software |
+| Install admin tools | Supports validation and troubleshooting |
+| Install security tools | Prepares UFW and Fail2Ban |
+| Install documentation tools | Enables tree output and cleaner screenshots |
 
 ---
 
@@ -54,22 +82,24 @@ Validation commands:
     hostname
     hostnamectl
 
-The local hosts file was also checked to prevent sudo hostname resolution warnings.
-
-Validation command:
+The local hosts file was also checked:
 
     cat /etc/hosts
 
 Expected result:
 
 - Hostname displays correctly
-- Sudo commands run without hostname resolution warnings
+- Sudo commands do not show hostname resolution warnings
+
+Why this matters:
+
+A clean hostname makes the VPS easier to identify in documentation, monitoring, Tailscale, terminal sessions, and future dashboards.
 
 ---
 
 ## Step 4 - Confirm Non-Root Sudo User
 
-A non-root administrative user was configured for daily management.
+A non-root administrative user was used for daily management.
 
 Validation commands:
 
@@ -82,15 +112,17 @@ Expected sudo result:
 
 Why this matters:
 
-- Avoids daily administration as root
-- Supports disabling direct root SSH login
-- Creates a safer operational model
+| Practice | Reason |
+|---|---|
+| Use non-root admin user | Safer daily administration |
+| Confirm sudo access | Ensures admin tasks still work |
+| Avoid direct root SSH | Reduces brute-force risk |
 
 ---
 
 ## Step 5 - Harden SSH
 
-SSH was configured for key-based access and reduced risk.
+SSH was configured for key-based access and reduced exposure.
 
 Target SSH settings:
 
@@ -107,13 +139,19 @@ For screenshot clarity:
 
     sudo sshd -t && echo "SSH config validation passed"
 
-SSH was reloaded after validation:
+Reload SSH after validation:
 
     sudo systemctl reload ssh
 
-Operational safety note:
+Safety workflow:
 
-A second terminal session was used to confirm SSH login still worked before closing the original session.
+| Step | Reason |
+|---|---|
+| Keep original session open | Prevents accidental lockout |
+| Validate config with sshd -t | Catches syntax errors |
+| Reload SSH | Applies changes safely |
+| Test from second terminal | Confirms access still works |
+| Close old session last | Avoids losing access |
 
 ---
 
@@ -134,7 +172,7 @@ Validation command:
 
     sudo ufw status verbose
 
-Expected public exposure:
+Expected baseline exposure:
 
 | Port | Purpose |
 |---|---|
@@ -142,11 +180,15 @@ Expected public exposure:
 | HTTP | Web traffic and certificate validation |
 | HTTPS | Secure public services |
 
+Design decision:
+
+Application ports, database ports, dashboards, and internal tools should not be directly exposed to the public internet.
+
 ---
 
 ## Step 7 - Enable Fail2Ban
 
-Fail2Ban was installed and configured for SSH brute-force protection.
+Fail2Ban was enabled for SSH brute-force protection.
 
 Example SSH jail configuration:
 
@@ -169,9 +211,9 @@ Validation commands:
 
 Why this matters:
 
-- Public VPS servers receive automated SSH login attempts
-- Fail2Ban adds an additional defensive layer
-- Repeated failed authentication attempts can be temporarily banned
+- Public VPS servers receive automated login attempts
+- Fail2Ban adds a defensive layer for repeated failures
+- SSH remains protected beyond key authentication and firewalling
 
 ---
 
@@ -190,9 +232,11 @@ Validation command:
 
 Why this matters:
 
-- Helps keep security updates applied
-- Reduces risk from unpatched packages
-- Supports a more production-minded baseline
+| Benefit | Description |
+|---|---|
+| Automatic security patches | Helps reduce exposure from outdated packages |
+| Lower maintenance burden | Security updates continue between manual checks |
+| Production-minded baseline | Aligns with real server administration habits |
 
 ---
 
@@ -207,6 +251,10 @@ Command used:
 Validation command:
 
     timedatectl
+
+Why this matters:
+
+Consistent time settings help with logs, alerts, screenshots, monitoring, and troubleshooting.
 
 ---
 
@@ -231,15 +279,15 @@ Persistence entry:
 
 Why this matters:
 
-- Helps reduce risk of process crashes under memory pressure
-- Provides a small safety buffer for lightweight services
-- Useful for smaller VPS plans
+- Adds a memory safety buffer
+- Helps reduce risk of process crashes under light memory pressure
+- Useful for smaller VPS plans running Docker services
 
 ---
 
 ## Step 11 - Install Docker and Docker Compose
 
-Docker was installed as the container runtime for future services.
+Docker was installed as the future container runtime.
 
 Install command:
 
@@ -261,9 +309,12 @@ Validation commands:
 
 Why this matters:
 
-- Prepares the VPS for containerized application hosting
-- Supports future reverse proxy, apps, monitoring, and automation services
-- Keeps deployment workflows repeatable through Docker Compose
+| Capability | Purpose |
+|---|---|
+| Docker Engine | Runs containers |
+| Docker Compose | Defines repeatable service stacks |
+| Docker group access | Allows non-root Docker management |
+| hello-world test | Confirms Docker works |
 
 ---
 
@@ -285,9 +336,9 @@ Validation command:
 
 Why this matters:
 
-- Supports private access to admin tools
+- Keeps admin-only tools private
 - Reduces need to expose dashboards publicly
-- Provides a secure management path for future internal services
+- Supports future private access to Portainer, monitoring, and internal services
 
 ---
 
@@ -313,11 +364,15 @@ Expected structure:
     ├── proxy
     └── scripts
 
-Why this matters:
+Purpose:
 
-- Keeps future services organized
-- Separates apps, proxy, monitoring, backups, and scripts
-- Makes the VPS easier to maintain and document
+| Folder | Intended Use |
+|---|---|
+| apps | Future Dockerized applications |
+| proxy | Reverse proxy stack |
+| monitoring | Monitoring agents or services |
+| backups | Backup targets and scripts |
+| scripts | Maintenance automation |
 
 ---
 
@@ -334,6 +389,27 @@ Why this matters:
 - Confirms what services are listening
 - Helps identify accidental exposure
 - Creates a clean baseline before reverse proxy and app deployment
+
+---
+
+## Final Phase 1 Validation Checklist
+
+| Validation Item | Status |
+|---|---:|
+| Hostname configured | ✅ Complete |
+| Non-root sudo user works | ✅ Complete |
+| SSH service active | ✅ Complete |
+| SSH config validates | ✅ Complete |
+| Root SSH login disabled | ✅ Complete |
+| Password SSH login disabled | ✅ Complete |
+| UFW enabled | ✅ Complete |
+| Fail2Ban active | ✅ Complete |
+| Unattended upgrades enabled | ✅ Complete |
+| Docker installed | ✅ Complete |
+| Docker Compose installed | ✅ Complete |
+| Tailscale connected | ✅ Complete |
+| Folder structure created | ✅ Complete |
+| Listening ports reviewed | ✅ Complete |
 
 ---
 
