@@ -1,6 +1,41 @@
+# Sanitized Fail2Ban SSH jail example
+# Project: VPS Cloud Infrastructure Lab
+# Phase: Phase 1 - VPS Baseline & Security Hardening
+#
+# This file is an example only.
+# Adjust values based on the environment and risk tolerance.
+
 [sshd]
 enabled = true
 port = ssh
 maxretry = 5
 bantime = 1h
 findtime = 10m
+
+# Field explanations:
+#
+# enabled:
+#   Enables the SSH jail.
+#
+# port:
+#   Uses the SSH service port. If SSH is moved to a custom port,
+#   update this value accordingly.
+#
+# maxretry:
+#   Number of failed attempts allowed before a ban.
+#
+# bantime:
+#   How long an offending source is banned.
+#
+# findtime:
+#   Time window used to count failed attempts.
+
+# Validation commands:
+#
+#   sudo fail2ban-client status
+#   sudo fail2ban-client status sshd
+#
+# Service commands:
+#
+#   sudo systemctl restart fail2ban
+#   sudo systemctl enable fail2ban

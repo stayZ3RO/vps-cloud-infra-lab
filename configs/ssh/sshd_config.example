@@ -1,9 +1,31 @@
 # Sanitized SSH hardening example
+# Project: VPS Cloud Infrastructure Lab
+# Phase: Phase 1 - VPS Baseline & Security Hardening
+#
+# This file is an example only.
+# It does not include private keys, live server IPs, or provider-specific secrets.
 
+# Disable direct root login over SSH.
 PermitRootLogin no
+
+# Disable password-based SSH login.
+# SSH key authentication should be tested before enabling this.
 PasswordAuthentication no
+
+# Enable public key authentication.
 PubkeyAuthentication yes
 
-# Optional:
-# Port 22
+# Optional: restrict SSH login to specific users.
+# Replace "ash" with the intended non-root admin user if used.
 # AllowUsers ash
+
+# Optional: change SSH port only after firewall rules are updated and tested.
+# Port 22
+
+# Operational safety:
+# 1. Keep an existing SSH session open.
+# 2. Validate config syntax with:
+#      sudo sshd -t
+# 3. Reload SSH with:
+#      sudo systemctl reload ssh
+# 4. Test login from a second terminal before closing the original session.

@@ -1,9 +1,43 @@
 # Sanitized UFW baseline
+# Project: VPS Cloud Infrastructure Lab
+# Phase: Phase 1 - VPS Baseline & Security Hardening
+#
+# This file documents the intended baseline firewall posture.
+# It is not an exported production firewall config.
 
 Default incoming policy: deny
 Default outgoing policy: allow
 
-Allowed:
-- OpenSSH
-- 80/tcp
-- 443/tcp
+Allowed inbound traffic:
+
+| Rule | Purpose |
+|---|---|
+| OpenSSH | Administrative SSH access |
+| 80/tcp | HTTP traffic and certificate validation |
+| 443/tcp | HTTPS public services |
+
+Expected public exposure:
+
+| Port | Purpose |
+|---|---|
+| SSH | Server administration |
+| HTTP | Web traffic and certificate validation |
+| HTTPS | Secure public services |
+
+Do not directly expose:
+
+- Application ports such as 3000, 5000, 8000, or 8080
+- Database ports such as 5432, 3306, or 6379
+- Portainer
+- Monitoring dashboards
+- Internal APIs
+- Admin-only services
+
+Validation command:
+
+    sudo ufw status verbose
+
+Design note:
+
+Public services should eventually be routed through a reverse proxy with HTTPS.
+Admin services should stay private through Tailscale whenever possible.
