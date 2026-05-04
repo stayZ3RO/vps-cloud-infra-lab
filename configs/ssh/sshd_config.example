@@ -1,0 +1,9 @@
+# Sanitized SSH hardening example
+
+PermitRootLogin no
+PasswordAuthentication no
+PubkeyAuthentication yes
+
+# Optional:
+# Port 22
+# AllowUsers ash

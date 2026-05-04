@@ -1,83 +1,169 @@
 # VPS Cloud Infrastructure Lab 🚀
 
-This repository documents my VPS-based cloud infrastructure lab built around public Linux servers, domain DNS, Docker, reverse proxying, HTTPS, monitoring, backups, and future AI/homelab automation.
-
-The goal of this project is to build a production-style cloud environment that demonstrates practical Linux administration, security hardening, Docker hosting, public DNS routing, observability, and disaster recovery practices.
+### Building a Production-Style VPS Cloud Lab with Linux, Docker, DNS, HTTPS, Monitoring, Backups, and Secure Access
 
 ---
 
-## Project Goals
+## About This Project
 
-- Build a secure public VPS foundation
-- Host services using Docker and Docker Compose
-- Configure domain DNS for public service routing
-- Deploy a reverse proxy with HTTPS
-- Separate production, staging, monitoring, and backup responsibilities
-- Document each phase with validation screenshots
-- Build portfolio-ready infrastructure documentation
+This project documents the process of building a production-style VPS cloud infrastructure lab using public Linux servers, Docker, domain DNS, reverse proxying, HTTPS, monitoring, backups, and secure administrative access.
 
----
+The goal is to build practical cloud and infrastructure experience by managing real VPS environments from the ground up.
 
-## Planned Architecture
+This lab is designed to demonstrate:
 
-| Component | Role |
-|---|---|
-| Netcup VPS | Primary production/public services host |
-| RackNerd VPS | Staging, monitoring, backups, and secondary services |
-| stayz3ro.dev | Public domain for hosted services |
-| Docker | Containerized application hosting |
-| Reverse Proxy | Public routing and HTTPS termination |
-| Tailscale | Private administrative access |
-| UFW + Fail2Ban | Basic host-level security |
-| Monitoring Stack | Availability and infrastructure visibility |
+- Linux server administration
+- VPS security hardening
+- SSH access control
+- Firewall configuration
+- Docker-based application hosting
+- Domain DNS management
+- Reverse proxy and HTTPS routing
+- Monitoring and alerting
+- Backup and disaster recovery planning
+- Staging and production separation
+- Infrastructure documentation
 
 ---
 
-## Current Status
+## Architecture Overview
 
-| Phase | Status |
-|---|---|
-| Phase 1 - VPS Baseline & Security Hardening | Complete |
-| Phase 2 - Domain DNS & Public Routing | Planned |
-| Phase 3 - Reverse Proxy & HTTPS | Planned |
-| Phase 4 - Docker App Deployment | Planned |
-| Phase 5 - Monitoring & Alerts | Planned |
-| Phase 6 - Backups & Disaster Recovery | Planned |
-| Phase 7 - Secondary VPS / Staging | Planned |
-| Phase 8 - AI Agent / Homelab Ops Bot | Planned |
+Current baseline:
+
+    Admin Workstation
+          |
+          | SSH key authentication / Tailscale
+          v
+    Netcup VPS - netcup-prod-01
+          |
+          ├── UFW Firewall
+          ├── Fail2Ban
+          ├── Docker Engine
+          ├── Tailscale
+          └── /opt/stayz3ro
+                ├── apps
+                ├── backups
+                ├── monitoring
+                ├── proxy
+                └── scripts
+
+Planned cloud architecture:
+
+    Internet
+       |
+       v
+    stayz3ro.dev DNS
+       |
+       v
+    Netcup VPS - Production/Public Services
+       |
+       ├── Reverse Proxy
+       ├── HTTPS
+       ├── Public Docker Apps
+       └── Private Admin Access via Tailscale
+
+    RackNerd VPS - Planned
+       |
+       ├── Staging
+       ├── Monitoring
+       ├── Backups
+       └── Secondary Services
+
+---
+
+## Current State
+
+- Netcup VPS provisioned
+- Hostname configured as `netcup-prod-01`
+- Non-root sudo user configured
+- SSH hardened
+- Root SSH login disabled
+- Password SSH login disabled
+- UFW firewall enabled
+- Only SSH, HTTP, and HTTPS allowed
+- Fail2Ban enabled for SSH protection
+- Unattended upgrades enabled
+- Docker and Docker Compose installed
+- Tailscale installed for private administrative access
+- `/opt/stayz3ro` folder structure created
+- Listening ports reviewed and documented
+
+---
+
+## Current Progress
+
+- ✅ Phase 1 - VPS Baseline & Security Hardening
+- ⏳ Phase 2 - Domain DNS & Public Routing
+- ⏳ Phase 3 - Reverse Proxy & HTTPS
+- ⏳ Phase 4 - Docker App Deployment
+- ⏳ Phase 5 - Monitoring & Alerts
+- ⏳ Phase 6 - Backups & Disaster Recovery
+- ⏳ Phase 7 - Secondary VPS / Staging
+- ⏳ Phase 8 - AI Agent / Homelab Ops Bot
 
 ---
 
 ## Documentation
 
-| Phase | Documentation |
-|---|---|
-| Phase 1 - VPS Baseline & Security Hardening | [View Phase 1](docs/phase-1-vps-baseline-security/README.md) |
-| Architecture | [View Architecture Notes](docs/architecture/README.md) |
-| Scripts | [View Scripts Notes](scripts/README.md) |
+### Phase 1 - VPS Baseline & Security Hardening
+
+- [Overview](docs/phase-1-vps-baseline-security/overview.md)
+- [Step-by-Step Guide](docs/phase-1-vps-baseline-security/step-by-step.md)
+- [Validation Evidence](docs/phase-1-vps-baseline-security/validation.md)
+- [Architecture Diagram](diagrams/phase-1-vps-baseline-security.md)
+- [Screenshots](screenshots/phase-1-vps-baseline-security/)
 
 ---
 
-## Phase 1 Summary
+## Repository Structure
 
-Phase 1 focused on preparing the Netcup VPS as a secure Linux baseline before exposing any public services.
+    configs/
+      Sanitized service and security configuration examples
 
-Completed items:
+    diagrams/
+      Architecture diagrams and infrastructure flow documentation
 
-- Configured hostname
-- Created non-root sudo user
-- Validated SSH service
-- Hardened SSH access
-- Disabled root SSH login
-- Disabled password SSH login
-- Enabled UFW firewall
-- Allowed only SSH, HTTP, and HTTPS
-- Enabled Fail2Ban for SSH protection
-- Enabled unattended upgrades
-- Installed Docker and Docker Compose
-- Installed Tailscale for private admin access
-- Created organized `/opt/stayz3ro` server folder structure
-- Reviewed listening ports
+    docs/
+      Phase-based documentation
+
+    screenshots/
+      Redacted validation screenshots and implementation evidence
+
+    scripts/
+      Future maintenance and automation scripts
+
+---
+
+## Core Tools and Services
+
+- Ubuntu Linux
+- SSH
+- UFW
+- Fail2Ban
+- Unattended Upgrades
+- Docker
+- Docker Compose
+- Tailscale
+- Netcup VPS
+- RackNerd VPS planned
+- Porkbun domain planned
+- Reverse proxy planned
+- HTTPS planned
+
+---
+
+## What This Project Demonstrates
+
+- Linux server administration
+- Secure VPS baseline configuration
+- SSH hardening and access control
+- Firewall policy management
+- Brute-force protection
+- Container runtime setup
+- Private administrative access with Tailscale
+- Infrastructure documentation
+- Cloud hosting fundamentals
+- Portfolio-ready technical validation
 
 ---
 
@@ -86,24 +172,36 @@ Completed items:
 This repository intentionally excludes:
 
 - Public IP addresses
-- Private IP addresses where unnecessary
-- SSH keys
+- Private keys
 - API keys
 - Provider credentials
 - Tailscale authentication data
-- Billing or account information
+- Billing information
 - Unredacted screenshots
+- Production secrets
 
-Screenshots are redacted before being committed.
+Admin dashboards, databases, and internal services should not be directly exposed to the public internet.
 
 ---
 
-## Future Roadmap
+## Current Status
 
-- Configure domain DNS for `stayz3ro.dev`
-- Deploy reverse proxy with HTTPS
-- Deploy first public Docker service
-- Add uptime monitoring
-- Add offsite backups to secondary VPS
-- Build staging/production split
-- Build an AI-powered infrastructure assistant for quick homelab and VPS checks
+For the latest status, see:
+
+- [Current Status](CURRENT-STATUS.md)
+
+---
+
+## Roadmap
+
+For planned phases, see:
+
+- [Roadmap](ROADMAP.md)
+
+---
+
+## Lessons Learned
+
+For troubleshooting notes and design decisions, see:
+
+- [Lessons Learned](LESSONS-LEARNED.md)

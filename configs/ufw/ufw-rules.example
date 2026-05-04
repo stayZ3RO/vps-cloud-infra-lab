@@ -1,0 +1,9 @@
+# Sanitized UFW baseline
+
+Default incoming policy: deny
+Default outgoing policy: allow
+
+Allowed:
+- OpenSSH
+- 80/tcp
+- 443/tcp
