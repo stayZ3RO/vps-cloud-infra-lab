@@ -2,9 +2,30 @@
 
 ## Objective
 
-Prepare the Netcup VPS as a secure, production-ready Linux server before configuring domain DNS, reverse proxying, HTTPS, or public application hosting.
+Prepare the Netcup VPS as a secure, production-ready Linux server before adding domain DNS, reverse proxying, HTTPS, or public application hosting.
 
-This phase establishes the baseline controls needed before exposing services to the public internet.
+This phase focuses on establishing a clean baseline:
+
+- Secure administrative access
+- Reduced public attack surface
+- Host-level firewall protection
+- SSH brute-force protection
+- Automatic security updates
+- Docker runtime readiness
+- Private administrative access through Tailscale
+- Redacted validation evidence
+
+---
+
+## Why This Phase Matters
+
+A public VPS is exposed to the internet immediately after provisioning.
+
+Before hosting applications, the server needs a secure baseline so future services are deployed on top of a controlled foundation instead of a default installation.
+
+This phase answers the basic operational question:
+
+**Is this VPS safe and ready to become a public services host?**
 
 ---
 
@@ -13,34 +34,69 @@ This phase establishes the baseline controls needed before exposing services to 
 | Item | Value |
 |---|---|
 | Provider | Netcup |
-| Hostname | `netcup-prod-01` |
+| Hostname | netcup-prod-01 |
 | Role | Primary production/public services VPS |
 | Operating System | Ubuntu Linux |
-| Primary Admin User | Non-root sudo user |
-| Public Domain | `stayz3ro.dev` planned |
-| Private Access | Tailscale |
+| Admin Model | Non-root sudo user |
+| Remote Access | SSH key authentication and Tailscale |
+| Firewall | UFW |
+| Intrusion Protection | Fail2Ban |
+| Container Runtime | Docker and Docker Compose |
+| Planned Domain | stayz3ro.dev |
 
 ---
 
-## Completed Tasks
+## Baseline Architecture
+
+    Admin Workstation
+          |
+          | SSH Key Authentication / Tailscale
+          v
+    Netcup VPS - netcup-prod-01
+          |
+          ├── UFW Firewall
+          │     ├── SSH
+          │     ├── HTTP
+          │     └── HTTPS
+          |
+          ├── Fail2Ban
+          │     └── SSH brute-force protection
+          |
+          ├── Docker Engine
+          │     └── Future container workloads
+          |
+          ├── Tailscale
+          │     └── Private administrative access
+          |
+          └── /opt/stayz3ro
+                ├── apps
+                ├── backups
+                ├── monitoring
+                ├── proxy
+                └── scripts
+
+---
+
+## Completed Work
 
 ### System Baseline
 
-- Confirmed hostname configuration
-- Confirmed operating system version
+- Verified operating system version
+- Configured hostname
+- Fixed local hostname resolution
 - Updated system packages
 - Installed baseline administration tools
-- Set system timezone
-- Added swap for stability
+- Configured timezone
+- Added swap for additional stability
 
 ### User and Access Management
 
-- Created non-root sudo user
+- Created a non-root sudo user
 - Confirmed sudo group membership
-- Confirmed sudo access
+- Confirmed sudo elevation works
+- Configured SSH key-based access
 - Disabled root SSH login
 - Disabled password-based SSH login
-- Confirmed SSH key-based access
 
 ### SSH Hardening
 
@@ -52,12 +108,12 @@ This phase establishes the baseline controls needed before exposing services to 
 ### Firewall
 
 - Enabled UFW
-- Set default deny for incoming traffic
-- Set default allow for outgoing traffic
+- Set default incoming policy to deny
+- Set default outgoing policy to allow
 - Allowed SSH
 - Allowed HTTP
 - Allowed HTTPS
-- Verified firewall rules
+- Verified active firewall rules
 
 ### Intrusion Protection
 
@@ -68,8 +124,8 @@ This phase establishes the baseline controls needed before exposing services to 
 
 ### Updates
 
-- Enabled unattended upgrades
-- Verified unattended upgrade service
+- Enabled unattended security upgrades
+- Verified unattended upgrades service
 
 ### Container Runtime
 
@@ -85,7 +141,7 @@ This phase establishes the baseline controls needed before exposing services to 
 
 ### Filesystem Organization
 
-Created the following VPS directory structure:
+Created a clean service directory layout:
 
     /opt/stayz3ro
     ├── apps
@@ -96,100 +152,57 @@ Created the following VPS directory structure:
 
 ---
 
+## Security Posture After Phase 1
+
+| Control | Status |
+|---|---:|
+| Non-root sudo user | Enabled |
+| Root SSH login | Disabled |
+| Password SSH login | Disabled |
+| SSH key authentication | Enabled |
+| UFW firewall | Enabled |
+| Fail2Ban SSH jail | Active |
+| Unattended upgrades | Enabled |
+| Tailscale private access | Connected |
+| Direct app port exposure | Not allowed |
+| Public database exposure | Not allowed |
+
+---
+
+## Public Exposure Model
+
+Only the following ports are intended to be publicly reachable at this stage:
+
+| Port | Purpose |
+|---|---|
+| SSH | Administrative access |
+| HTTP | Web traffic and certificate validation |
+| HTTPS | Secure public services |
+
+Application ports, database ports, admin dashboards, Portainer, and monitoring tools should not be exposed directly to the public internet.
+
+---
+
 ## Validation Evidence
 
-| Evidence | Screenshot |
-|---|---|
-| Netcup VPS dashboard | `screenshots/01-netcup-vps-dashboard-redacted.png` |
-| Hostname validation | `screenshots/02-hostnamectl.png` |
-| OS version | `screenshots/03-os-version.png` |
-| Sudo user validation | `screenshots/04-sudo-user-groups.png` |
-| SSH service status | `screenshots/05-ssh-service-status.png` |
-| SSH config validation | `screenshots/06-ssh-config-validation.png` |
-| UFW firewall status | `screenshots/07-ufw-firewall-status.png` |
-| Fail2Ban status | `screenshots/08-fail2ban-status.png` |
-| Unattended upgrades | `screenshots/09-unattended-upgrades-status.png` |
-| Swap and memory check | `screenshots/10-swap-memory-check.png` |
-| Docker validation | `screenshots/11-docker-version.png` |
-| Tailscale status | `screenshots/12-tailscale-status-redacted.png` |
-| VPS folder structure | `screenshots/13-folder-structure.png` |
-| Listening ports | `screenshots/14-listening-ports-redacted.png` |
+Validation screenshots are documented here:
+
+[View Phase 1 Validation Evidence](validation.md)
 
 ---
 
-## Commands Used for Validation
+## Step-by-Step Guide
 
-    hostnamectl
-    cat /etc/os-release
-    groups ash
-    sudo whoami
-    sudo systemctl status ssh --no-pager
-    sudo sshd -t && echo "SSH config validation passed"
-    sudo ufw status verbose
-    sudo fail2ban-client status sshd
-    systemctl status unattended-upgrades --no-pager
-    free -h
-    docker version
-    docker compose version
-    tailscale status
-    tree /opt/stayz3ro
-    sudo ss -tulpen | grep LISTEN
+The implementation steps are documented here:
 
----
-
-## Security Decisions
-
-| Decision | Reason |
-|---|---|
-| Disabled root SSH login | Reduces risk from direct root brute-force attempts |
-| Disabled password SSH login | Requires SSH key authentication |
-| Enabled UFW | Limits exposed network services |
-| Allowed only SSH, HTTP, HTTPS | Keeps the attack surface small |
-| Enabled Fail2Ban | Adds brute-force protection for SSH |
-| Used Tailscale | Provides private admin access without exposing dashboards |
-| Avoided public Portainer exposure | Prevents exposing privileged container management to the internet |
-
----
-
-## Redaction Rules
-
-The following data is redacted from screenshots before being committed:
-
-- Public IPv4 address
-- IPv6 address
-- Tailscale IPs
-- Tailscale device identifiers where needed
-- Netcup customer/account details
-- Email addresses
-- Authentication URLs
-- API keys or tokens
-- Billing details
-
----
-
-## Phase 1 Completion Criteria
-
-Phase 1 is complete because:
-
-- Hostname resolves correctly with no sudo warning
-- Non-root sudo user works
-- SSH service is active
-- SSH config validates successfully
-- Root SSH login is disabled
-- Password SSH login is disabled
-- UFW is enabled
-- Only SSH, HTTP, and HTTPS are allowed
-- Fail2Ban is active for SSH
-- Unattended upgrades are enabled
-- Docker and Docker Compose work
-- Tailscale is installed and connected
-- `/opt/stayz3ro` folder structure exists
-- Listening ports are understood and documented
+[View Phase 1 Step-by-Step Guide](step-by-step.md)
 
 ---
 
 ## Next Phase
 
-Next: **Phase 2 - Domain DNS & Public Routing**
+Next phase:
 
-The next phase will connect the `stayz3ro.dev` domain to the VPS and establish public DNS records before deploying the reverse proxy and HTTPS certificates.
+**Phase 2 - Domain DNS & Public Routing**
+
+This will connect stayz3ro.dev to the VPS and prepare the environment for reverse proxy and HTTPS configuration.
