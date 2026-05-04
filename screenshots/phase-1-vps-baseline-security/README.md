@@ -6,10 +6,8 @@ This folder contains redacted validation screenshots for Phase 1: VPS Baseline &
 
 | # | Evidence |
 |---|---|
-| 01 | Netcup VPS dashboard |
 | 02 | Hostname validation |
 | 03 | OS version |
-| 04 | Sudo user validation |
 | 05 | SSH service status |
 | 06 | SSH config validation |
 | 07 | UFW firewall status |
@@ -20,6 +18,15 @@ This folder contains redacted validation screenshots for Phase 1: VPS Baseline &
 | 12 | Tailscale status |
 | 13 | VPS folder structure |
 | 14 | Listening ports |
+
+## Optional Screenshots
+
+The following screenshots can be added later if needed:
+
+| # | Evidence |
+|---|---|
+| 01 | Netcup VPS dashboard, fully redacted |
+| 04 | Sudo user group validation |
 
 ## Redaction Notice
 

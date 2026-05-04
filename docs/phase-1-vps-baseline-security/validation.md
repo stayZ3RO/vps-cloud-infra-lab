@@ -23,22 +23,86 @@ Phase 1 is complete because:
 
 ## Screenshot Evidence
 
-| Evidence | Screenshot |
-|---|---|
-| Netcup VPS dashboard | [View Screenshot](../../screenshots/phase-1-vps-baseline-security/01-netcup-vps-dashboard-redacted.png) |
-| Hostname validation | [View Screenshot](../../screenshots/phase-1-vps-baseline-security/02-hostnamectl.png) |
-| OS version | [View Screenshot](../../screenshots/phase-1-vps-baseline-security/03-os-version.png) |
-| Sudo user validation | [View Screenshot](../../screenshots/phase-1-vps-baseline-security/04-sudo-user-groups.png) |
-| SSH service status | [View Screenshot](../../screenshots/phase-1-vps-baseline-security/05-ssh-service-status.png) |
-| SSH config validation | [View Screenshot](../../screenshots/phase-1-vps-baseline-security/06-ssh-config-validation.png) |
-| UFW firewall status | [View Screenshot](../../screenshots/phase-1-vps-baseline-security/07-ufw-firewall-status.png) |
-| Fail2Ban status | [View Screenshot](../../screenshots/phase-1-vps-baseline-security/08-fail2ban-status.png) |
-| Unattended upgrades | [View Screenshot](../../screenshots/phase-1-vps-baseline-security/09-unattended-upgrades-status.png) |
-| Swap and memory check | [View Screenshot](../../screenshots/phase-1-vps-baseline-security/10-swap-memory-check.png) |
-| Docker validation | [View Screenshot](../../screenshots/phase-1-vps-baseline-security/11-docker-version.png) |
-| Tailscale status | [View Screenshot](../../screenshots/phase-1-vps-baseline-security/12-tailscale-status-redacted.png) |
-| VPS folder structure | [View Screenshot](../../screenshots/phase-1-vps-baseline-security/13-folder-structure.png) |
-| Listening ports | [View Screenshot](../../screenshots/phase-1-vps-baseline-security/14-listening-ports-redacted.png) |
+### 02 - Hostname Validation
+
+![Hostname validation](../../screenshots/phase-1-vps-baseline-security/02-hostnamectl.png)
+
+---
+
+### 03 - OS Version
+
+![OS version](../../screenshots/phase-1-vps-baseline-security/03-os-version.png)
+
+---
+
+### 05 - SSH Service Status
+
+![SSH service status](../../screenshots/phase-1-vps-baseline-security/05-ssh-service-status.png)
+
+---
+
+### 06 - SSH Config Validation
+
+![SSH config validation](../../screenshots/phase-1-vps-baseline-security/06-ssh-config-validation.png)
+
+---
+
+### 07 - UFW Firewall Status
+
+![UFW firewall status](../../screenshots/phase-1-vps-baseline-security/07-ufw-firewall-status.png)
+
+---
+
+### 08 - Fail2Ban Status
+
+![Fail2Ban status](../../screenshots/phase-1-vps-baseline-security/08-fail2ban-status.png)
+
+---
+
+### 09 - Unattended Upgrades
+
+![Unattended upgrades](../../screenshots/phase-1-vps-baseline-security/09-unattended-upgrades-status.png)
+
+---
+
+### 10 - Swap and Memory Check
+
+![Swap and memory check](../../screenshots/phase-1-vps-baseline-security/10-swap-memory-check.png)
+
+---
+
+### 11 - Docker Validation
+
+![Docker validation](../../screenshots/phase-1-vps-baseline-security/11-docker-version.png)
+
+---
+
+### 12 - Tailscale Status
+
+![Tailscale status](../../screenshots/phase-1-vps-baseline-security/12-tailscale-status-redacted.png)
+
+---
+
+### 13 - VPS Folder Structure
+
+![VPS folder structure](../../screenshots/phase-1-vps-baseline-security/13-folder-structure.png)
+
+---
+
+### 14 - Listening Ports
+
+![Listening ports](../../screenshots/phase-1-vps-baseline-security/14-listening-ports-redacted.png)
+
+---
+
+## Optional Evidence Not Included
+
+The following evidence was either omitted or can be added later:
+
+- Netcup VPS dashboard screenshot
+- Sudo user group validation screenshot
+
+The Netcup dashboard contains provider/account details and should only be included if fully redacted.
 
 ---
 
