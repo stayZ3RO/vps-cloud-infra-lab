@@ -169,6 +169,7 @@ Full validation screenshots are available here:
 | [Step-by-Step Guide](docs/phase-1-vps-baseline-security/step-by-step.md) | Commands and setup process |
 | [Validation Evidence](docs/phase-1-vps-baseline-security/validation.md) | Screenshots and proof |
 | [Architecture Diagram](diagrams/phase-1-vps-baseline-security.md) | Phase 1 infrastructure layout |
+| [Phase 2 Documentation](docs/phase-2-domain-dns-public-routing/) | Domain DNS and public routing validation |
 
 ### Project-Level Docs
 

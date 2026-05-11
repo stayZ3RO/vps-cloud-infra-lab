@@ -81,3 +81,38 @@ Planned:
 - Route services through subdomains
 - Validate HTTP to HTTPS behavior
 - Avoid direct app port exposure
+
+---
+
+## Phase 2 - Domain DNS & Public Routing
+
+### Added
+
+- Phase 2 documentation folder
+- Phase 2 overview
+- Phase 2 step-by-step guide
+- Phase 2 validation evidence
+- Phase 2 screenshot evidence folder
+- Phase 2 DNS routing diagram
+
+### Completed
+
+- Removed Porkbun parking DNS records
+- Added root domain A record
+- Added www CNAME record
+- Added apps subdomain A record
+- Added status subdomain A record
+- Added api subdomain A record
+- Validated local DNS resolution
+- Validated public resolver DNS results
+- Confirmed SSH listening state
+- Validated SSH over Tailscale
+- Blocked public SSH access
+- Confirmed UFW allows SSH only over Tailscale
+- Captured and redacted Phase 2 screenshots
+
+### Security Improvement
+
+Administrative SSH access is now restricted to the Tailscale private network.
+
+Public exposure is limited to HTTP and HTTPS for future reverse proxy traffic.

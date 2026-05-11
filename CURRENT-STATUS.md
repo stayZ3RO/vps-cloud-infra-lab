@@ -103,3 +103,21 @@ Planned tasks:
 - Document public routing strategy
 - Capture redacted DNS screenshots
 - Prepare for reverse proxy and HTTPS configuration
+
+
+## Phase 2 Completion Summary
+
+| Area | Status |
+|---|---:|
+| Porkbun parking records removed | ✅ Complete |
+| Root domain A record configured | ✅ Complete |
+| www CNAME configured | ✅ Complete |
+| apps subdomain configured | ✅ Complete |
+| status subdomain configured | ✅ Complete |
+| api subdomain configured | ✅ Complete |
+| Local DNS resolution validated | ✅ Complete |
+| Public resolver validation completed | ✅ Complete |
+| Public SSH blocked | ✅ Complete |
+| Tailscale SSH validated | ✅ Complete |
+| UFW updated for Tailscale-only SSH | ✅ Complete |
+

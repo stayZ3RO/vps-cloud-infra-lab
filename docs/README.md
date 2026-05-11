@@ -18,7 +18,7 @@ Each phase is organized like a small infrastructure case study:
 | Phase | Status | Documentation |
 |---|---:|---|
 | Phase 1 - VPS Baseline & Security Hardening | ✅ Complete | [View Phase 1](phase-1-vps-baseline-security/) |
-| Phase 2 - Domain DNS & Public Routing | ⏳ Planned | Coming soon |
+| Phase 2 - Domain DNS & Public Routing | ✅ Complete | [View Phase 2](phase-2-domain-dns-public-routing/) |
 | Phase 3 - Reverse Proxy & HTTPS | ⏳ Planned | Coming soon |
 | Phase 4 - Docker App Deployment | ⏳ Planned | Coming soon |
 | Phase 5 - Monitoring & Alerts | ⏳ Planned | Coming soon |
