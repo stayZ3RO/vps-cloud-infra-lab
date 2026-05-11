@@ -109,7 +109,7 @@ This VPS lab gives me a place to practice:
 | Phase | Status | Focus |
 |---|---:|---|
 | Phase 1 - VPS Baseline & Security Hardening | ✅ Complete | Secure Linux baseline |
-| Phase 2 - Domain DNS & Public Routing | ⏳ Planned | stayz3ro.dev DNS records |
+| Phase 2 - Domain DNS & Public Routing | ✅ Complete | stayz3ro.dev DNS records and Tailscale-only SSH |
 | Phase 3 - Reverse Proxy & HTTPS | ⏳ Planned | Public routing and TLS |
 | Phase 4 - Docker App Deployment | ⏳ Planned | First public containerized services |
 | Phase 5 - Monitoring & Alerts | ⏳ Planned | Uptime and service visibility |
