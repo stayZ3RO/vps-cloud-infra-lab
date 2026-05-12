@@ -32,9 +32,9 @@ Each phase is organized like a small infrastructure case study:
 
 The current completed phase is:
 
-**Phase 1 - VPS Baseline & Security Hardening**
+**Phase 2 - Domain DNS & Public Routing**
 
-This phase established the secure Linux foundation for the Netcup VPS before exposing public applications or configuring domain routing.
+This phase connected `stayz3ro.dev` to the Netcup VPS, validated DNS resolution, and restricted SSH administration to Tailscale.
 
 ---
 

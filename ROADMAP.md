@@ -11,7 +11,7 @@ The project starts with a secure Linux baseline, then layers on DNS, HTTPS, cont
 | Phase | Status | Focus |
 |---|---:|---|
 | Phase 1 - VPS Baseline & Security Hardening | ✅ Complete | Secure the Netcup VPS before public hosting |
-| Phase 2 - Domain DNS & Public Routing | ⏳ Planned | Connect stayz3ro.dev to the VPS |
+| Phase 2 - Domain DNS & Public Routing | ✅ Complete | Connected stayz3ro.dev to the VPS |
 | Phase 3 - Reverse Proxy & HTTPS | ⏳ Planned | Route services through HTTPS |
 | Phase 4 - Docker App Deployment | ⏳ Planned | Deploy public containerized services |
 | Phase 5 - Monitoring & Alerts | ⏳ Planned | Add uptime and service visibility |
@@ -51,22 +51,23 @@ Completed:
 
 ## Phase 2 - Domain DNS & Public Routing
 
-Status: ⏳ Planned
+Status: ✅ Complete
 
 Purpose:
 
 Connect the stayz3ro.dev domain to the VPS and establish a clean DNS foundation for public services.
 
-Planned tasks:
+Completed:
 
-- Configure DNS provider settings
-- Add root domain record
-- Add www record
-- Plan app and service subdomains
-- Validate DNS propagation
-- Confirm records resolve to the correct VPS
-- Document DNS layout
-- Capture redacted DNS screenshots
+- Configured Porkbun DNS records
+- Removed default parking records
+- Added root domain record
+- Added www record
+- Added apps, status, and api records
+- Validated local DNS resolution
+- Validated public resolvers
+- Restricted SSH to Tailscale
+- Captured redacted DNS and security screenshots
 
 Example future subdomain plan:
 
