@@ -1,7 +1,7 @@
 # VPS Cloud Infrastructure Lab 🚀
 
 ![Status](https://img.shields.io/badge/status-active-brightgreen)
-![Current Phase](https://img.shields.io/badge/current_phase-VPS%20Baseline%20Security-blue)
+![Current Phase](https://img.shields.io/badge/current_phase-Reverse%20Proxy%20%26%20HTTPS-blue)
 ![Platform](https://img.shields.io/badge/platform-Netcup%20VPS-orange)
 ![Docker](https://img.shields.io/badge/container_runtime-Docker-blue)
 ![Security](https://img.shields.io/badge/security-hardened-success)
@@ -14,8 +14,8 @@
 | Current Status | [CURRENT-STATUS.md](CURRENT-STATUS.md) |
 | Roadmap | [ROADMAP.md](ROADMAP.md) |
 | Lessons Learned | [LESSONS-LEARNED.md](LESSONS-LEARNED.md) |
-| Phase 1 Documentation | [Phase 1 - VPS Baseline & Security Hardening](docs/phase-1-vps-baseline-security/) |
-| Validation Evidence | [Phase 1 Validation](docs/phase-1-vps-baseline-security/validation.md) |
+| Changelog | [CHANGELOG.md](CHANGELOG.md) |
+| Documentation Hub | [docs/](docs/) |
 | Architecture Diagrams | [diagrams/](diagrams/) |
 | Config Examples | [configs/](configs/) |
 | Screenshots | [screenshots/](screenshots/) |
@@ -53,14 +53,14 @@ This VPS lab gives me a place to practice:
 
     Admin Workstation
           |
-          | SSH Key Authentication / Tailscale
+          | SSH over Tailscale
           v
     Netcup VPS - netcup-prod-01
           |
           ├── UFW Firewall
-          │     ├── SSH
-          │     ├── HTTP
-          │     └── HTTPS
+          │     ├── HTTP public
+          │     ├── HTTPS public
+          │     └── SSH over tailscale0 only
           |
           ├── Fail2Ban
           │     └── SSH brute-force protection
@@ -119,43 +119,42 @@ This VPS lab gives me a place to practice:
 
 ---
 
-## Phase 1 Highlights
+## Completed Work
 
-Phase 1 focused on preparing the Netcup VPS as a secure baseline before deploying any public services.
+### Phase 1 - VPS Baseline & Security Hardening
 
-Completed:
+Phase 1 prepared the Netcup VPS as a secure Linux baseline before deploying public services.
 
-- Configured hostname: netcup-prod-01
+Highlights:
+
+- Configured hostname: `netcup-prod-01`
 - Created a non-root sudo user
 - Hardened SSH access
 - Disabled root SSH login
 - Disabled password-based SSH login
 - Enabled UFW firewall
-- Allowed only SSH, HTTP, and HTTPS
-- Enabled Fail2Ban for SSH protection
+- Enabled Fail2Ban
 - Enabled unattended security updates
 - Installed Docker and Docker Compose
-- Installed Tailscale for private administrative access
-- Created a clean /opt/stayz3ro folder structure
-- Reviewed listening ports before public service deployment
+- Installed Tailscale
+- Created `/opt/stayz3ro` folder structure
+- Reviewed listening ports
 
----
+### Phase 2 - Domain DNS & Public Routing
 
-## Validation Preview
+Phase 2 connected `stayz3ro.dev` to the VPS and improved the management-plane security model.
 
-| Area | Evidence |
-|---|---|
-| SSH service | Confirmed active and running |
-| SSH config | Validated successfully |
-| Firewall | UFW enabled with limited public exposure |
-| Intrusion protection | Fail2Ban active for SSH |
-| Container runtime | Docker and Docker Compose installed |
-| Private access | Tailscale connected |
-| Filesystem layout | /opt/stayz3ro service folders created |
+Highlights:
 
-Full validation screenshots are available here:
-
-[View Phase 1 Validation Evidence](docs/phase-1-vps-baseline-security/validation.md)
+- Removed Porkbun parking records
+- Added root domain DNS record
+- Added `www`, `apps`, `status`, and `api` records
+- Validated local DNS resolution
+- Validated public DNS resolvers
+- Confirmed SSH over Tailscale
+- Removed public SSH access
+- Confirmed UFW allows SSH only over `tailscale0`
+- Captured redacted validation screenshots
 
 ---
 
@@ -165,11 +164,21 @@ Full validation screenshots are available here:
 
 | Document | Description |
 |---|---|
+| [Phase Home](docs/phase-1-vps-baseline-security/) | Phase 1 landing page |
 | [Overview](docs/phase-1-vps-baseline-security/overview.md) | What was built and why |
 | [Step-by-Step Guide](docs/phase-1-vps-baseline-security/step-by-step.md) | Commands and setup process |
 | [Validation Evidence](docs/phase-1-vps-baseline-security/validation.md) | Screenshots and proof |
 | [Architecture Diagram](diagrams/phase-1-vps-baseline-security.md) | Phase 1 infrastructure layout |
-| [Phase 2 Documentation](docs/phase-2-domain-dns-public-routing/) | Domain DNS and public routing validation |
+
+### Phase 2 - Domain DNS & Public Routing
+
+| Document | Description |
+|---|---|
+| [Phase Home](docs/phase-2-domain-dns-public-routing/) | Phase 2 landing page |
+| [Overview](docs/phase-2-domain-dns-public-routing/overview.md) | DNS and access model overview |
+| [Step-by-Step Guide](docs/phase-2-domain-dns-public-routing/step-by-step.md) | DNS and SSH access implementation flow |
+| [Validation Evidence](docs/phase-2-domain-dns-public-routing/validation.md) | DNS and Tailscale-only SSH proof |
+| [Architecture Diagram](diagrams/phase-2-domain-dns-public-routing.md) | Public DNS and private admin access model |
 
 ### Project-Level Docs
 
@@ -208,12 +217,13 @@ Full validation screenshots are available here:
 | VPS Provider | Netcup |
 | Planned Secondary VPS | RackNerd |
 | OS | Ubuntu Linux |
-| Access | SSH, Tailscale |
+| Access | SSH over Tailscale |
 | Firewall | UFW |
 | Intrusion Protection | Fail2Ban |
 | Updates | Unattended Upgrades |
 | Containers | Docker, Docker Compose |
-| Domain | stayz3ro.dev planned |
+| Domain | stayz3ro.dev |
+| DNS Provider | Porkbun |
 | Reverse Proxy | Planned |
 | HTTPS | Planned |
 
@@ -230,7 +240,7 @@ This project demonstrates practical infrastructure skills across:
 - Brute-force protection
 - Secure remote administration
 - Docker runtime setup
-- Public DNS planning
+- Public DNS routing
 - Infrastructure documentation
 - Cloud hosting fundamentals
 - Production-minded validation
@@ -256,6 +266,6 @@ Admin dashboards, databases, Portainer, and monitoring tools should not be direc
 
 ## Next Phase
 
-Next up: Phase 2 - Domain DNS & Public Routing.
+Next up: **Phase 3 - Reverse Proxy & HTTPS**
 
-This phase will connect stayz3ro.dev to the VPS, configure DNS records, validate public resolution, and prepare the environment for reverse proxy and HTTPS deployment.
+This phase will deploy a reverse proxy, configure HTTPS certificates, and route public services through `stayz3ro.dev` and planned subdomains.

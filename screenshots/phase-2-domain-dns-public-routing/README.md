@@ -41,6 +41,6 @@ Redacted or excluded items include:
 
 | Document | Link |
 |---|---|
-| Phase 2 Overview | ../../docs/phase-2-domain-dns-public-routing/overview.md |
-| Phase 2 Step-by-Step Guide | ../../docs/phase-2-domain-dns-public-routing/step-by-step.md |
-| Phase 2 Validation Evidence | ../../docs/phase-2-domain-dns-public-routing/validation.md |
+| Phase 2 Overview | [overview.md](../../docs/phase-2-domain-dns-public-routing/overview.md) |
+| Phase 2 Step-by-Step Guide | [step-by-step.md](../../docs/phase-2-domain-dns-public-routing/step-by-step.md) |
+| Phase 2 Validation Evidence | [validation.md](../../docs/phase-2-domain-dns-public-routing/validation.md) |

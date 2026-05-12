@@ -1,37 +1,44 @@
 # Current Status
 
+![Status](https://img.shields.io/badge/status-active-brightgreen)
+![Current Phase](https://img.shields.io/badge/current_phase-Phase%203%20Planned-blue)
+![Security](https://img.shields.io/badge/ssh-Tailscale%20Only-success)
+
 ## Project State
 
-The Netcup VPS has been provisioned and secured as the primary public services host for this VPS cloud infrastructure lab.
+The Netcup VPS has been provisioned, secured, connected to `stayz3ro.dev`, and validated for public DNS routing.
 
 The project is currently at the end of:
 
-**Phase 1 - VPS Baseline & Security Hardening**
+**Phase 2 - Domain DNS & Public Routing**
 
 ---
 
 ## Current Architecture State
 
-    Admin Workstation
-          |
-          | SSH Key Authentication / Tailscale
-          v
+    Internet
+       |
+       v
+    Porkbun DNS - stayz3ro.dev
+       |
+       v
     Netcup VPS - netcup-prod-01
-          |
-          ├── UFW Firewall
-          ├── Fail2Ban
-          ├── Docker Engine
-          ├── Tailscale
-          └── /opt/stayz3ro
-                ├── apps
-                ├── backups
-                ├── monitoring
-                ├── proxy
-                └── scripts
+       |
+       ├── Public HTTP - 80/tcp
+       ├── Public HTTPS - 443/tcp
+       └── Private SSH - tailscale0 only
+
+    Admin Workstation
+       |
+       v
+    Tailscale
+       |
+       v
+    SSH to Netcup VPS
 
 ---
 
-## Phase 1 Completion Summary
+## Phase Completion Summary
 
 | Area | Status |
 |---|---:|
@@ -43,14 +50,21 @@ The project is currently at the end of:
 | Root SSH login disabled | ✅ Complete |
 | Password SSH login disabled | ✅ Complete |
 | UFW firewall enabled | ✅ Complete |
-| SSH, HTTP, and HTTPS allowed | ✅ Complete |
 | Fail2Ban enabled for SSH | ✅ Complete |
 | Unattended upgrades enabled | ✅ Complete |
 | Docker installed | ✅ Complete |
 | Docker Compose installed | ✅ Complete |
 | Tailscale installed and connected | ✅ Complete |
-| VPS folder structure created | ✅ Complete |
-| Listening ports reviewed | ✅ Complete |
+| Porkbun DNS configured | ✅ Complete |
+| Root domain record configured | ✅ Complete |
+| `www` record configured | ✅ Complete |
+| `apps` record configured | ✅ Complete |
+| `status` record configured | ✅ Complete |
+| `api` record configured | ✅ Complete |
+| Local DNS validation completed | ✅ Complete |
+| Public resolver validation completed | ✅ Complete |
+| Public SSH blocked | ✅ Complete |
+| SSH over Tailscale validated | ✅ Complete |
 
 ---
 
@@ -62,28 +76,29 @@ The project is currently at the end of:
 | Hostname | netcup-prod-01 |
 | Role | Primary production/public services VPS |
 | Operating System | Ubuntu Linux |
-| Access Method | SSH key authentication and Tailscale |
+| Domain | stayz3ro.dev |
+| DNS Provider | Porkbun |
+| Access Method | SSH over Tailscale |
 | Firewall | UFW |
 | Intrusion Protection | Fail2Ban |
 | Container Runtime | Docker and Docker Compose |
-| Public Exposure | SSH, HTTP, HTTPS only |
+| Public Exposure | HTTP and HTTPS only |
 
 ---
 
 ## Current Security Posture
 
-The VPS has a secure baseline before public applications are deployed.
+The VPS now uses a stronger management-plane design.
 
 Current access and exposure model:
 
-- SSH is enabled for administrative access
-- Root SSH login is disabled
-- Password-based SSH login is disabled
-- UFW is enabled with a limited ruleset
-- Fail2Ban is active for SSH brute-force protection
-- Tailscale is available for private administrative access
-- No application ports are directly exposed
-- No databases or admin dashboards are publicly exposed
+- SSH is blocked on the public VPS IP
+- SSH is allowed through Tailscale only
+- HTTP is open for future reverse proxy/certificate traffic
+- HTTPS is open for future reverse proxy traffic
+- Direct application ports are not exposed
+- Databases are not exposed
+- Admin dashboards are not exposed publicly
 
 ---
 
@@ -91,33 +106,14 @@ Current access and exposure model:
 
 Next phase:
 
-**Phase 2 - Domain DNS & Public Routing**
+**Phase 3 - Reverse Proxy & HTTPS**
 
 Planned tasks:
 
-- Configure DNS for stayz3ro.dev
-- Add root domain record
-- Add www record
-- Plan service subdomains
-- Validate DNS resolution
-- Document public routing strategy
-- Capture redacted DNS screenshots
-- Prepare for reverse proxy and HTTPS configuration
-
-
-## Phase 2 Completion Summary
-
-| Area | Status |
-|---|---:|
-| Porkbun parking records removed | ✅ Complete |
-| Root domain A record configured | ✅ Complete |
-| www CNAME configured | ✅ Complete |
-| apps subdomain configured | ✅ Complete |
-| status subdomain configured | ✅ Complete |
-| api subdomain configured | ✅ Complete |
-| Local DNS resolution validated | ✅ Complete |
-| Public resolver validation completed | ✅ Complete |
-| Public SSH blocked | ✅ Complete |
-| Tailscale SSH validated | ✅ Complete |
-| UFW updated for Tailscale-only SSH | ✅ Complete |
-
+- Choose reverse proxy platform
+- Deploy reverse proxy stack
+- Configure HTTP to HTTPS routing
+- Issue TLS certificates
+- Route root domain and subdomains
+- Validate HTTPS externally
+- Keep application ports private behind the proxy

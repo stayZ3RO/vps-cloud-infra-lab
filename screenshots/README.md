@@ -26,6 +26,7 @@ Redacted items include:
 - Public IPv4 addresses
 - IPv6 addresses
 - Tailscale IPs
+- SSH host fingerprints
 - Provider account details
 - Customer numbers
 - Email addresses
