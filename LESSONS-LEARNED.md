@@ -1,6 +1,26 @@
-# Lessons Learned
+# Lessons Learned 🧠
 
-This file documents the operational lessons, troubleshooting notes, and infrastructure decisions made during the VPS Cloud Infrastructure Lab.
+![Status](https://img.shields.io/badge/status-active-brightgreen)
+![Phase 1](https://img.shields.io/badge/phase_1-complete-success)
+![Phase 2](https://img.shields.io/badge/phase_2-complete-success)
+![Next](https://img.shields.io/badge/next-Reverse%20Proxy%20%26%20HTTPS-blue)
+
+This file documents operational lessons, troubleshooting notes, and infrastructure design decisions from the VPS Cloud Infrastructure Lab.
+
+---
+
+## Current Project Takeaway
+
+The first two phases established the foundation for a production-style public VPS environment:
+
+| Phase | Outcome |
+|---|---|
+| Phase 1 - VPS Baseline & Security Hardening | Built a secure Linux server baseline |
+| Phase 2 - Domain DNS & Public Routing | Connected `stayz3ro.dev` and restricted SSH to Tailscale |
+
+The project is now ready for:
+
+**Phase 3 - Reverse Proxy & HTTPS**
 
 ---
 
@@ -51,7 +71,7 @@ If there is no output, the SSH configuration syntax is valid.
 
 Disabling root login and password login is good practice, but only after confirming key-based access works.
 
-The final SSH posture for this phase:
+The final SSH posture for Phase 1:
 
 | Setting | Value |
 |---|---|
@@ -60,7 +80,7 @@ The final SSH posture for this phase:
 | Public key authentication | Enabled |
 | Non-root sudo user | Enabled |
 
-This reduces the risk of brute-force access and removes direct root login from the public internet.
+This reduced the risk of brute-force access and removed direct root login from the public internet.
 
 ---
 
@@ -72,7 +92,7 @@ Without that, sudo can show a warning like:
 
     sudo: unable to resolve host netcup-prod-01
 
-The fix was to ensure the hostname was reflected in /etc/hosts.
+The fix was to ensure the hostname was reflected in `/etc/hosts`.
 
 This was a useful reminder that clean Linux administration includes both visible hostname configuration and local name resolution.
 
@@ -82,7 +102,7 @@ This was a useful reminder that clean Linux administration includes both visible
 
 A new VPS should not expose application ports directly.
 
-For the baseline phase, only these public services are expected:
+For the baseline phase, only these public services were expected:
 
 | Port | Purpose |
 |---|---|
@@ -100,20 +120,20 @@ Those services should eventually sit behind a reverse proxy, Tailscale, or priva
 
 UFW gives a straightforward host-level firewall baseline.
 
-The initial policy is:
+The initial policy was:
 
 | Direction | Policy |
 |---|---|
 | Incoming | Deny by default |
 | Outgoing | Allow by default |
 
-Allowed public traffic:
+Allowed public traffic during Phase 1:
 
 - SSH
 - HTTP
 - HTTPS
 
-This creates a small and understandable exposure model before the VPS hosts public workloads.
+This created a small and understandable exposure model before the VPS hosted public workloads.
 
 ---
 
@@ -121,7 +141,7 @@ This creates a small and understandable exposure model before the VPS hosts publ
 
 Fail2Ban does not replace SSH key authentication or firewalling, but it adds another useful layer.
 
-For this phase, Fail2Ban was configured to monitor SSH authentication attempts and temporarily ban repeated failures.
+For Phase 1, Fail2Ban was configured to monitor SSH authentication attempts and temporarily ban repeated failures.
 
 This is especially useful on a public VPS where automated SSH scanning is expected.
 
@@ -139,7 +159,144 @@ This is useful for future services that should not be public, such as:
 - Admin-only apps
 - Private service checks
 
-The main design decision: public services should use HTTPS through a reverse proxy, while admin services should stay private whenever possible.
+The main design decision:
+
+**Public services should use HTTPS through a reverse proxy. Admin services should stay private whenever possible.**
+
+---
+
+# Phase 2 - Domain DNS & Public Routing
+
+## DNS Should Be Treated as Infrastructure
+
+Phase 2 showed that DNS is not just a domain setup step. It is part of the infrastructure design.
+
+The domain records define how users, services, and future applications will reach the VPS.
+
+Configured records:
+
+| Record | Purpose |
+|---|---|
+| `stayz3ro.dev` | Root domain |
+| `www.stayz3ro.dev` | Web alias |
+| `apps.stayz3ro.dev` | Future public apps |
+| `status.stayz3ro.dev` | Future status page |
+| `api.stayz3ro.dev` | Future API services |
+
+The lesson:
+
+**DNS should be planned before deploying the reverse proxy.**
+
+---
+
+## Remove Default Parking Records First
+
+Porkbun default parking records needed to be removed before the domain could point cleanly to the Netcup VPS.
+
+Removed records:
+
+    ALIAS   stayz3ro.dev       pixie.porkbun.com
+    CNAME   *.stayz3ro.dev     pixie.porkbun.com
+
+Keeping wildcard or parking records would make future validation confusing.
+
+The lesson:
+
+**Clean DNS records reduce troubleshooting noise.**
+
+---
+
+## Validate DNS Locally and Publicly
+
+DNS was validated from the local workstation and from public resolvers.
+
+Useful validation commands:
+
+    dig +short stayz3ro.dev
+    dig +short www.stayz3ro.dev
+    dig +short apps.stayz3ro.dev
+    dig +short status.stayz3ro.dev
+    dig +short api.stayz3ro.dev
+
+Public resolver checks:
+
+    dig @1.1.1.1 +short stayz3ro.dev
+    dig @8.8.8.8 +short stayz3ro.dev
+
+The lesson:
+
+**A DNS record is not complete until resolution is verified from more than one perspective.**
+
+---
+
+## Public DNS Does Not Mean Public Administration
+
+Connecting a domain to a public VPS does not mean administrative services should be public.
+
+During Phase 2, SSH was moved from public exposure to Tailscale-only access.
+
+Final access model:
+
+| Access Type | Result |
+|---|---|
+| SSH to public VPS IP | Blocked |
+| SSH to Tailscale IP | Allowed |
+| HTTP | Public for future reverse proxy |
+| HTTPS | Public for future reverse proxy |
+| Direct app ports | Blocked |
+| Admin dashboards | Not publicly exposed |
+
+The lesson:
+
+**Public service traffic and administrative access should be separate paths.**
+
+---
+
+## Tailscale-Only SSH Better Matches Enterprise Access Patterns
+
+Restricting SSH to Tailscale created a more enterprise-style management plane.
+
+The model is similar to:
+
+    Admin workstation
+      ↓
+    VPN / private access layer
+      ↓
+    Server management interface
+
+In this lab:
+
+    Admin workstation
+      ↓
+    Tailscale
+      ↓
+    Netcup VPS
+      ↓
+    SSH
+
+The lesson:
+
+**Administrative access should go through a private management path whenever possible.**
+
+---
+
+## Firewall Rules Should Match Actual Listening Services
+
+During Phase 2, SSH was confirmed to be listening on port `22`.
+
+That made unused `2222` firewall rules unnecessary.
+
+The final firewall posture should be simple and intentional:
+
+| Rule | Purpose |
+|---|---|
+| `22/tcp on tailscale0` | Private SSH administration |
+| `80/tcp` | Public HTTP for future reverse proxy |
+| `443/tcp` | Public HTTPS for future reverse proxy |
+
+The lesson:
+
+**Firewall rules should be reviewed after each change so stale rules do not remain.**
 
 ---
 
@@ -151,17 +308,13 @@ They prove that the implementation was completed and tested.
 
 Useful validation evidence includes:
 
-- Hostname validation
-- OS version
-- SSH service status
-- SSH config validation
-- UFW firewall rules
-- Fail2Ban status
-- Unattended upgrades
-- Docker version
-- Tailscale status
-- Folder structure
-- Listening ports
+- DNS records
+- Local DNS resolution
+- Public resolver checks
+- SSH listening state
+- Tailscale SSH success
+- Final UFW rules
+- Public SSH blocked
 
 This makes the project stronger as a portfolio artifact because it shows both configuration and verification.
 
@@ -181,6 +334,7 @@ Redacted or excluded items include:
 - Authentication links
 - Tokens
 - Private keys
+- SSH host fingerprints
 - Billing details
 
 A clean repo should demonstrate infrastructure skills without exposing operational secrets.
@@ -189,8 +343,10 @@ A clean repo should demonstrate infrastructure skills without exposing operation
 
 ## Main Takeaway
 
-Phase 1 did not deploy a public app yet, but it established the foundation required to safely host one.
+Phase 1 made the VPS safe to manage.
+
+Phase 2 made the VPS reachable through a real domain while keeping administration private.
 
 The important lesson:
 
-**Public infrastructure should be hardened before it is useful.**
+**Public infrastructure should expose services intentionally, but management access should stay private.**
