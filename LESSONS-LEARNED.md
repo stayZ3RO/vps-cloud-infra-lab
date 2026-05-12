@@ -300,47 +300,6 @@ The lesson:
 
 ---
 
-## Screenshots Are Validation Evidence
-
-Screenshots are not just decoration.
-
-They prove that the implementation was completed and tested.
-
-Useful validation evidence includes:
-
-- DNS records
-- Local DNS resolution
-- Public resolver checks
-- SSH listening state
-- Tailscale SSH success
-- Final UFW rules
-- Public SSH blocked
-
-This makes the project stronger as a portfolio artifact because it shows both configuration and verification.
-
----
-
-## Redaction Is Part of Documentation Quality
-
-Public infrastructure documentation should not leak sensitive information.
-
-Redacted or excluded items include:
-
-- Public IPv4 addresses
-- IPv6 addresses
-- Tailscale IPs
-- Provider account details
-- Email addresses
-- Authentication links
-- Tokens
-- Private keys
-- SSH host fingerprints
-- Billing details
-
-A clean repo should demonstrate infrastructure skills without exposing operational secrets.
-
----
-
 ## Main Takeaway
 
 Phase 1 made the VPS safe to manage.
