@@ -2,23 +2,22 @@
 
 Describe what changed and why.
 
-## Type of change
-
-- [ ] Documentation update
-- [ ] Bug fix
-- [ ] Feature
-- [ ] Cleanup/refactor
-- [ ] Configuration change
-- [ ] CI/workflow update
-
 ## Validation
 
-- [ ] I reviewed the changed files
-- [ ] I ran the applicable local checks
-- [ ] I checked links, screenshots, and relative paths
-- [ ] I confirmed no `.env`, private keys, credentials, tokens, or sensitive files were added
-- [ ] I confirmed the change is not being made directly on `main`
+- [ ] Reviewed changed files
+- [ ] Checked Markdown files
+- [ ] Checked for empty Markdown files
+- [ ] Checked for obvious sensitive files
+- [ ] Confirmed docs/screenshots are public-safe or intentionally private
+
+## Redaction / Safety
+
+- [ ] No secrets, keys, tokens, or passwords committed
+- [ ] No private keys or authorized_keys contents committed
+- [ ] No .env files committed
+- [ ] No public VPS IPs exposed unintentionally
+- [ ] No sensitive screenshots added unintentionally
 
 ## Notes
 
-Add any context, screenshots, or follow-up items.
+Add follow-up work, limitations, or deferred items.
