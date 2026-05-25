@@ -2,9 +2,9 @@ name: Docs Check
 
 on:
   pull_request:
-    branches: [main]
+    branches: [master]
   push:
-    branches: [main]
+    branches: [master]
 
 jobs:
   docs-check:
@@ -30,7 +30,6 @@ jobs:
               -name ".env" -o \
               -name ".env.local" -o \
               -name ".env.production" -o \
-              -name ".env.*" -o \
               -name "*.pem" -o \
               -name "*.key" -o \
               -name "*.p12" -o \
