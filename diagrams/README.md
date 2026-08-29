@@ -8,10 +8,11 @@ The diagrams are intentionally simple and text-based so they are easy to version
 
 ## Diagram Index
 
-| Phase | Diagram | Description |
-|---|---|---|
-| Phase 1 - VPS Baseline & Security Hardening | [View Diagram](phase-1-vps-baseline-security.md) | Secure baseline architecture for the Netcup VPS |
-| Phase 2 - Domain DNS & Public Routing | [View Diagram](phase-2-domain-dns-public-routing.md) | Public DNS routing and Tailscale-only SSH model |
+| Diagram | Description |
+|---|---|
+| [Architecture Overview](architecture.md) | One consolidated view — current state + planned Cloudflare / reverse-proxy layer (Mermaid) |
+| [Phase 1 - VPS Baseline & Security Hardening](phase-1-vps-baseline-security.md) | Secure baseline architecture for the Netcup VPS |
+| [Phase 2 - Domain DNS & Public Routing](phase-2-domain-dns-public-routing.md) | Public DNS routing and Tailscale-only SSH model |
 
 ---
 
