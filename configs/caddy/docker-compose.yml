@@ -1,0 +1,52 @@
+# Reverse proxy stack - VPS Cloud Infrastructure Lab
+# Phase: Phase 3 - Reverse Proxy & HTTPS
+#
+# Usage (on the VPS, over Tailscale SSH):
+#   cd /opt/stayz3ro/proxy        # or wherever the repo is checked out
+#   cp .env.example .env && edit .env
+#   mkdir -p logs
+#   docker compose up -d
+#
+# Only this container publishes ports 80/443. Backend apps (Phase 4) join the
+# `web` network and are reached by Caddy over the internal Docker network.
+
+services:
+  caddy:
+    # Rolling major-2 tag. Pin to a specific patch once confirmed current,
+    # e.g. image: caddy:2.10.0-alpine
+    image: caddy:2-alpine
+    container_name: caddy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"   # HTTP/3
+    environment:
+      SITE_DOMAIN: ${SITE_DOMAIN:?set SITE_DOMAIN in .env}
+      ACME_EMAIL: ${ACME_EMAIL:?set ACME_EMAIL in .env}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./logs:/var/log/caddy
+      - caddy_data:/data     # issued certs + ACME account - MUST persist
+      - caddy_config:/config
+    networks:
+      - web
+
+  uptime-kuma:
+    image: louislam/uptime-kuma:1
+    container_name: uptime-kuma
+    restart: unless-stopped
+    # No published ports - reached only via Caddy on the `web` network.
+    volumes:
+      - uptime_kuma_data:/app/data
+    networks:
+      - web
+
+networks:
+  web:
+    name: web
+
+volumes:
+  caddy_data:
+  caddy_config:
+  uptime_kuma_data:
