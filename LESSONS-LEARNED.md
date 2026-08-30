@@ -3,7 +3,8 @@
 ![Status](https://img.shields.io/badge/status-active-brightgreen)
 ![Phase 1](https://img.shields.io/badge/phase_1-complete-success)
 ![Phase 2](https://img.shields.io/badge/phase_2-complete-success)
-![Next](https://img.shields.io/badge/next-Reverse%20Proxy%20%26%20HTTPS-blue)
+![Phase 3](https://img.shields.io/badge/phase_3-complete-success)
+![Next](https://img.shields.io/badge/next-Docker%20App%20Deployment-blue)
 
 This file documents operational lessons, troubleshooting notes, and infrastructure design decisions from the VPS Cloud Infrastructure Lab.
 
@@ -17,10 +18,11 @@ The first two phases established the foundation for a production-style public VP
 |---|---|
 | Phase 1 - VPS Baseline & Security Hardening | Built a secure Linux server baseline |
 | Phase 2 - Domain DNS & Public Routing | Connected `stayz3ro.dev` and restricted SSH to Tailscale |
+| Phase 3 - Reverse Proxy & HTTPS | Deployed Caddy + Uptime Kuma, found and fixed a DNS zone mismatch, closed a race-condition risk before going public |
 
 The project is now ready for:
 
-**Phase 3 - Reverse Proxy & HTTPS**
+**Phase 4 - Docker App Deployment**
 
 ---
 
@@ -300,12 +302,158 @@ The lesson:
 
 ---
 
+## Confirm What a Domain Serves Before Building For It
+
+Phase 3 was originally built to serve the `stayz3ro.dev` apex directly —
+a static landing page, TLS terminated on this VPS. Between building that
+and deploying it, the apex was claimed by a separate project (a blog, on
+Cloudflare Pages) that had been decided independently, in a different
+repo, around the same time.
+
+The rework wasn't large (retarget the Caddyfile, compose, and docs from
+apex/`www` to a subdomain), but it was avoidable: the two decisions —
+"the VPS serves the apex" and "the blog serves the apex" — were made in
+different places without either one checking the other first.
+
+**The lesson: before building infrastructure for a specific domain or
+hostname, confirm nothing else already owns it or is about to.** A
+one-line check (grep the other repos, or just ask) is cheaper than a
+rebuild.
+
+---
+
+# Phase 3 - Reverse Proxy & HTTPS
+
+## A DNS Panel Is Not Authoritative Just Because You Can Edit Records In It
+
+Deploying Caddy failed with a real ACME error: Let's Encrypt got `NXDOMAIN`
+looking up `status.stayz3ro.dev`, even though the record had just been
+added in Porkbun's DNS panel and Porkbun's own nameservers
+(`*.ns.porkbun.com`) returned the correct value when queried directly.
+
+The first theory — DNS negative caching, since the SOA's negative-cache TTL
+was 1800s and the record had genuinely been missing minutes earlier — was
+plausible and partially right, but wrong as the root cause. After far
+longer than any TTL could explain, a check against real, independent
+resolvers (DNS-over-HTTPS, which bypasses any local resolver or VPN DNS
+override entirely) kept returning a real, authoritative `NXDOMAIN` — with
+the `aa` (authoritative answer) flag set. That flag matters: it means the
+answer came from a server that considers itself the source of truth for
+the zone, not a cache.
+
+Querying the domain's actual registry-delegated nameservers (found via
+`dig NS stayz3ro.dev` through DoH, bypassing every local resolver) showed
+`stayz3ro.dev`'s real nameservers are Cloudflare's
+(`felipe.ns.cloudflare.com` / `melissa.ns.cloudflare.com`) — not Porkbun's.
+The domain's nameservers had been switched to Cloudflare when the blog
+moved to Cloudflare Pages (a separate decision, in a separate repo, around
+the same time — see "Confirm What a Domain Serves Before Building For It"
+below, the same root pattern twice). Porkbun's own DNS hosting still
+accepted edits through its panel, but was never consulted by the live
+internet again after that switch. Every edit made there all night was
+going to a zone nobody was reading.
+
+The actual fix: add the record in Cloudflare's dashboard, where the zone
+that's actually delegated lives.
+
+The lesson:
+
+**Before troubleshooting DNS propagation, confirm you're editing the zone
+that's actually delegated at the registry — not just a panel that lets you
+edit records.** `dig NS <domain>` against a resolver that bypasses local
+overrides (DoH, or a resolver you don't control) tells you the truth in one
+query. An `aa` (authoritative answer) flag on an unexpected result is the
+signal to stop trusting your first theory and check the delegation itself.
+
+---
+
+## Don't Trust Local DNS Checks Without Ruling Out Your Own Resolver
+
+A second, compounding trap during the same investigation: the workstation
+used to run every `dig` command had Tailscale's MagicDNS enabled, which
+overrides the system resolver (`/etc/resolv.conf` pointed at
+`100.100.100.100`). Tailscale can transparently intercept port-53 traffic
+system-wide, including explicit `dig @8.8.8.8` queries — meaning even
+"checking against a different public resolver" can silently still be
+answered by the same local proxy.
+
+DNS-over-HTTPS (plain HTTPS to `https://dns.google/resolve` or
+`https://1.1.1.1/dns-query`) sidesteps this entirely, since it never uses
+port 53 and can't be intercepted the same way.
+
+The lesson:
+
+**When a machine runs a VPN or MagicDNS-style tool, "specifying a different
+DNS server" in a CLI tool is not enough to guarantee an independent answer
+— verify the resolution path itself (`resolv.conf`, `tailscale dns
+status`), or use DoH to bypass it entirely.**
+
+---
+
+## A Fresh Public Service Needs Its Admin Account Secured Before It's Discoverable
+
+Uptime Kuma's first-run setup (create the admin account) is unauthenticated
+by design — whoever loads the page first gets to claim it. The moment
+Let's Encrypt issues a real certificate for a hostname, that hostname
+becomes public in Certificate Transparency logs (crt.sh and similar),
+which are continuously scanned by bots. That creates a real window between
+"certificate issued" and "admin account claimed" where a stranger could
+win the race.
+
+The fix didn't require exposing anything early or rushing the deploy:
+Docker's bridge networking means the VPS host can always reach a
+container's internal IP directly, even when no port is published to the
+host or the internet. An SSH local-port-forward (`ssh -L
+3001:<container_ip>:3001`) tunneled straight to Uptime Kuma's internal
+Docker network address, completely bypassing the public hostname, Caddy,
+and the certificate. Setup was completed over that private tunnel before
+DNS had even finished propagating — closing the race window before it
+could open.
+
+The lesson:
+
+**For any self-hosted service with unauthenticated first-run setup, claim
+the admin account over a private path (SSH tunnel, VPN, `docker exec`)
+before the service is reachable by its public hostname — don't rely on
+being fast enough to win a race against Certificate Transparency log
+scanners.**
+
+---
+
+## A Runbook's Assumptions Can Go Stale Against the Actual Config
+
+The Phase 3 runbook's Step 6 (confirm certificate issuance) called for
+`docker compose logs caddy`. That returned nothing — not an error, just
+silence — because this Caddyfile explicitly redirects the default logger
+from stderr to a file (`/var/log/caddy/access.log`, bind-mounted to
+`configs/caddy/logs/access.log`), a deliberate choice for structured JSON
+logging. `docker compose logs` only captures a container's stdout/stderr,
+so it will never see anything the app has redirected away from those
+streams.
+
+The lesson:
+
+**A runbook step that assumes a default (stdout logging) needs to be
+checked against what the actual config does, not re-run harder when it
+returns nothing.** The fix here was checking the log file directly
+(`sudo grep -i certificate logs/access.log`), which is also where Step 9's
+access-log evidence lives — both steps' real evidence sits in the same
+file, not in `docker compose logs`.
+
+---
+
 ## Main Takeaway
 
 Phase 1 made the VPS safe to manage.
 
 Phase 2 made the VPS reachable through a real domain while keeping administration private.
 
+Phase 3 made a real service publicly reachable over HTTPS — and surfaced
+that "public" and "publicly discoverable" arrive on different timelines
+(DNS/cert issuance vs. Certificate Transparency logs), and that
+troubleshooting DNS requires confirming *which* DNS is actually live before
+trusting any answer from it.
+
 The important lesson:
 
-**Public infrastructure should expose services intentionally, but management access should stay private.**
+**Public infrastructure should expose services intentionally, but management access should stay private — and before you trust an authoritative-looking DNS answer, confirm it actually came from the zone the registry delegates to.**

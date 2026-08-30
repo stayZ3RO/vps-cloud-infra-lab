@@ -1,0 +1,69 @@
+# Caddyfile - VPS Cloud Infrastructure Lab
+# Phase: Phase 3 - Reverse Proxy & HTTPS
+#
+# Public-safe. No secrets in this file.
+# ACME_EMAIL and SITE_DOMAIN are supplied from configs/caddy/.env at runtime.
+#
+# Design goals:
+#   - Terminate TLS in one place, automatically (Let's Encrypt + auto-renew)
+#   - Reverse-proxy real services at subdomains (status.<domain> etc.)
+#   - Emit structured JSON access logs
+#   - The apex + www are NOT served here - stayz3ro.dev's apex is the blog,
+#     hosted on Cloudflare Pages. This VPS only fronts service subdomains.
+{
+	# ACME account contact. Set ACME_EMAIL in configs/caddy/.env
+	email {$ACME_EMAIL}
+
+	# Do not expose the local admin API.
+	admin off
+
+	# Structured access logging for the whole server.
+	log {
+		output file /var/log/caddy/access.log {
+			roll_size 10MiB
+			roll_keep 10
+			roll_keep_for 336h
+		}
+		format json
+		level INFO
+	}
+}
+
+# ---------------------------------------------------------------------------
+# Shared response header policy (applied to each site block that imports it).
+# ---------------------------------------------------------------------------
+(security_headers) {
+	header {
+		# HSTS - 1 year, include subdomains. Remove/lower while testing if unsure.
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		X-Content-Type-Options "nosniff"
+		X-Frame-Options "DENY"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		# Do not advertise the server software.
+		-Server
+	}
+}
+
+# ---------------------------------------------------------------------------
+# status.<domain> -> Uptime Kuma
+# ---------------------------------------------------------------------------
+status.{$SITE_DOMAIN} {
+	import security_headers
+	reverse_proxy uptime-kuma:3001
+}
+
+# ---------------------------------------------------------------------------
+# Additional service routes (staged, intentionally disabled).
+# Uncomment a block once the matching container is running on the `web`
+# network. Application ports stay private on the Docker network - only Caddy
+# is published on 80/443.
+# ---------------------------------------------------------------------------
+# apps.{$SITE_DOMAIN} {
+# 	import security_headers
+# 	reverse_proxy app:3000
+# }
+#
+# api.{$SITE_DOMAIN} {
+# 	import security_headers
+# 	reverse_proxy api:8000
+# }
