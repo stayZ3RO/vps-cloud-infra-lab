@@ -12,7 +12,7 @@ The project starts with a secure Linux baseline, then layers on DNS, HTTPS, cont
 |---|---:|---|
 | Phase 1 - VPS Baseline & Security Hardening | ✅ Complete | Secure the Netcup VPS before public hosting |
 | Phase 2 - Domain DNS & Public Routing | ✅ Complete | Connected stayz3ro.dev to the VPS |
-| Phase 3 - Reverse Proxy & HTTPS | ⏳ Planned | Route services through HTTPS |
+| Phase 3 - Reverse Proxy & HTTPS | ✅ Complete | Route services through HTTPS |
 | Phase 4 - Docker App Deployment | ⏳ Planned | Deploy public containerized services |
 | Phase 5 - Monitoring & Alerts | ⏳ Planned | Add uptime and service visibility |
 | Phase 6 - Backups & Disaster Recovery | ⏳ Planned | Build recovery and backup strategy |
@@ -84,27 +84,25 @@ Example future subdomain plan:
 
 ## Phase 3 - Reverse Proxy & HTTPS
 
-Status: ⏳ Planned
+Status: ✅ Complete
 
 Purpose:
 
 Deploy a reverse proxy to route public services securely through HTTPS.
 
-Planned tasks:
+Completed:
 
-- Choose reverse proxy platform
-- Configure HTTP to HTTPS routing
-- Issue TLS certificates
-- Route services through subdomains
-- Avoid exposing application ports directly
-- Document proxy design
-- Validate HTTPS externally
+- Chose Caddy (automatic HTTPS, no admin port, no database)
+- Configured HTTP to HTTPS routing (`308` redirect)
+- Issued a Let's Encrypt TLS certificate for `status.stayz3ro.dev`
+- Routed `status.stayz3ro.dev` to Uptime Kuma; `apps`/`api` staged for later
+- Application ports never published to the host
+- Documented proxy design (`configs/caddy/README.md`)
+- Validated HTTPS externally (curl + browser)
+- Secured Uptime Kuma's admin account before public exposure
 
-Candidate tools:
-
-- Caddy
-- Nginx Proxy Manager
-- Traefik
+See `CHANGELOG.md` and `LESSONS-LEARNED.md` for the full deployment record,
+including the DNS zone mismatch that blocked the first deploy attempt.
 
 ---
 

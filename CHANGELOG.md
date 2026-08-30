@@ -3,7 +3,8 @@
 ![Status](https://img.shields.io/badge/status-active-brightgreen)
 ![Phase 1](https://img.shields.io/badge/phase_1-complete-success)
 ![Phase 2](https://img.shields.io/badge/phase_2-complete-success)
-![Next](https://img.shields.io/badge/next-Reverse%20Proxy%20%26%20HTTPS-blue)
+![Phase 3](https://img.shields.io/badge/phase_3-complete-success)
+![Next](https://img.shields.io/badge/next-Docker%20App%20Deployment-blue)
 
 This changelog tracks major documentation and infrastructure milestones for the VPS Cloud Infrastructure Lab.
 
@@ -15,7 +16,7 @@ This changelog tracks major documentation and infrastructure milestones for the 
 |---|---:|
 | Phase 1 - VPS Baseline & Security Hardening | ✅ Complete |
 | Phase 2 - Domain DNS & Public Routing | ✅ Complete |
-| Phase 3 - Reverse Proxy & HTTPS | 🟡 Built, committed, not deployed |
+| Phase 3 - Reverse Proxy & HTTPS | ✅ Complete |
 
 ---
 
@@ -138,7 +139,7 @@ Phase 2 validation screenshots cover:
 
 ## Phase 3 - Reverse Proxy & HTTPS
 
-Status: 🟡 Built, committed, pushed — **not yet deployed to the VPS**
+Status: ✅ Complete
 
 Reverse proxy platform chosen: **Caddy** (automatic HTTPS, no admin port,
 no database, config-as-code — see `configs/caddy/README.md` for the full
@@ -152,21 +153,32 @@ stack, and all four Phase 3 docs were retargeted: this VPS now serves
 `status.stayz3ro.dev` reverse-proxied to Uptime Kuma; the apex/`www` are
 never served here. `apps` and `api` remain staged for later.
 
-Completed:
+Deployed 2026-08-30, all 11 runbook steps executed and validated on
+`netcup-prod-01` (`docs/phases/phase-3-reverse-proxy-https/step-by-step.md`):
 
-- Reverse proxy platform chosen and justified
-- `Caddyfile` + `docker-compose.yml` (Caddy + Uptime Kuma) written and
-  validated (`caddy validate`, `docker compose config` both pass)
-- HTTP → HTTPS redirect, security headers, JSON access logging configured
-- `apps`/`api` subdomains staged (commented) for future services
-- Backend application ports never published to the host
-- All four Phase 3 docs (README, overview, step-by-step, validation)
-  written and kept in sync with the retarget
+- `Caddyfile` + `docker-compose.yml` (Caddy + Uptime Kuma) deployed;
+  `docker compose up -d` brought both containers up healthy
+- Let's Encrypt certificate obtained for `status.stayz3ro.dev`
+  (`tls-alpn-01` challenge, verified via multi-perspective validators)
+- HTTP → HTTPS redirect (`308`), HSTS + security headers, JSON access
+  logging all confirmed live
+- Backend ports (`3000`, `3001`) confirmed not publicly reachable
+- Uptime Kuma admin account created **before** public exposure, over a
+  private SSH tunnel to the container's internal Docker network IP — not
+  through the public hostname — closing the unauthenticated-first-run-setup
+  window before the certificate made the hostname discoverable via
+  Certificate Transparency logs
+- `apps`/`api` subdomains remain staged (commented) for future services
+- Redacted evidence screenshots captured for all 9 runbook evidence items
 - Committed and pushed to branch `phase-03-reverse-proxy-https`
 
-Not yet done:
-
-- Deploy to the actual VPS over Tailscale SSH
-- External HTTPS validation (curl + browser)
-- Redacted screenshots
+**Real blocker hit during deploy, not anticipated by the plan: DNS was
+being edited in the wrong place.** `stayz3ro.dev`'s actual registry-delegated
+nameservers are Cloudflare's (`felipe.ns.cloudflare.com` /
+`melissa.ns.cloudflare.com`), not Porkbun's own DNS panel — the domain's
+nameservers were switched to Cloudflare when the blog moved to Cloudflare
+Pages, orphaning Porkbun's DNS hosting without removing write access to it.
+Records edited in the Porkbun panel were never consulted by the live
+internet. Full root-cause writeup: see "Confirm Which DNS Zone Is Actually
+Live" in `LESSONS-LEARNED.md`.
 - Merge to `master`

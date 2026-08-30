@@ -1,16 +1,16 @@
 # Current Status
 
 ![Status](https://img.shields.io/badge/status-active-brightgreen)
-![Current Phase](https://img.shields.io/badge/current_phase-Phase%203%20Planned-blue)
+![Current Phase](https://img.shields.io/badge/current_phase-Phase%203%20Complete-brightgreen)
 ![Security](https://img.shields.io/badge/ssh-Tailscale%20Only-success)
 
 ## Project State
 
-The Netcup VPS has been provisioned, secured, connected to `stayz3ro.dev`, and validated for public DNS routing.
+The Netcup VPS has been provisioned, secured, connected to `stayz3ro.dev`, and is now serving a public HTTPS service (`status.stayz3ro.dev`, Uptime Kuma behind Caddy).
 
 The project is currently at the end of:
 
-**Phase 2 - Domain DNS & Public Routing**
+**Phase 3 - Reverse Proxy & HTTPS**
 
 ---
 
@@ -19,13 +19,15 @@ The project is currently at the end of:
     Internet
        |
        v
-    Porkbun DNS - stayz3ro.dev
+    Cloudflare DNS - stayz3ro.dev
+    (registrar: Porkbun; DNS hosting: Cloudflare — the domain's
+     nameservers point to Cloudflare, not Porkbun's own DNS panel)
        |
        v
     Netcup VPS - netcup-prod-01
        |
-       ├── Public HTTP - 80/tcp
-       ├── Public HTTPS - 443/tcp
+       ├── Caddy (reverse proxy, automatic HTTPS) - 80/443 tcp
+       │      └── status.stayz3ro.dev -> Uptime Kuma (internal only)
        └── Private SSH - tailscale0 only
 
     Admin Workstation
@@ -65,6 +67,14 @@ The project is currently at the end of:
 | Public resolver validation completed | ✅ Complete |
 | Public SSH blocked | ✅ Complete |
 | SSH over Tailscale validated | ✅ Complete |
+| Caddy reverse proxy deployed | ✅ Complete |
+| Uptime Kuma deployed (private, proxied only) | ✅ Complete |
+| Let's Encrypt certificate issued for `status.stayz3ro.dev` | ✅ Complete |
+| HTTPS validated externally | ✅ Complete |
+| Security headers validated | ✅ Complete |
+| Backend ports confirmed not public | ✅ Complete |
+| Uptime Kuma admin account secured pre-exposure | ✅ Complete |
+| Redacted Phase 3 evidence captured | ✅ Complete |
 
 ---
 
@@ -77,12 +87,13 @@ The project is currently at the end of:
 | Role | Primary production/public services VPS |
 | Operating System | Ubuntu Linux |
 | Domain | stayz3ro.dev |
-| DNS Provider | Porkbun |
+| Domain Registrar | Porkbun |
+| DNS Hosting (actual, authoritative) | Cloudflare — Porkbun's own DNS panel is not consulted by the live domain, see Lessons Learned |
 | Access Method | SSH over Tailscale |
 | Firewall | UFW |
 | Intrusion Protection | Fail2Ban |
 | Container Runtime | Docker and Docker Compose |
-| Public Exposure | HTTP and HTTPS only |
+| Public Exposure | HTTPS via Caddy (`status.stayz3ro.dev` -> Uptime Kuma); apex/`www` served separately by Cloudflare Pages, not this VPS |
 
 ---
 
@@ -94,11 +105,14 @@ Current access and exposure model:
 
 - SSH is blocked on the public VPS IP
 - SSH is allowed through Tailscale only
-- HTTP is open for future reverse proxy/certificate traffic
-- HTTPS is open for future reverse proxy traffic
-- Direct application ports are not exposed
+- HTTP is open, redirects to HTTPS via Caddy
+- HTTPS is open, serves `status.stayz3ro.dev` (Uptime Kuma) via Caddy
+- Direct application ports (`3000`, `3001`) are not exposed — confirmed by
+  external probe
 - Databases are not exposed
-- Admin dashboards are not exposed publicly
+- Admin dashboards are not exposed publicly; Uptime Kuma's admin account
+  was created over a private SSH tunnel before the certificate made the
+  hostname publicly discoverable
 
 ---
 
@@ -106,14 +120,12 @@ Current access and exposure model:
 
 Next phase:
 
-**Phase 3 - Reverse Proxy & HTTPS**
+**Phase 4 - Docker App Deployment**
 
 Planned tasks:
 
-- Choose reverse proxy platform
-- Deploy reverse proxy stack
-- Configure HTTP to HTTPS routing
-- Issue TLS certificates
-- Route root domain and subdomains
-- Validate HTTPS externally
-- Keep application ports private behind the proxy
+- Deploy the first real public Dockerized app behind Caddy
+- Route it through the reverse proxy
+- Validate external access
+- Document environment variables and `.env.example`
+- Capture deployment screenshots
