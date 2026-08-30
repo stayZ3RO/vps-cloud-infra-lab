@@ -300,6 +300,24 @@ The lesson:
 
 ---
 
+## Confirm What a Domain Serves Before Building For It
+
+Phase 3 was originally built to serve the `stayz3ro.dev` apex directly —
+a static landing page, TLS terminated on this VPS. Between building that
+and deploying it, the apex was claimed by a separate project (a blog, on
+Cloudflare Pages) that had been decided independently, in a different
+repo, around the same time.
+
+The rework wasn't large (retarget the Caddyfile, compose, and docs from
+apex/`www` to a subdomain), but it was avoidable: the two decisions —
+"the VPS serves the apex" and "the blog serves the apex" — were made in
+different places without either one checking the other first.
+
+**The lesson: before building infrastructure for a specific domain or
+hostname, confirm nothing else already owns it or is about to.** A
+one-line check (grep the other repos, or just ask) is cheaper than a
+rebuild.
+
 ## Main Takeaway
 
 Phase 1 made the VPS safe to manage.

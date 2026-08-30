@@ -15,7 +15,7 @@ This changelog tracks major documentation and infrastructure milestones for the 
 |---|---:|
 | Phase 1 - VPS Baseline & Security Hardening | ✅ Complete |
 | Phase 2 - Domain DNS & Public Routing | ✅ Complete |
-| Phase 3 - Reverse Proxy & HTTPS | ⏳ Planned |
+| Phase 3 - Reverse Proxy & HTTPS | 🟡 Built, committed, not deployed |
 
 ---
 
@@ -136,35 +136,37 @@ Phase 2 validation screenshots cover:
 
 ---
 
-# Upcoming
-
 ## Phase 3 - Reverse Proxy & HTTPS
 
-Status: ⏳ Planned
+Status: 🟡 Built, committed, pushed — **not yet deployed to the VPS**
 
-Planned work:
+Reverse proxy platform chosen: **Caddy** (automatic HTTPS, no admin port,
+no database, config-as-code — see `configs/caddy/README.md` for the full
+Caddy-vs-NPM-vs-Traefik comparison).
 
-- Choose reverse proxy platform
-- Deploy reverse proxy with Docker Compose
-- Configure HTTP to HTTPS behavior
-- Issue TLS certificates
-- Route `stayz3ro.dev`
-- Route `www.stayz3ro.dev`
-- Prepare `apps`, `status`, and `api` subdomains
-- Keep backend application ports private
-- Validate HTTPS externally
-- Capture redacted screenshots
-- Document Phase 3 implementation and validation
+Correction made 2026-08-30: the original build targeted the `stayz3ro.dev`
+apex + `www` with a static landing page. Between build and deploy, the
+apex was claimed by a separate Astro blog on Cloudflare Pages (see
+`homelab-ops-private` CHANGELOG, 2026-08-29 entry). The Caddy config, compose
+stack, and all four Phase 3 docs were retargeted: this VPS now serves
+`status.stayz3ro.dev` reverse-proxied to Uptime Kuma; the apex/`www` are
+never served here. `apps` and `api` remain staged for later.
 
-Recommended reverse proxy direction:
+Completed:
 
-| Option | Notes |
-|---|---|
-| Caddy | Clean config, automatic HTTPS, strong fit for this repo |
-| NGINX | Traditional reverse proxy, useful for deeper web-server experience |
-| Nginx Proxy Manager | Easy UI, but less infrastructure-as-code focused |
-| Traefik | Strong Docker-native option, more complex |
+- Reverse proxy platform chosen and justified
+- `Caddyfile` + `docker-compose.yml` (Caddy + Uptime Kuma) written and
+  validated (`caddy validate`, `docker compose config` both pass)
+- HTTP → HTTPS redirect, security headers, JSON access logging configured
+- `apps`/`api` subdomains staged (commented) for future services
+- Backend application ports never published to the host
+- All four Phase 3 docs (README, overview, step-by-step, validation)
+  written and kept in sync with the retarget
+- Committed and pushed to branch `phase-03-reverse-proxy-https`
 
-Current recommendation:
+Not yet done:
 
-**Caddy for Phase 3** because it keeps the reverse proxy and HTTPS story clean, version-controlled, and easy to document.
+- Deploy to the actual VPS over Tailscale SSH
+- External HTTPS validation (curl + browser)
+- Redacted screenshots
+- Merge to `master`
