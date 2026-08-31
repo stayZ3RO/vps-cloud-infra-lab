@@ -19,8 +19,8 @@ Each phase is organized like a small infrastructure case study:
 |---|---:|---|
 | Phase 1 - VPS Baseline & Security Hardening | ✅ Complete | [View Phase 1](phase-1-vps-baseline-security/) |
 | Phase 2 - Domain DNS & Public Routing | ✅ Complete | [View Phase 2](phase-2-domain-dns-public-routing/) |
-| Phase 3 - Reverse Proxy & HTTPS | ⏳ Planned | Coming soon |
-| Phase 4 - Docker App Deployment | ⏳ Planned | Coming soon |
+| Phase 3 - Reverse Proxy & HTTPS | ✅ Complete | [View Phase 3](phase-3-reverse-proxy-https/) |
+| Phase 4 - Docker App Deployment | 🚧 In Progress | [View Phase 4](phase-4-docker-app-deployment/) |
 | Phase 5 - Monitoring & Alerts | ⏳ Planned | Coming soon |
 | Phase 6 - Backups & Disaster Recovery | ⏳ Planned | Coming soon |
 | Phase 7 - Secondary VPS / Staging | ⏳ Planned | Coming soon |
@@ -30,11 +30,14 @@ Each phase is organized like a small infrastructure case study:
 
 ## Current Focus
 
-The current completed phase is:
+The current phase is:
 
-**Phase 2 - Domain DNS & Public Routing**
+**Phase 4 - Docker App Deployment**
 
-This phase connected `stayz3ro.dev` to the Netcup VPS, validated DNS resolution, and restricted SSH administration to Tailscale.
+App selected: **Umami** (privacy-first web analytics) at
+`analytics.stayz3ro.dev`. Scoping, compose stack, and runbook are staged;
+deployment is pending. See
+[phase-4-docker-app-deployment/](phase-4-docker-app-deployment/).
 
 ---
 

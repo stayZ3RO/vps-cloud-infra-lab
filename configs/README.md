@@ -13,6 +13,8 @@ These files are documentation artifacts, not live production secrets.
 | SSH | [sshd_config.example](ssh/sshd_config.example) | SSH hardening reference |
 | UFW | [ufw-rules.example](ufw/ufw-rules.example) | Firewall baseline reference |
 | Fail2Ban | [jail.local.example](fail2ban/jail.local.example) | SSH brute-force protection example |
+| Reverse Proxy | [Caddy Config](caddy/) | Caddyfile + compose stack, automatic HTTPS (Phase 3) |
+| Analytics | [Umami Config](umami/) | Umami + PostgreSQL compose stack, env template (Phase 4) |
 | Docker | [Docker Config Notes](docker/) | Future Docker Compose examples |
 
 ---

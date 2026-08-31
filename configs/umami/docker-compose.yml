@@ -1,0 +1,54 @@
+# Umami analytics stack - VPS Cloud Infrastructure Lab
+# Phase: Phase 4 - Docker App Deployment
+#
+# Usage (on the VPS, over Tailscale SSH, from the repo checkout):
+#   cd configs/umami
+#   cp .env.example .env && edit .env   # POSTGRES_PASSWORD + APP_SECRET
+#   docker compose up -d
+#
+# No published ports. Umami is reached by Caddy over the external `web`
+# network (created by configs/caddy). Postgres sits on an internal-only
+# network that is NOT attached to `web`, so the database is unreachable
+# from anything but the umami container itself.
+
+services:
+  umami:
+    # Rolling tag. Pin to a specific version tag once confirmed current,
+    # e.g. image: umamisoftware/umami:postgresql-v2.x.y
+    image: umamisoftware/umami:postgresql-latest
+    container_name: umami
+    restart: unless-stopped
+    environment:
+      # Runs database migrations on first start.
+      DATABASE_URL: postgresql://umami:${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}@db:5432/umami
+      APP_SECRET: ${APP_SECRET:?set APP_SECRET in .env}
+    networks:
+      - web
+      - umami_internal
+    depends_on:
+      - db
+
+  db:
+    image: postgres:16-alpine
+    container_name: umami-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: umami
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
+      POSTGRES_DB: umami
+    volumes:
+      - umami_db_data:/var/lib/postgresql/data
+    # Internal-only network: no route to the outside, not attached to `web`.
+    networks:
+      - umami_internal
+
+networks:
+  # Created by the Phase 3 proxy stack (configs/caddy/docker-compose.yml).
+  # Must already exist - bring the proxy stack up first.
+  web:
+    external: true
+  umami_internal:
+    internal: true
+
+volumes:
+  umami_db_data:

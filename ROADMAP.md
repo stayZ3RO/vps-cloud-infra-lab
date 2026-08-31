@@ -13,7 +13,7 @@ The project starts with a secure Linux baseline, then layers on DNS, HTTPS, cont
 | Phase 1 - VPS Baseline & Security Hardening | ✅ Complete | Secure the Netcup VPS before public hosting |
 | Phase 2 - Domain DNS & Public Routing | ✅ Complete | Connected stayz3ro.dev to the VPS |
 | Phase 3 - Reverse Proxy & HTTPS | ✅ Complete | Route services through HTTPS |
-| Phase 4 - Docker App Deployment | ⏳ Planned | Deploy public containerized services |
+| Phase 4 - Docker App Deployment | 🚧 In Progress | Deploy public containerized services (app chosen: Umami) |
 | Phase 5 - Monitoring & Alerts | ⏳ Planned | Add uptime and service visibility |
 | Phase 6 - Backups & Disaster Recovery | ⏳ Planned | Build recovery and backup strategy |
 | Phase 7 - Secondary VPS / Staging | ⏳ Planned | Use RackNerd for staging, monitoring, and backups |
@@ -108,11 +108,15 @@ including the DNS zone mismatch that blocked the first deploy attempt.
 
 ## Phase 4 - Docker App Deployment
 
-Status: ⏳ Planned
+Status: 🚧 In Progress
 
 Purpose:
 
 Deploy the first public Dockerized service on the VPS.
+
+App selected (2026-08-30): **Umami** — privacy-first web analytics at
+`analytics.stayz3ro.dev` (Umami + PostgreSQL). Candidate comparison:
+`docs/phase-4-docker-app-deployment/overview.md`.
 
 Planned tasks:
 
