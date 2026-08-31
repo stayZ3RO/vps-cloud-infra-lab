@@ -98,7 +98,7 @@ restarts do not trigger re-issuance.
 |---|---|
 | `status.stayz3ro.dev` | Reverse-proxied to the `uptime-kuma` container on the internal `web` network |
 
-Uptime Kuma is the first real service behind the proxy — the public surface
+Uptime Kuma is the first real service behind the proxy. The public surface
 is one monitored, actively-updated service, not a static placeholder page.
 
 ### Response Hardening
@@ -131,7 +131,7 @@ rotation. This is the input for uptime and traffic visibility in Phase 5.
 |---|---|
 | HTTP / HTTPS | Public |
 | `status.stayz3ro.dev` (Uptime Kuma) | Public |
-| `stayz3ro.dev` apex / `www` | Not served by this VPS — Cloudflare Pages (blog) |
+| `stayz3ro.dev` apex / `www` | Not served by this VPS, Cloudflare Pages (blog) |
 | `apps` / `api` | Not routed yet |
 | Backend application ports | Internal Docker network only |
 | Caddy admin API | Disabled |
@@ -169,7 +169,7 @@ See [validation.md](validation.md).
 ## Key Takeaway
 
 Phase 3 does not add every future service, but it does put one real,
-monitored service in front of the public — Uptime Kuma at
+monitored service in front of the public: Uptime Kuma at
 `status.stayz3ro.dev`.
 
 It establishes the rule every later phase depends on:

@@ -142,7 +142,7 @@ Phase 2 validation screenshots cover:
 Status: ✅ Complete
 
 Reverse proxy platform chosen: **Caddy** (automatic HTTPS, no admin port,
-no database, config-as-code — see `configs/caddy/README.md` for the full
+no database, config-as-code. See `configs/caddy/README.md` for the full
 Caddy-vs-NPM-vs-Traefik comparison).
 
 Correction made 2026-08-30: the original build targeted the `stayz3ro.dev`
@@ -164,8 +164,8 @@ Deployed 2026-08-30, all 11 runbook steps executed and validated on
   logging all confirmed live
 - Backend ports (`3000`, `3001`) confirmed not publicly reachable
 - Uptime Kuma admin account created **before** public exposure, over a
-  private SSH tunnel to the container's internal Docker network IP — not
-  through the public hostname — closing the unauthenticated-first-run-setup
+  private SSH tunnel to the container's internal Docker network IP, not
+  through the public hostname, closing the unauthenticated-first-run-setup
   window before the certificate made the hostname discoverable via
   Certificate Transparency logs
 - `apps`/`api` subdomains remain staged (commented) for future services
@@ -175,7 +175,7 @@ Deployed 2026-08-30, all 11 runbook steps executed and validated on
 **Real blocker hit during deploy, not anticipated by the plan: DNS was
 being edited in the wrong place.** `stayz3ro.dev`'s actual registry-delegated
 nameservers are Cloudflare's (`felipe.ns.cloudflare.com` /
-`melissa.ns.cloudflare.com`), not Porkbun's own DNS panel — the domain's
+`melissa.ns.cloudflare.com`), not Porkbun's own DNS panel. The domain's
 nameservers were switched to Cloudflare when the blog moved to Cloudflare
 Pages, orphaning Porkbun's DNS hosting without removing write access to it.
 Records edited in the Porkbun panel were never consulted by the live

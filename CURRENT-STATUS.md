@@ -20,7 +20,7 @@ The project is currently at the end of:
        |
        v
     Cloudflare DNS - stayz3ro.dev
-    (registrar: Porkbun; DNS hosting: Cloudflare — the domain's
+    (registrar: Porkbun; DNS hosting: Cloudflare. The domain's
      nameservers point to Cloudflare, not Porkbun's own DNS panel)
        |
        v
@@ -88,7 +88,7 @@ The project is currently at the end of:
 | Operating System | Ubuntu Linux |
 | Domain | stayz3ro.dev |
 | Domain Registrar | Porkbun |
-| DNS Hosting (actual, authoritative) | Cloudflare — Porkbun's own DNS panel is not consulted by the live domain, see Lessons Learned |
+| DNS Hosting (actual, authoritative) | Cloudflare. Porkbun's own DNS panel is not consulted by the live domain, see Lessons Learned |
 | Access Method | SSH over Tailscale |
 | Firewall | UFW |
 | Intrusion Protection | Fail2Ban |
@@ -107,7 +107,7 @@ Current access and exposure model:
 - SSH is allowed through Tailscale only
 - HTTP is open, redirects to HTTPS via Caddy
 - HTTPS is open, serves `status.stayz3ro.dev` (Uptime Kuma) via Caddy
-- Direct application ports (`3000`, `3001`) are not exposed — confirmed by
+- Direct application ports (`3000`, `3001`) are not exposed, confirmed by
   external probe
 - Databases are not exposed
 - Admin dashboards are not exposed publicly; Uptime Kuma's admin account

@@ -1,4 +1,4 @@
-# VPS Cloud Infra — Architecture Overview
+# VPS Cloud Infra: Architecture Overview
 
 One consolidated view of the target architecture. The phase diagrams
 ([phase 1](phase-1-vps-baseline-security.md),
@@ -8,10 +8,10 @@ One consolidated view of the target architecture. The phase diagrams
 ```mermaid
 flowchart TD
     USER["Internet user"]
-    CF["Cloudflare — authoritative DNS for stayz3ro.dev"]
-    PAGES["Cloudflare Pages — Astro blog<br/>stayz3ro.dev (apex) + www"]
+    CF["Cloudflare: authoritative DNS for stayz3ro.dev"]
+    PAGES["Cloudflare Pages: Astro blog<br/>stayz3ro.dev (apex) + www"]
     CADDY["Caddy on the VPS<br/>terminates TLS (Let's Encrypt) · routes by hostname<br/>only 80/443 public · JSON access logs"]
-    VPS["Netcup VPS 1000 G12 — Debian · netcup-prod-01<br/>SSH keys only · UFW · fail2ban · unattended-upgrades"]
+    VPS["Netcup VPS 1000 G12, Debian · netcup-prod-01<br/>SSH keys only · UFW · fail2ban · unattended-upgrades"]
     SVCS["public services at subdomains<br/>e.g. status.stayz3ro.dev"]
     ADMIN["admin workstation"]
 
@@ -35,6 +35,6 @@ flowchart TD
 **`stayz3ro.dev` DNS is Cloudflare-authoritative** (Porkbun registrar only).
 The **apex + `www` serve the Astro blog** from Cloudflare Pages. **Service
 subdomains** (e.g. `status.stayz3ro.dev`) resolve to the VPS, where **Caddy**
-terminates TLS and routes by hostname — exactly the ports 80/443 are public,
+terminates TLS and routes by hostname. Only ports 80/443 are public,
 everything else is Tailscale-only. Backend app containers stay on an internal
 Docker network and are never published directly.
