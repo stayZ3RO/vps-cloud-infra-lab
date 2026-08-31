@@ -1,6 +1,6 @@
 # Phase 3 - Reverse Proxy & HTTPS 🔒
 
-![Status](https://img.shields.io/badge/status-in%20progress-yellow)
+![Status](https://img.shields.io/badge/status-complete-success)
 ![Proxy](https://img.shields.io/badge/proxy-Caddy-blue)
 ![TLS](https://img.shields.io/badge/tls-Let's%20Encrypt-success)
 ![Scope](https://img.shields.io/badge/scope-HTTPS%20edge-purple)
@@ -51,22 +51,22 @@ backend ports.
 |---|---:|
 | Reverse proxy platform chosen and justified | ✅ Complete |
 | Caddy stack committed (Caddyfile, compose, env template) | ✅ Complete |
-| Static landing page committed | ✅ Complete |
-| Stack deployed on the VPS | ⏳ Pending |
-| Valid TLS certificate issued for apex + www | ⏳ Pending |
-| HTTP redirects to HTTPS | ⏳ Pending |
-| `www` redirects to apex | ⏳ Pending |
-| External HTTPS validated (browser + `curl`) | ⏳ Pending |
-| Security headers present | ⏳ Pending |
-| JSON access log confirmed writing | ⏳ Pending |
-| Backend ports confirmed not publicly reachable | ⏳ Pending |
-| Redacted screenshots captured | ⏳ Pending |
+| Stack deployed on the VPS (2026-08-30) | ✅ Complete |
+| Valid TLS certificate issued for `status.stayz3ro.dev` | ✅ Complete |
+| HTTP redirects to HTTPS (308) | ✅ Complete |
+| `www` -> apex redirect | ➖ Not applicable - apex/`www` moved to Cloudflare Pages before deploy; this VPS never serves them |
+| External HTTPS validated (browser + `curl`) | ✅ Complete |
+| Security headers present | ✅ Complete |
+| JSON access log confirmed writing | ✅ Complete |
+| Backend ports confirmed not publicly reachable | ✅ Complete |
+| Redacted screenshots captured | ✅ Complete |
 
 ---
 
 ## Evidence
 
-Redacted validation screenshots will be stored here:
+Redacted validation screenshots (captured 2026-08-30, including the
+Cloudflare-zone bonus evidence for the DNS zone mismatch):
 
 [Phase 3 Screenshot Evidence](../../screenshots/phase-3-reverse-proxy-https/)
 
