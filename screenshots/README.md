@@ -12,7 +12,7 @@ Screenshots are included to show that each phase was configured, tested, and ver
 |---|---:|---|
 | Phase 1 - VPS Baseline & Security Hardening | ✅ Complete | [View Evidence](phase-1-vps-baseline-security/) |
 | Phase 2 - Domain DNS & Public Routing | ✅ Complete | [View Evidence](phase-2-domain-dns-public-routing/) |
-| Phase 3 - Reverse Proxy & HTTPS | ⏳ Planned | Coming soon |
+| Phase 3 - Reverse Proxy & HTTPS | ✅ Complete | [View Evidence](phase-3-reverse-proxy-https/) |
 | Phase 4 - Docker App Deployment | ⏳ Planned | Coming soon |
 
 ---
