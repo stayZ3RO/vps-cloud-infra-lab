@@ -10,7 +10,7 @@
 Phase 3 puts a reverse proxy in front of the Netcup VPS so a real public
 service, `status.stayz3ro.dev` (Uptime Kuma), reaches the internet over
 HTTPS, while backend application ports stay private. The `stayz3ro.dev`
-apex + `www` are served elsewhere (Cloudflare Pages, the blog) — this VPS
+apex + `www` are served elsewhere (Cloudflare Pages, the blog). This VPS
 never serves them.
 
 Caddy terminates TLS with automatically issued and renewed Let's Encrypt
