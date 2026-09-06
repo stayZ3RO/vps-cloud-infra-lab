@@ -17,6 +17,7 @@ This changelog tracks major documentation and infrastructure milestones for the 
 | Phase 1 - VPS Baseline & Security Hardening | ✅ Complete |
 | Phase 2 - Domain DNS & Public Routing | ✅ Complete |
 | Phase 3 - Reverse Proxy & HTTPS | ✅ Complete |
+| Phase 4 - Docker App Deployment | 🚧 In Progress |
 
 ---
 
@@ -182,3 +183,52 @@ Records edited in the Porkbun panel were never consulted by the live
 internet. Full root-cause writeup: see "Confirm Which DNS Zone Is Actually
 Live" in `LESSONS-LEARNED.md`.
 - Merge to `master`
+
+---
+
+# Phase 4 - Docker App Deployment
+
+Status: 🚧 In Progress (app selected, configs and runbook staged; live deployment pending)
+
+App selected 2026-08-30: **Umami**, privacy-first, cookieless web analytics
+at `analytics.stayz3ro.dev` (Umami + PostgreSQL), chosen over Shlink and
+Vikunja. Rationale and candidate comparison:
+`docs/phase-4-docker-app-deployment/overview.md`. The selection optimizes for
+the lab's portfolio/blog goals (real analytics for the Cloudflare Pages blog
+and the portfolio), a first stateful service (creating a concrete backup
+target for Phase 6), and the smallest abuse surface for a first public app.
+
+## Added
+
+- Phase 4 documentation folder: scoping overview (candidates, tradeoffs,
+  decision record) and landing README
+- `configs/umami/`: Docker Compose stack (Umami + PostgreSQL), `.env.example`
+  template, README with architecture and first-run security notes
+- Umami stack design: app joins the external `web` network (reached only via
+  Caddy); Postgres on an `internal: true` network unreachable from `web` or
+  the host; no published ports
+- Staged `analytics.{$SITE_DOMAIN}` route in `configs/caddy/Caddyfile`
+  (commented until the runbook enables it)
+- Phase 4 step-by-step runbook: SSH-tunnel admin claim before exposure
+  (default-credential race, per the Phase 3 CT-log lesson), Cloudflare-zone
+  DNS record (DNS-only), Caddy validate + zero-downtime reload, external
+  validation, port probes, Uptime Kuma monitor, blog-embed coordination
+- Phase 4 validation checklist (pending execution)
+- Phase 4 architecture diagram (`diagrams/phase-4-docker-app-deployment.md`)
+
+## Captured Since Scoping
+
+- The 9 Phase 3 evidence screenshots were located (they had been taken during
+  the 2026-08-30 deploy session but not carried into the repo), redacted
+  (OCR-assisted detection - IPs, workstation hostname, ACME order URLs - with
+  layered verification passes per the redaction-sweep lessons), and embedded
+  in `docs/phase-3-reverse-proxy-https/validation.md` and
+  `screenshots/phase-3-reverse-proxy-https/`. Item 06 (`www` redirect) was
+  confirmed not applicable post-retarget; a bonus item 10 (Cloudflare zone
+  as found during the DNS-zone-mismatch fix) was added. Committed after the
+  operator visual pass (PR #11).
+
+## Pending
+
+- Execute the runbook on `netcup-prod-01`
+- Wire the embed script into the Astro blog (separate repo)

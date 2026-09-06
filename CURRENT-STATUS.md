@@ -1,16 +1,23 @@
 # Current Status
 
 ![Status](https://img.shields.io/badge/status-active-brightgreen)
-![Current Phase](https://img.shields.io/badge/current_phase-Phase%203%20Complete-brightgreen)
+![Current Phase](https://img.shields.io/badge/current_phase-Phase%204%20In%20Progress-yellow)
 ![Security](https://img.shields.io/badge/ssh-Tailscale%20Only-success)
 
 ## Project State
 
 The Netcup VPS has been provisioned, secured, connected to `stayz3ro.dev`, and is now serving a public HTTPS service (`status.stayz3ro.dev`, Uptime Kuma behind Caddy).
 
-The project is currently at the end of:
+The project has completed Phase 3 and is now in:
 
-**Phase 3 - Reverse Proxy & HTTPS**
+**Phase 4 - Docker App Deployment**
+
+App selected: **Umami** (privacy-first web analytics) at
+`analytics.stayz3ro.dev`. Scoping, candidate comparison, compose stack
+(`configs/umami/`), and the deployment runbook
+(`docs/phase-4-docker-app-deployment/step-by-step.md`) are staged; the live
+deployment is pending. The Phase 3 evidence screenshots are still outstanding
+and should be captured before Phase 4 changes the running stack.
 
 ---
 
@@ -120,12 +127,15 @@ Current access and exposure model:
 
 Next phase:
 
-**Phase 4 - Docker App Deployment**
+**Phase 4 - Docker App Deployment** (in progress, app chosen, deployment pending)
 
 Planned tasks:
 
-- Deploy the first real public Dockerized app behind Caddy
-- Route it through the reverse proxy
-- Validate external access
-- Document environment variables and `.env.example`
+- Deploy Umami (privacy-first web analytics) behind Caddy at `analytics.stayz3ro.dev`
+- Claim the Umami admin account over a private SSH tunnel before public exposure
+- Add the `analytics` DNS record in the Cloudflare zone (the live zone, see Lessons Learned)
+- Route it through the reverse proxy and validate external access
+- Document environment variables and `.env.example` (done, `configs/umami/`)
+- Add the new host as an Uptime Kuma monitor
+- Wire the blog embed (separate repo, coordinated change)
 - Capture deployment screenshots

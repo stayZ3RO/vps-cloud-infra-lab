@@ -53,6 +53,18 @@ status.{$SITE_DOMAIN} {
 }
 
 # ---------------------------------------------------------------------------
+# analytics.<domain> -> Umami web analytics (Phase 4).
+# Staged until the Umami stack (configs/umami) is running on the `web`
+# network - enable it in step-by-step.md Step 7 (uncomment, validate,
+# reload). Requires an `analytics` A record in the LIVE zone (Cloudflare,
+# not Porkbun - see Lessons Learned, Phase 3).
+# ---------------------------------------------------------------------------
+# analytics.{$SITE_DOMAIN} {
+# 	import security_headers
+# 	reverse_proxy umami:3000
+# }
+
+# ---------------------------------------------------------------------------
 # Additional service routes (staged, intentionally disabled).
 # Uncomment a block once the matching container is running on the `web`
 # network. Application ports stay private on the Docker network - only Caddy
