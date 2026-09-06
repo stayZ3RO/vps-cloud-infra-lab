@@ -16,8 +16,7 @@ App selected: **Umami** (privacy-first web analytics) at
 `analytics.stayz3ro.dev`. Scoping, candidate comparison, compose stack
 (`configs/umami/`), and the deployment runbook
 (`docs/phase-4-docker-app-deployment/step-by-step.md`) are staged; the live
-deployment is pending. The Phase 3 evidence screenshots are still outstanding
-and should be captured before Phase 4 changes the running stack.
+deployment is pending.
 
 ---
 
