@@ -127,15 +127,15 @@ Current access and exposure model:
 
 Next phase:
 
-**Phase 4 - Docker App Deployment** (in progress — app chosen, deployment pending)
+**Phase 4 - Docker App Deployment** (in progress, app chosen, deployment pending)
 
 Planned tasks:
 
 - Deploy Umami (privacy-first web analytics) behind Caddy at `analytics.stayz3ro.dev`
 - Claim the Umami admin account over a private SSH tunnel before public exposure
-- Add the `analytics` DNS record in the Cloudflare zone (the live zone — see Lessons Learned)
+- Add the `analytics` DNS record in the Cloudflare zone (the live zone, see Lessons Learned)
 - Route it through the reverse proxy and validate external access
-- Document environment variables and `.env.example` (done — `configs/umami/`)
+- Document environment variables and `.env.example` (done, `configs/umami/`)
 - Add the new host as an Uptime Kuma monitor
 - Wire the blog embed (separate repo, coordinated change)
 - Capture deployment screenshots

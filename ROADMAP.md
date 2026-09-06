@@ -114,7 +114,7 @@ Purpose:
 
 Deploy the first public Dockerized service on the VPS.
 
-App selected (2026-08-30): **Umami** — privacy-first web analytics at
+App selected (2026-08-30): **Umami**, privacy-first web analytics at
 `analytics.stayz3ro.dev` (Umami + PostgreSQL). Candidate comparison:
 `docs/phase-4-docker-app-deployment/overview.md`.
 

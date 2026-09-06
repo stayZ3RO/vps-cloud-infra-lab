@@ -15,7 +15,7 @@ proves the repeatable app-onboarding pattern: compose service, env template,
 Caddy route, DNS record, validation, evidence.
 
 **App selected (2026-08-30): Umami**, privacy-first web analytics, at
-`analytics.stayz3ro.dev` — real visitor analytics for the blog and portfolio,
+`analytics.stayz3ro.dev`, real visitor analytics for the blog and portfolio,
 and the VPS's first stateful service (Umami + PostgreSQL). Candidate
 comparison and rationale: [overview.md](overview.md).
 
@@ -94,7 +94,7 @@ evidence layout.
 
 The Phase 3 screenshot checklist
 ([screenshots/phase-3-reverse-proxy-https/README.md](../../screenshots/phase-3-reverse-proxy-https/README.md),
-9 items) is still unfilled. The Phase 3 stack is live right now — capture that
+9 items) is still unfilled. The Phase 3 stack is live right now. Capture that
 evidence **before** Phase 4 changes anything about the running deployment.
 
 ---

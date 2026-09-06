@@ -190,7 +190,7 @@ Live" in `LESSONS-LEARNED.md`.
 
 Status: 🚧 In Progress (app selected, configs and runbook staged; live deployment pending)
 
-App selected 2026-08-30: **Umami** — privacy-first, cookieless web analytics
+App selected 2026-08-30: **Umami**, privacy-first, cookieless web analytics
 at `analytics.stayz3ro.dev` (Umami + PostgreSQL), chosen over Shlink and
 Vikunja. Rationale and candidate comparison:
 `docs/phase-4-docker-app-deployment/overview.md`. The selection optimizes for
