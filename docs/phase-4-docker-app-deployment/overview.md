@@ -167,7 +167,7 @@ image.
 
 Open-source, self-hosted to-do and project management (list, Kanban, Gantt,
 labels, teams). Go binary with a PostgreSQL backend. Recommended 2026-08-30
-in the cross-repo coordination notes (`homelab-ops-private`) as the tracker
+in the private cross-repo coordination notes as the tracker
 for the parallel infra/certs/content tracks.
 
 ### Deployment Shape
