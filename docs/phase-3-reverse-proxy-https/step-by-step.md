@@ -66,7 +66,7 @@ Expected: no output.
 Clone into the proxy service directory created in Phase 1:
 
     cd /opt/stayz3ro/proxy
-    git clone https://github.com/stayZ3RO/vps-cloud-infra-lab.git .
+    git clone https://github.com/stayZ3RO/vps-lab.git .
     # or, if already cloned:
     git pull
 

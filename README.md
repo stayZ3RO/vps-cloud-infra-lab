@@ -278,6 +278,6 @@ This repository is part of a broader infrastructure lab portfolio.
 
 | Repository | Focus | Relationship |
 |---|---|---|
-| [Home Network Infrastructure Lab](https://github.com/stayZ3RO/home-network-infrastructure-HA-DNS) | HA DNS, Pi-hole, Unbound, monitoring, Tailscale, Proxmox, RustDesk | Demonstrates the local infrastructure foundation and HA service layer |
-| [Home Network Managed Infrastructure Lab](https://github.com/stayZ3RO/home-network-managed-infrastructure-lab) | Managed router, switching, VLANs, firewall policy, network segmentation | Demonstrates managed networking and segmentation architecture |
-| [VPS Cloud Infrastructure Lab](https://github.com/stayZ3RO/vps-cloud-infra-lab) | Linux VPS hardening, Docker, DNS, HTTPS, monitoring, backups, secure access | Demonstrates cloud-hosted infrastructure and service operations |
+| [Home Network Infrastructure Lab](https://github.com/stayZ3RO/dns) | HA DNS, Pi-hole, Unbound, monitoring, Tailscale, Proxmox, RustDesk | Demonstrates the local infrastructure foundation and HA service layer |
+| [Home Network Managed Infrastructure Lab](https://github.com/stayZ3RO/netlab) | Managed router, switching, VLANs, firewall policy, network segmentation | Demonstrates managed networking and segmentation architecture |
+| [VPS Cloud Infrastructure Lab](https://github.com/stayZ3RO/vps-lab) | Linux VPS hardening, Docker, DNS, HTTPS, monitoring, backups, secure access | Demonstrates cloud-hosted infrastructure and service operations |
