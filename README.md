@@ -1,7 +1,7 @@
 # VPS Cloud Infrastructure Lab 🚀
 
 ![Status](https://img.shields.io/badge/status-active-brightgreen)
-![Current Phase](https://img.shields.io/badge/current_phase-Reverse%20Proxy%20%26%20HTTPS-blue)
+![Current Phase](https://img.shields.io/badge/current_phase-Docker%20App%20Deployment-blue)
 ![Platform](https://img.shields.io/badge/platform-Netcup%20VPS-orange)
 ![Docker](https://img.shields.io/badge/container_runtime-Docker-blue)
 ![Security](https://img.shields.io/badge/security-hardened-success)
@@ -66,7 +66,8 @@ This VPS lab gives me a place to practice:
           │     └── SSH brute-force protection
           |
           ├── Docker Engine
-          │     └── Future container workloads
+          │     ├── Caddy (reverse proxy, automatic HTTPS)
+          │     └── Uptime Kuma (status.stayz3ro.dev, internal only)
           |
           ├── Tailscale
           │     └── Private administrative access
@@ -110,8 +111,8 @@ This VPS lab gives me a place to practice:
 |---|---:|---|
 | Phase 1 - VPS Baseline & Security Hardening | ✅ Complete | Secure Linux baseline |
 | Phase 2 - Domain DNS & Public Routing | ✅ Complete | stayz3ro.dev DNS records and Tailscale-only SSH |
-| Phase 3 - Reverse Proxy & HTTPS | ⏳ Planned | Public routing and TLS |
-| Phase 4 - Docker App Deployment | ⏳ Planned | First public containerized services |
+| Phase 3 - Reverse Proxy & HTTPS | ✅ Complete | Public routing and TLS |
+| Phase 4 - Docker App Deployment | 🚧 In Progress | First public containerized services (app chosen: Umami) |
 | Phase 5 - Monitoring & Alerts | ⏳ Planned | Uptime and service visibility |
 | Phase 6 - Backups & Disaster Recovery | ⏳ Planned | Recovery strategy |
 | Phase 7 - Secondary VPS / Staging | ⏳ Planned | RackNerd staging and backup node |
@@ -156,6 +157,20 @@ Highlights:
 - Confirmed UFW allows SSH only over `tailscale0`
 - Captured redacted validation screenshots
 
+### Phase 3 - Reverse Proxy & HTTPS
+
+Phase 3 put Caddy in front of the VPS so a real public service, `status.stayz3ro.dev` (Uptime Kuma), is served over HTTPS while backend ports stay private.
+
+Highlights:
+
+- Deployed the Caddy stack on the VPS (2026-08-30)
+- Issued a Let's Encrypt certificate for `status.stayz3ro.dev`, renewed automatically
+- Reverse-proxied Uptime Kuma; its admin account was created over a private SSH tunnel before exposure
+- HTTP redirects to HTTPS (308)
+- Validated security headers and the JSON access log
+- Confirmed backend ports are not public with an external probe
+- Captured redacted validation screenshots
+
 ---
 
 ## Documentation
@@ -179,6 +194,16 @@ Highlights:
 | [Step-by-Step Guide](docs/phase-2-domain-dns-public-routing/step-by-step.md) | DNS and SSH access implementation flow |
 | [Validation Evidence](docs/phase-2-domain-dns-public-routing/validation.md) | DNS and Tailscale-only SSH proof |
 | [Architecture Diagram](diagrams/phase-2-domain-dns-public-routing.md) | Public DNS and private admin access model |
+
+### Phase 3 - Reverse Proxy & HTTPS
+
+| Document | Description |
+|---|---|
+| [Phase Home](docs/phase-3-reverse-proxy-https/) | Phase 3 landing page |
+| [Overview](docs/phase-3-reverse-proxy-https/overview.md) | What was built and why |
+| [Step-by-Step Guide](docs/phase-3-reverse-proxy-https/step-by-step.md) | Implementation runbook and commands |
+| [Validation Evidence](docs/phase-3-reverse-proxy-https/validation.md) | Screenshots and proof |
+| [Architecture Diagram](diagrams/phase-3-reverse-proxy-https.md) | HTTPS edge and request flow |
 
 ### Project-Level Docs
 
@@ -223,9 +248,9 @@ Highlights:
 | Updates | Unattended Upgrades |
 | Containers | Docker, Docker Compose |
 | Domain | stayz3ro.dev |
-| DNS Provider | Porkbun |
-| Reverse Proxy | Planned |
-| HTTPS | Planned |
+| DNS Provider | Cloudflare (Porkbun is the registrar) |
+| Reverse Proxy | Caddy |
+| HTTPS | Let's Encrypt, automatic via Caddy |
 
 ---
 
@@ -266,9 +291,9 @@ Admin dashboards, databases, Portainer, and monitoring tools should not be direc
 
 ## Next Phase
 
-Next up: **Phase 3 - Reverse Proxy & HTTPS**
+Next up: **Phase 4 - Docker App Deployment**
 
-This phase will deploy a reverse proxy, configure HTTPS certificates, and route public services through `stayz3ro.dev` and planned subdomains.
+This phase deploys Umami (privacy-first web analytics) behind Caddy at `analytics.stayz3ro.dev`. The compose stack and deployment runbook are staged; the live deployment is pending.
 
 ---
 
