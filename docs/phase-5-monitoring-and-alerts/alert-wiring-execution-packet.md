@@ -81,13 +81,28 @@ openssl rand -hex 12
 These checks were run from a workstation against the live VPS. No change was
 made. Commands that need `sudo` or the Kuma credentials were not run.
 
-Commands used:
+Commands (read-only):
 
 ```sh
 ssh -o BatchMode=yes netcup-prod-01 'hostname; uptime; id'
 ssh -o BatchMode=yes netcup-prod-01 'docker ps --format "{{.Names}}\t{{.Image}}\t{{.Status}}\t{{.Ports}}"'
-ssh -o BatchMode=yes netcup-prod-01 'docker exec uptime-kuma cat /app/data/kuma.db' > /tmp/kuma-ro/kuma.db
 curl -sS -o /dev/null -w '%{http_code}\n' https://status.stayz3ro.dev/
+```
+
+The Kuma counts below were first taken from a copy of the database, which has
+since been deleted. Do not copy the database off the host: it holds the admin
+password hash and the session-signing secret. For a re-check, query only the
+counts and the named settings, read-only, inside the container:
+
+```sh
+ssh -o BatchMode=yes netcup-prod-01 'docker exec -i uptime-kuma sqlite3 "file:/app/data/kuma.db?mode=ro"' <<'SQL'
+select 'monitors', count(*) from monitor;
+select 'notifications', count(*) from notification;
+select 'status_pages', count(*) from status_page;
+select 'heartbeats', count(*) from heartbeat;
+select 'users', count(*) from user;
+select key, value from setting where key in ('database_version', 'serverTimezone', 'keepDataPeriodDays');
+SQL
 ```
 
 Findings:
@@ -105,17 +120,11 @@ Findings:
 | Kuma users | one admin account |
 | Public edge | `https://status.stayz3ro.dev/` returns 302 to `/dashboard`; `/dashboard` returns 200 |
 
-Two current-state observations, flagged and not changed by this packet:
+One current-state observation, flagged and not changed by this packet:
 
-1. **The admin surface is publicly reachable.** `https://status.stayz3ro.dev/dashboard`
-   serves the Kuma login page (HTTP 200). It is password-protected, but the
-   plan intended the admin surface to be reachable only over the private
-   tunnel. Tightening this (for example a Caddy matcher for `/dashboard*` that
-   only allows the tailnet, or a second private vhost) is a separate change
-   and is not part of alert wiring. Decide separately whether to keep it as is.
-2. **No public status page exists.** The `status_page` table is empty, so
-   `status.stayz3ro.dev` currently shows the admin login, not a status page.
-   Creating one is optional and out of scope here.
+- **No public status page exists.** The `status_page` table is empty, so
+  `status.stayz3ro.dev` currently shows the admin login, not a status page.
+  Creating one is optional and out of scope here.
 
 What could not be checked read-only: the `.env` file, the Caddy runtime
 configuration, firewall state, and anything behind `sudo`. None of those are
@@ -201,21 +210,21 @@ third, critical-only channel that is not worth new infrastructure right now.
 
 ## 7. Relation to the LAN-side automation and alerting stack
 
-The home LAN already runs an automation and alerting stack (its own ntfy
-server and a Discord receiver). Keep the two paths distinct:
+The home LAN has its own alerting stack: a Discord receiver today, with an
+ntfy server planned on the LAN side. Keep the two paths distinct:
 
 | | This packet (Kuma, external) | LAN stack (internal) |
 |---|---|---|
 | Vantage point | From the VPS, outside the LAN | From inside the LAN |
 | Watches | Public sites, proxy, public DNS, certificates | Nodes, cluster, backups, HA DNS, containers |
-| ntfy topic | New, dedicated topic | Its existing topic |
+| ntfy topic | New, dedicated topic | Its own topic, once its ntfy server exists |
 | Discord | `#status-public` | Its existing channel |
-| Direction | Outbound notifications only | Inbound to the LAN |
+| Direction | Outbound notifications only | Internal only, never reached from the VPS |
 
 Rules that keep them from double-paging and from crossing the boundary:
 
 - Use a new ntfy topic and a new Discord channel, not the LAN stack's.
-- Never point Kuma at the LAN ntfy server. The VPS must not open an inbound
+- Never point Kuma at a LAN ntfy server. The VPS must not open an inbound
   path into the LAN.
 - Never monitor a LAN or admin endpoint from the VPS.
 - The overlap is intentional only at the transport level (both may use ntfy
@@ -232,9 +241,10 @@ The private path is an SSH local port forward to the Kuma container, matching
 the access method used at first-run. Get the container address, then tunnel.
 
 ```sh
-ssh -o BatchMode=yes netcup-prod-01 \
-  "docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' uptime-kuma"
-ssh -N -L 3001:<kuma-container-ip>:3001 netcup-prod-01
+KUMA_IP=$(ssh -o BatchMode=yes netcup-prod-01 \
+  "docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' uptime-kuma")
+echo "$KUMA_IP"
+ssh -N -L "3001:${KUMA_IP}:3001" netcup-prod-01
 ```
 
 Leave the tunnel running and open `http://localhost:3001` in a browser. Run
@@ -390,9 +400,7 @@ bolt it onto this one.
    warning-only monitor. Confirm which.
 5. **Resend value.** `30` (about 30 minutes) or `0` (state-change only).
    Confirm.
-6. **Admin surface.** `status.stayz3ro.dev/dashboard` is publicly reachable.
-   Decide separately whether to keep it or restrict it.
-7. **Public status page.** None exists. Decide separately whether to create
+6. **Public status page.** None exists. Decide separately whether to create
    one, and whether it should list only these public-edge monitors.
 
 ## 13. Evidence and screenshots
