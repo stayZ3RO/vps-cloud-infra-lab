@@ -18,6 +18,9 @@ App selected: **Umami** (privacy-first web analytics) at
 (`docs/phase-4-docker-app-deployment/step-by-step.md`) are staged; the live
 deployment is pending.
 
+Phase 5 public-edge monitoring is live as of 2026-09-28 (see Monitoring and
+Alerts below); Phase 4 remains in progress.
+
 ---
 
 ## Current Architecture State
@@ -119,6 +122,27 @@ Current access and exposure model:
 - Admin dashboards are not exposed publicly; Uptime Kuma's admin account
   was created over a private SSH tunnel before the certificate made the
   hostname publicly discoverable
+
+---
+
+## Monitoring and Alerts
+
+Uptime Kuma on `netcup-prod-01` watches the public edge. As of 2026-09-28:
+
+- Six monitors: `public-blog` (`stayz3ro.dev`), `public-portfolio`
+  (`chrisalorenzo.com`), and `public-status-edge` (`status.stayz3ro.dev`),
+  all with certificate-expiry notices; `public-edge-https` (TCP port 443 on
+  `status.stayz3ro.dev`); and `dns-stayz3ro` and `dns-chrisalorenzo` (DNS A).
+- Interval 60 seconds, retries 2, retry interval 60 seconds, resend 30.
+- One notification provider live: Discord (`public-edge-discord`), attached
+  to all six monitors.
+- A synthetic DOWN/UP test passed on 2026-09-28: DOWN after the retry
+  threshold, then one recovery message. The synthetic monitor was removed
+  afterwards.
+- ntfy is pending the self-hosted server on the VPS.
+
+No private or admin endpoint is monitored from the VPS, and no path from the
+VPS into the home LAN is opened.
 
 ---
 
