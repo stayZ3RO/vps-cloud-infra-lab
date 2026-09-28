@@ -79,3 +79,19 @@ status.{$SITE_DOMAIN} {
 # 	import security_headers
 # 	reverse_proxy api:8000
 # }
+
+# ---------------------------------------------------------------------------
+# ntfy.chrisalorenzo.com -> self-hosted ntfy (Phase 5).
+# Staged until the ntfy stack (configs/ntfy) is running on the `web` network
+# and the DNS-only A record exists. Enable it in Stage 4 of
+# docs/phase-5-monitoring-and-alerts/ntfy-self-hosted-execution-packet.md.
+# Caddy serves HTTP/2 and HTTP/3 here by default; WebSockets pass through.
+# ntfy.chrisalorenzo.com {
+# 	import security_headers
+# 	# ntfy's metrics listener is off; refuse the path at the edge anyway.
+# 	respond /metrics 404
+# 	reverse_proxy ntfy:80 {
+# 		# Send subscriber streams (JSON stream, SSE) without buffering.
+# 		flush_interval -1
+# 	}
+# }

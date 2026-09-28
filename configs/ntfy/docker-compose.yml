@@ -1,0 +1,44 @@
+# Self-hosted ntfy - VPS Cloud Infrastructure Lab
+# Phase: Phase 5 - Monitoring & Alerts
+# Packet: docs/phase-5-monitoring-and-alerts/ntfy-self-hosted-execution-packet.md
+#
+# Usage (on the VPS, from the deploy directory):
+#   cd configs/ntfy
+#   docker compose up -d
+#
+# No published ports. Caddy reaches ntfy over the external `web` network
+# (created by configs/caddy) at ntfy:80, and publishes it at
+# https://ntfy.chrisalorenzo.com. Uptime Kuma on the same network publishes
+# to http://ntfy directly. No secrets in this file or in server.yml: users and
+# tokens live only in the auth database volume.
+
+services:
+  ntfy:
+    # Pinned: v2.28.0 (released 2026-08-27), multi-arch index digest.
+    image: binwiederhier/ntfy:v2.28.0@sha256:6ef4b819f722fccdc036af611c4774cfdc2de821ab74fdd48bbf4c9d6f8973da
+    container_name: ntfy
+    restart: unless-stopped
+    command: serve
+    environment:
+      TZ: America/New_York
+    volumes:
+      - ./server.yml:/etc/ntfy/server.yml:ro
+      - ntfy_cache:/var/cache/ntfy      # message cache
+      - ntfy_lib:/var/lib/ntfy          # auth database and attachments - MUST persist
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q --tries=1 -O- http://localhost:80/v1/health | grep -Eo '\"healthy\"\\s*:\\s*true' || exit 1"]
+      interval: 60s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+    networks:
+      - web
+
+networks:
+  web:
+    external: true
+    name: web
+
+volumes:
+  ntfy_cache:
+  ntfy_lib:
