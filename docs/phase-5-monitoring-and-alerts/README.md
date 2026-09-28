@@ -6,11 +6,12 @@
 
 ## Phase Summary
 
-Phase 5 makes the public edge observable. Uptime Kuma is already deployed on
-`netcup-prod-01` and reachable at `https://status.stayz3ro.dev`, but it has no
-monitors and no notification providers. This phase adds public-edge
-availability, DNS, and certificate-expiry monitoring, with ntfy for actionable
-push and Discord for history.
+Phase 5 makes the public edge observable. Uptime Kuma is deployed on
+`netcup-prod-01` and reachable at `https://status.stayz3ro.dev`. As of
+2026-09-28 it monitors the public sites, the HTTPS edge, and public DNS for
+`stayz3ro.dev` and `chrisalorenzo.com`, with certificate-expiry notices, and
+sends alerts to a dedicated Discord provider. The self-hosted ntfy provider is
+pending its server.
 
 The design rule for the phase is narrow: monitor only what is public, from
 outside the LAN. Nothing in this phase monitors a private or admin endpoint,
@@ -63,13 +64,13 @@ Out of scope:
 | Requirement | Status |
 |---|---:|
 | Execution packet written and reviewed read-only | ✅ Complete |
-| ntfy provider configured and test received | ⏳ To run |
-| Discord provider configured and test received | ⏳ To run |
-| Public-edge monitors created | ⏳ To run |
-| Certificate expiry warning enabled | ⏳ To run |
-| Real DOWN and UP notification proven | ⏳ To run |
-| Final wiring recorded without secrets | ⏳ To run |
+| ntfy provider configured and test received | ⏳ Pending the self-hosted server |
+| Discord provider configured and test received | ✅ Complete |
+| Public-edge monitors created | ✅ Complete |
+| Certificate expiry warning enabled | ✅ Complete |
+| Real DOWN and UP notification proven | ✅ Complete |
+| Final wiring recorded without secrets | ✅ Complete |
 | Offsite dead-man monitor designed | ⏳ Separate packet |
 
-The packet was prepared from read-only checks only. The live changes are run
-by the owner, one stage at a time, and are not made by this repo.
+The live wiring was done on 2026-09-28 and is recorded in the packet and
+`CURRENT-STATUS.md`.

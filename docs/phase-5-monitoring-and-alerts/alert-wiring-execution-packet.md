@@ -350,13 +350,24 @@ public failure target. It does not stop any service.
 - Rollback: restore the target, pause or delete `synthetic-alert-test`, and
   confirm the production monitors are unchanged.
 
-### Stage 6: record the final state (5 minutes)
+### Stage 6: record the final state (done 2026-09-28)
 
-Record, without secrets: the provider labels, the monitor classes and targets,
-which providers are attached to each, the interval, retry interval, retries,
-resend value, the expiry threshold, and the test timestamps. Update
-`CURRENT-STATUS.md` and the Phase 5 summary. Do not record the ntfy topic, the
-Discord webhook, or any account identifier.
+Live state on 2026-09-28, recorded without secrets:
+
+- Six monitors: `public-blog`, `public-portfolio`, and `public-status-edge`
+  (HTTP(s), with certificate expiry notices), `public-edge-https` (TCP port
+  443), `dns-stayz3ro`, and `dns-chrisalorenzo` (DNS A). Interval 60 seconds,
+  retries 2, retry interval 60 seconds, resend 30.
+- One notification provider live: Discord, `public-edge-discord`, attached to
+  all six monitors.
+- A synthetic DOWN/UP test passed on 2026-09-28: the monitor went DOWN after
+  the retry threshold and one recovery message arrived. The synthetic monitor
+  was removed afterwards.
+- ntfy is pending the self-hosted server on the VPS.
+
+Record only non-secret values. Never record the ntfy topic or token, the
+Discord webhook, or any account identifier. Update `CURRENT-STATUS.md` and the
+Phase 5 summary with the same non-secret set.
 
 - Gate: another admin can reproduce the wiring from the record alone, and a
   search of the recorded text finds no secret.
