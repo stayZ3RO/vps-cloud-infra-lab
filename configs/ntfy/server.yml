@@ -1,0 +1,38 @@
+# ntfy server configuration - VPS Cloud Infrastructure Lab
+# Public-safe. No users, passwords, or tokens here: they are created with the
+# ntfy CLI and stored only in the auth database (volume ntfy_lib).
+
+base-url: "https://ntfy.chrisalorenzo.com"
+listen-http: ":80"
+
+# Caddy is the only proxy in front (Cloudflare record is DNS-only), so the
+# default X-Forwarded-For header identifies visitors for rate limiting.
+behind-proxy: true
+
+# Private instance: nothing is readable or writable without a user or token.
+auth-file: "/var/lib/ntfy/user.db"
+auth-default-access: "deny-all"
+enable-signup: false
+enable-login: false
+enable-reservations: false
+
+# No web app: phones use the ntfy app, senders use the API.
+web-root: "disable"
+
+# Message cache so phones that were offline still get recent alerts.
+cache-file: "/var/cache/ntfy/cache.db"
+cache-duration: "24h"
+
+# Attachments: small, short-lived.
+attachment-cache-dir: "/var/lib/ntfy/attachments"
+attachment-total-size-limit: "200M"
+attachment-file-size-limit: "5M"
+attachment-expiry-duration: "24h"
+
+# Long-lived subscriber connections stay open through Caddy.
+keepalive-interval: "45s"
+
+# iOS instant push for a self-hosted server needs an upstream relay. ntfy.sh
+# receives only a poll request (message ID), not the message content.
+# Uncomment only if an iPhone subscribes. See the packet, Stage 6.
+# upstream-base-url: "https://ntfy.sh"
