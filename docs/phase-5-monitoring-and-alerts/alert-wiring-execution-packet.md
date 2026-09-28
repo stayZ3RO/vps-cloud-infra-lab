@@ -6,8 +6,8 @@ Scope: public-edge availability and certificate alerts only.
 
 This packet is the execution form of the public-edge alert plan. It turns the
 plan into a sequence you can run in one sitting with your own credentials. The
-secrets (an ntfy topic, a Discord webhook) are entered only in the Uptime Kuma
-UI and never written to this repo.
+provider credentials (an ntfy token and topic, a Discord webhook) are entered
+only in the Uptime Kuma UI and never written to this repo.
 
 ## 1. Purpose and scope
 
@@ -32,8 +32,8 @@ Out of scope and explicitly not done here:
   packet.
 - no change to the internal LAN monitoring and alerting stack. It keeps its
   own receivers.
-- no secret in Git. The ntfy topic and the Discord webhook live only in the
-  Kuma UI (and in the ntfy app on your phone).
+- no secret in Git. The ntfy token and topic, and the Discord webhook, live
+  only in the Kuma UI (and the ntfy subscription on your phone).
 
 ## 2. What this changes vs what it does not
 
@@ -58,19 +58,18 @@ Discord server.
   to. This packet uses the name `#status-public` as the example.
 - A Discord channel webhook URL. Create it in the channel settings. It is a
   secret; it is pasted only into Kuma.
-- An ntfy destination. Either:
-  - an `ntfy.sh` topic with a long random name (default here, no new infra),
-    or
-  - a self-hosted ntfy server on the VPS (more infra, and it must publish on
-    443 through Caddy to be useful), or
-  - an existing self-hosted ntfy that is reachable from the public internet.
-    Do not point Kuma at a LAN-only ntfy server; that would require an
-    inbound path into the LAN, which is out of scope.
+- The self-hosted ntfy on the VPS, published at `https://ntfy.chrisalorenzo.com`
+  with authentication on (deny-all default, per-client tokens). Kuma uses a
+  dedicated write-only client token for its topic, and the phone subscribes
+  read-only with its own token. The server is deployed by a separate packet.
+  Until it is live, an `ntfy.sh` topic with a long random name is the interim
+  fallback.
 - About 60 to 90 minutes. The DOWN/UP test waits on retry timing, so keep the
   session open.
 
 Generate an ntfy topic on the workstation (do not paste the result into any
-file in this repo):
+file in this repo). The per-client ntfy token is created on the ntfy server
+and is never recorded here.
 
 ```sh
 openssl rand -hex 12
@@ -89,19 +88,14 @@ ssh -o BatchMode=yes netcup-prod-01 'docker ps --format "{{.Names}}\t{{.Image}}\
 curl -sS -o /dev/null -w '%{http_code}\n' https://status.stayz3ro.dev/
 ```
 
-The Kuma counts below were first taken from a copy of the database, which has
-since been deleted. Do not copy the database off the host: it holds the admin
-password hash and the session-signing secret. For a re-check, query only the
-counts and the named settings, read-only, inside the container:
+For a repeat of the monitor and provider counts, run three narrow read-only
+counts inside the container. Do not copy the database off the host.
 
 ```sh
 ssh -o BatchMode=yes netcup-prod-01 'docker exec -i uptime-kuma sqlite3 "file:/app/data/kuma.db?mode=ro"' <<'SQL'
-select 'monitors', count(*) from monitor;
-select 'notifications', count(*) from notification;
-select 'status_pages', count(*) from status_page;
-select 'heartbeats', count(*) from heartbeat;
-select 'users', count(*) from user;
-select key, value from setting where key in ('database_version', 'serverTimezone', 'keepDataPeriodDays');
+select count(*) from monitor;
+select count(*) from notification;
+select count(*) from status_page;
 SQL
 ```
 
@@ -112,19 +106,18 @@ Findings:
 | Host | `netcup-prod-01`, up 35 days, admin user in the `docker` group |
 | Running containers | `caddy` (`caddy:2-alpine`, ports 80 and 443) and `uptime-kuma` (`louislam/uptime-kuma:1`, healthy, no published port) |
 | Kuma application version | 1.23.17 |
-| Kuma database schema | 10, `serverTimezone` `America/New_York`, `keepDataPeriodDays` 180 |
 | Existing monitors | none (0) |
 | Existing notification providers | none (0) |
 | Existing status pages | none (0) |
-| Stored heartbeats | none (0) |
-| Kuma users | one admin account |
-| Public edge | `https://status.stayz3ro.dev/` returns 302 to `/dashboard`; `/dashboard` returns 200 |
+| Public edge | `https://status.stayz3ro.dev/` returns 302 into the Kuma UI |
 
-One current-state observation, flagged and not changed by this packet:
+Two current-state notes, flagged and not changed by this packet:
 
 - **No public status page exists.** The `status_page` table is empty, so
-  `status.stayz3ro.dev` currently shows the admin login, not a status page.
+  `status.stayz3ro.dev` currently serves the Kuma UI, not a status page.
   Creating one is optional and out of scope here.
+- **Admin access hardening is tracked privately.** No further detail is
+  recorded here.
 
 What could not be checked read-only: the `.env` file, the Caddy runtime
 configuration, firewall state, and anything behind `sudo`. None of those are
@@ -137,54 +130,62 @@ points at an admin route or a private address.
 
 | Monitor name | Type | Target | Providers | Retries | Resend |
 |---|---|---|---|---|---|
-| `public-blog-apex` | HTTP(s) | `https://stayz3ro.dev` | ntfy + Discord | 2 | 30 |
-| `public-status-page` | HTTP(s) | `https://status.stayz3ro.dev` | ntfy + Discord | 2 | 30 |
+| `public-blog` | HTTP(s) | `https://stayz3ro.dev` | ntfy + Discord | 2 | 30 |
+| `public-portfolio` | HTTP(s) | `https://chrisalorenzo.com` | ntfy + Discord | 2 | 30 |
+| `public-status-edge` | HTTP(s) | `https://status.stayz3ro.dev` | ntfy + Discord | 2 | 30 |
 | `public-edge-https` | TCP port | `status.stayz3ro.dev` port 443 | ntfy + Discord | 2 | 30 |
-| `public-dns-apex` | DNS | `stayz3ro.dev` A | ntfy + Discord | 2 | 30 |
-| `public-dns-www` | DNS | `www.stayz3ro.dev` A | ntfy + Discord | 2 | 30 |
-| `public-dns-status` | DNS | `status.stayz3ro.dev` A | ntfy + Discord | 2 | 30 |
-| `public-dns-analytics` | DNS | `analytics.stayz3ro.dev` A | ntfy + Discord | 2 | 30 |
+| `dns-stayz3ro` | DNS | `stayz3ro.dev` A | ntfy + Discord | 2 | 30 |
+| `dns-chrisalorenzo` | DNS | `chrisalorenzo.com` A | ntfy + Discord | 2 | 30 |
 
 Notes:
 
-- Retries `2` and retry interval 60 seconds mean the alert fires after two
-  consecutive failed checks, not on a single blip.
+- Every monitor uses a 60-second interval, a 60-second retry interval, and
+  retries `2`, so the alert fires after two consecutive failed checks, not on
+  a single blip.
 - Resend `30` re-notifies every 30 failed heartbeats while still down, about
   30 minutes at a 60-second interval. Set `0` to disable re-notify entirely if
   you prefer state-change-only alerts.
-- `public-status-page` watches Kuma's own public entry point. It proves the
+- `public-status-edge` watches Kuma's own public entry point. It proves the
   edge is answering, but a total VPS outage takes Kuma down with it and
   nothing alerts. The real answer to that is an independent offsite dead-man
   monitor, which is out of scope here (see section 11).
-- `analytics.stayz3ro.dev` is staged, not yet deployed. Add the DNS monitor
-  only after the record exists; otherwise leave it out for now.
+- A local script, `~/kuma-add-monitors.sh`, inserts the monitors with a
+  stopped-container backup. It is not reproduced here.
+- `blog.chrisalorenzo.com` is added after the domain move.
+- An analytics monitor is added only after that record exists.
 - Excluded on purpose: everything in the section 1 out-of-scope list.
 
 ### Certificate expiry
 
 Kuma reports certificate expiry on its HTTP(s) monitors. Enable the expiry
-notification on `public-blog-apex` and `public-status-page` and set the
-warning threshold to 14 days. There is one limitation to know about: Kuma
-assigns providers to a monitor, not to an event type, so those two monitors
-send both DOWN and expiry notices to ntfy and Discord. If you want the expiry
-warning on Discord only, add a second HTTP(s) monitor for the same host with
-only the Discord provider assigned and leave the expiry notice off the
-primary monitor. This packet defaults to the simpler single-monitor form.
+notification on `public-blog`, `public-portfolio`, and `public-status-edge`
+and set the warning threshold to 14 days. There is one limitation to know
+about: Kuma assigns providers to a monitor, not to an event type, so those
+three monitors send both DOWN and expiry notices to ntfy and Discord. If you
+want the expiry warning on Discord only, add a second HTTP(s) monitor for the
+same host with only the Discord provider assigned and leave the expiry notice
+off the primary monitor. This packet defaults to the simpler single-monitor
+form.
 
 ## 6. Notification provider plan
 
 ### ntfy (primary, actionable push)
 
+- The ntfy server is self-hosted on the VPS at
+  `https://ntfy.chrisalorenzo.com`, with authentication on: deny-all by
+  default and a per-client token per sender.
+- Kuma uses its own write-only client token for its topic. The phone
+  subscribes read-only with a separate client token.
+- Kuma reaches the server container to container over the internal Docker
+  network, so an alert does not depend on public DNS, Cloudflare, or Caddy.
 - Server URL and topic are separate fields in the Kuma ntfy form. The server
-  URL must not contain the topic.
-- Default server: `https://ntfy.sh`. Topic: the random value from section 3.
-  The topic name is the only thing protecting a public `ntfy.sh` topic, so
-  treat it as a secret.
-- If your ntfy server requires authentication, put the credential in the Kuma
-  credential field, never in the URL.
+  URL must not contain the topic. Put the client token in the credential
+  field, never in the URL.
+- Interim fallback only: until the self-hosted server is live, an `ntfy.sh`
+  topic with an unguessable name. The topic name is the only protection on a
+  public `ntfy.sh` topic, so treat it as a secret.
 - Set a high priority (5) for DOWN and a lower priority for recovery/expiry.
-- Subscribe the phone to the same server and topic, then use Kuma's provider
-  test button and confirm the push arrives.
+- Use Kuma's provider test button and confirm the push arrives on the phone.
 
 ### Discord (secondary, history)
 
@@ -210,25 +211,28 @@ third, critical-only channel that is not worth new infrastructure right now.
 
 ## 7. Relation to the LAN-side automation and alerting stack
 
-The home LAN has its own alerting stack: a Discord receiver today, with an
-ntfy server planned on the LAN side. Keep the two paths distinct:
+The home LAN has its own alerting stack, with a Discord receiver today. The
+self-hosted ntfy on the VPS is shared: Kuma uses it for public-edge alerts,
+and the home automation stack uses it outbound for its own messages. Keep the
+two paths distinct:
 
-| | This packet (Kuma, external) | LAN stack (internal) |
+| | This packet (Kuma, external) | LAN automation stack |
 |---|---|---|
 | Vantage point | From the VPS, outside the LAN | From inside the LAN |
 | Watches | Public sites, proxy, public DNS, certificates | Nodes, cluster, backups, HA DNS, containers |
-| ntfy topic | New, dedicated topic | Its own topic, once its ntfy server exists |
+| ntfy | The shared VPS server, its own topic and client token | The same VPS server, outbound, its own topic and client token |
 | Discord | `#status-public` | Its existing channel |
-| Direction | Outbound notifications only | Internal only, never reached from the VPS |
+| Direction | Outbound notifications only | Outbound to the VPS only, never reached from the VPS |
 
 Rules that keep them from double-paging and from crossing the boundary:
 
-- Use a new ntfy topic and a new Discord channel, not the LAN stack's.
-- Never point Kuma at a LAN ntfy server. The VPS must not open an inbound
-  path into the LAN.
+- Use a dedicated ntfy topic and client token for Kuma, and a separate
+  Discord channel, not the LAN stack's.
+- The home automation stack reaches the VPS ntfy outbound. The VPS never
+  opens a path into the LAN.
 - Never monitor a LAN or admin endpoint from the VPS.
-- The overlap is intentional only at the transport level (both may use ntfy
-  and Discord). Separate topics and channels keep the messages distinct.
+- The overlap is intentional only at the transport level. Separate topics,
+  tokens, and channels keep the messages distinct.
 
 ## 8. Steps
 
@@ -264,11 +268,12 @@ page should be present.
 1. In the private UI, open the notification settings and add a provider of
    type **ntfy**.
 2. Label it `public-edge-ntfy`.
-3. Enter the server URL and the topic from section 3 in their separate
-   fields. Add a credential only if the server needs one.
+3. Enter `https://ntfy.chrisalorenzo.com` and the Kuma topic in their
+   separate fields, and the Kuma client token in the credential field.
 4. Set the DOWN priority to 5.
 5. Save, then use the provider test action.
-6. Subscribe the phone to the same server and topic first, then run the test.
+6. Subscribe the phone read-only to the same server and topic first, then run
+   the test.
 
 - Gate: the test push arrives on the phone and the UI reports success.
 - Rollback: delete the `public-edge-ntfy` provider. It is not yet attached to
@@ -299,15 +304,14 @@ For each row in the section 5 table:
 4. Set the heartbeat interval to 60 seconds.
 5. Set the retry interval to 60 seconds and retries to `2`.
 6. Leave the monitor enabled.
-7. For the two HTTP(s) monitors, enable the certificate expiry notification
+7. For the three HTTP(s) monitors, enable the certificate expiry notification
    and set the threshold to 14 days.
 
 Do not attach providers yet.
 
-- Gate: every monitor shows UP (except `analytics.stayz3ro.dev` if its record
-  does not exist yet), and no monitor targets a private address or an admin
-  route. Re-open each monitor and confirm the saved interval, retry, and
-  retry-interval values match section 5.
+- Gate: every monitor shows UP, and no monitor targets a private address or
+  an admin route. Re-open each monitor and confirm the saved interval, retry,
+  and retry-interval values match section 5.
 - Rollback: delete the monitors created in this stage. Because no provider is
   attached yet, no notification can have been sent.
 
@@ -389,18 +393,13 @@ bolt it onto this one.
 
 ## 12. Open questions and decisions
 
-1. **ntfy destination.** Default here is `ntfy.sh` with an unguessable topic
-   (no new infra). The alternative is self-hosting ntfy on the VPS, which is
-   more infrastructure and must publish through Caddy on 443. Confirm which.
-2. **Discord target.** One shared server with a new `#status-public` channel,
+1. **Discord target.** One shared server with a new `#status-public` channel,
    or a dedicated server for public-facing alerts. Confirm the channel.
-3. **Email.** Deferred in this packet. Confirm it stays deferred.
-4. **Expiry routing.** Kuma cannot route expiry notices to Discord only on the
+2. **Email.** Deferred in this packet. Confirm it stays deferred.
+3. **Expiry routing.** Kuma cannot route expiry notices to Discord only on the
    same monitor. Accept both providers for expiry, or add a duplicate
    warning-only monitor. Confirm which.
-5. **Resend value.** `30` (about 30 minutes) or `0` (state-change only).
-   Confirm.
-6. **Public status page.** None exists. Decide separately whether to create
+4. **Public status page.** None exists. Decide separately whether to create
    one, and whether it should list only these public-edge monitors.
 
 ## 13. Evidence and screenshots
