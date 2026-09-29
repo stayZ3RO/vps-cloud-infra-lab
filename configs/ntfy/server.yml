@@ -34,5 +34,5 @@ keepalive-interval: "45s"
 
 # iOS instant push for a self-hosted server needs an upstream relay. ntfy.sh
 # receives only a poll request (message ID), not the message content.
-# Uncomment only if an iPhone subscribes. See the packet, Stage 6.
-# upstream-base-url: "https://ntfy.sh"
+# Enabled 2026-09-28: an iPhone subscribes. See the packet, Stage 6.
+upstream-base-url: "https://ntfy.sh"

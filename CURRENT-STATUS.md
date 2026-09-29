@@ -139,7 +139,24 @@ Uptime Kuma on `netcup-prod-01` watches the public edge. As of 2026-09-28:
 - A synthetic DOWN/UP test passed on 2026-09-28: DOWN after the retry
   threshold, then one recovery message. The synthetic monitor was removed
   afterwards.
-- ntfy is pending the self-hosted server on the VPS.
+- Second provider live: self-hosted ntfy (`public-edge-ntfy`), attached to
+  all six monitors and tested to the phone on 2026-09-28.
+- `ntfy-health` (keyword `healthy` on `https://ntfy.chrisalorenzo.com/v1/health`)
+  alerts through Discord only, so a broken ntfy still pages.
+
+### ntfy (live 2026-09-28)
+
+- `binwiederhier/ntfy:v2.28.0`, pinned by digest, on the `web` network with no
+  published port. Caddy serves `ntfy.chrisalorenzo.com` (DNS only A record).
+- `deny-all` by default, no signup, no web app. Users: `admin`, `kuma`
+  (write-only `edge-alerts`), `automation` and `alertmanager` (write-only
+  `lab-alerts`, no tokens issued yet), `phone` (read-only on both).
+- iOS relay enabled (`upstream-base-url`); ntfy.sh sees only message IDs.
+- Kuma reaches ntfy at `http://ntfy` inside the `web` network and signs in as
+  `kuma` with username and password.
+- Stage 5 results: root 404, metrics 404, anonymous publish and read 403,
+  `kuma` publish 200, `kuma` on `lab-alerts` 403, `kuma` read 403.
+- Remove the Caddyfile and `server.yml` backups on the VPS after 2026-10-05.
 
 No private or admin endpoint is monitored from the VPS, and no path from the
 VPS into the home LAN is opened.
