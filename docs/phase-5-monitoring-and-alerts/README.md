@@ -10,8 +10,8 @@ Phase 5 makes the public edge observable. Uptime Kuma is deployed on
 `netcup-prod-01` and reachable at `https://status.stayz3ro.dev`. As of
 2026-09-28 it monitors the public sites, the HTTPS edge, and public DNS for
 `stayz3ro.dev` and `chrisalorenzo.com`, with certificate-expiry notices, and
-sends alerts to a dedicated Discord provider. The self-hosted ntfy provider is
-pending its server.
+sends alerts to a dedicated Discord provider and to a self-hosted ntfy server
+on the same VPS (`ntfy.chrisalorenzo.com`).
 
 The design rule for the phase is narrow: monitor only what is public, from
 outside the LAN. Nothing in this phase monitors a private or admin endpoint,
@@ -64,7 +64,7 @@ Out of scope:
 | Requirement | Status |
 |---|---:|
 | Execution packet written and reviewed read-only | ✅ Complete |
-| ntfy provider configured and test received | ⏳ Pending the self-hosted server |
+| ntfy provider configured and test received | ✅ Complete |
 | Discord provider configured and test received | ✅ Complete |
 | Public-edge monitors created | ✅ Complete |
 | Certificate expiry warning enabled | ✅ Complete |

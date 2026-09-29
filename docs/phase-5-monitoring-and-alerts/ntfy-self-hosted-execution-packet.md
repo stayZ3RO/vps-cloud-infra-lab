@@ -296,26 +296,26 @@ phone within a few seconds.
 
 Rollback: remove the subscriptions and the server entry in the app.
 
-### Stage 7: switch Kuma's provider (2 min)
+### Stage 7: add the ntfy provider in Kuma (5 min)
 
-In Kuma (`https://status.stayz3ro.dev`): Settings > Notifications >
-`public-edge-ntfy` > Edit:
+In Kuma (`https://status.stayz3ro.dev`): Settings > Notifications > Setup
+Notification:
 
-1. Server URL: `http://ntfy` (the container on the `web` network).
-2. Topic: `edge-alerts`.
-3. Priority: leave as is.
-4. Authentication: Access Token, paste the `kuma` token. If this Kuma version
-   shows no token option, choose username and password and use the `kuma`
-   user.
-5. Test. The test message must arrive on the phone. Then Save.
-
-Keep the phone subscribed to the old `ntfy.sh` topic for a day, then remove it.
+1. Notification Type: ntfy. Friendly Name: `public-edge-ntfy`.
+2. Server URL: `http://ntfy` (plain HTTP to the container on the `web`
+   network; `https://ntfy` fails with ECONNREFUSED on 443).
+3. Topic: `edge-alerts`. Priority: 5.
+4. Authentication: Access Token with the `kuma` token, or Username and
+   Password with the `kuma` user. Both carry the same rights. The live setup
+   uses username and password.
+5. Default enabled and Apply on all existing monitors: on.
+6. Test. The test message must arrive on the phone. Then Save.
 
 Gate: the Test notification arrives, and the next real DOWN/UP (or a forced
 one, as in the alert wiring packet) arrives through the new server.
 
-Rollback: edit `public-edge-ntfy` back to server `https://ntfy.sh`, the old
-topic from the password manager, and no authentication. Test and save.
+Rollback: delete `public-edge-ntfy` in Kuma. Discord stays attached to every
+monitor.
 
 ## 7. Monitoring the new server
 
