@@ -39,8 +39,11 @@
 		X-Content-Type-Options "nosniff"
 		X-Frame-Options "DENY"
 		Referrer-Policy "strict-origin-when-cross-origin"
-		# Do not advertise the server software.
+		# Do not advertise the server software. Deletions are deferred until the
+		# response is written, so this also strips the Via header that
+		# reverse_proxy adds.
 		-Server
+		-Via
 	}
 }
 
@@ -66,6 +69,7 @@ status.chrisalorenzo.com {
 
 # Old host: permanent redirect to the consolidated domain.
 status.{$SITE_DOMAIN} {
+	import security_headers
 	redir https://status.chrisalorenzo.com{uri} permanent
 }
 
@@ -104,6 +108,10 @@ status.{$SITE_DOMAIN} {
 # Caddy serves HTTP/2 and HTTP/3 here by default; WebSockets pass through.
 ntfy.chrisalorenzo.com {
 	import security_headers
+	# ntfy v2.28.0 always sends Access-Control-Allow-Origin "*" (no config key).
+	# The web app is off and every client is native or server-side, so no
+	# browser needs CORS here. Strip the CORS headers at the edge.
+	header -Access-Control-Allow-*
 	# ntfy's metrics listener is off; refuse the path at the edge anyway.
 	respond /metrics 404
 	reverse_proxy ntfy:80 {
