@@ -37,10 +37,58 @@ reason to pick a heavier proxy - Caddy emits structured JSON access logs here.
 | `https://stayz3ro.dev` | Public - static landing page only |
 | `https://www.stayz3ro.dev` | Public - 308 redirect to apex |
 | `apps` / `status` / `api` subdomains | Staged in `Caddyfile`, disabled until Phase 4 |
-| Backend application ports | Never published - internal `web` Docker network only |
+| Backend application ports | Internal `web` Docker network; Kuma also publishes IPv4 loopback port 3001 for Stage 0b |
 | Caddy admin API | Disabled (`admin off`) |
 
 ---
+
+## Stage 0b: deployment gates
+
+Run these checks during the live session, before Stage 3b restricts the public
+status routes. Before enabling the Kuma loopback mapping, check the Docker
+server version on the VPS:
+
+```bash
+docker version --format '{{.Server.Version}}'
+```
+
+Require Docker Engine 28.0.0 or newer. Earlier releases can expose a
+localhost-published port to other hosts on the same L2 segment; see
+[Docker's port-publishing warning](https://docs.docker.com/engine/network/port-publishing/).
+If the server is older or its version cannot be checked, stop before enabling
+the mapping. Handle any upgrade as a separate approved change.
+
+After recreating only Kuma as directed in Stage 0b, check from this directory:
+
+```bash
+docker compose ps --format '{{.Name}} {{.Status}} {{.Ports}}'
+curl -sS -o /dev/null -w 'kuma loopback %{http_code}\n' http://127.0.0.1:3001/
+```
+
+Require `127.0.0.1:3001->3001/tcp`, no wildcard or IPv6 port 3001 mapping,
+and loopback HTTP `302`.
+
+From a separate machine off the tailnet, with working public DNS and no HTTP
+proxy, first confirm the public HTTPS host responds, then check port 3001:
+
+```bash
+curl --noproxy '*' -sS -m 10 -o /dev/null -w 'https %{http_code}\n' https://status.stayz3ro.dev/
+curl --noproxy '*' -sS -m 5 -o /dev/null -w 'http=%{http_code} connects=%{num_connects}\n' http://status.stayz3ro.dev:3001/
+```
+
+Require a normal HTTPS response and `http=000 connects=0` on port 3001,
+with curl reporting connection refusal or timeout (exit 7 or 28). DNS failure,
+proxy failure, a successful TCP connection or a failing HTTPS control does not
+pass this gate. If the test fails, stop and use the Stage 0b rollback; do not
+continue to the public route restriction.
+
+Before Stage 3b, check every push client. Configure its protected destination
+as `$KUMA_TS_URL/api/push/<token>` on a host with the required tailnet access.
+Verify one real client run and its monitor returning UP. Record client names
+and results only; keep tokens and full push URLs out of Git and logs. If no
+push clients exist, record that after checking. Any unverified client blocks
+Stage 3b: the public host will reject `/api/push/*`, including requests redirected
+from the old status hostname.
 
 ## Run
 
