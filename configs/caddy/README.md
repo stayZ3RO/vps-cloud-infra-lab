@@ -10,7 +10,7 @@ Phase: **Phase 3 - Reverse Proxy & HTTPS**
 
 | File | Purpose |
 |---|---|
-| `Caddyfile` | Proxy + TLS for service subdomains (public-safe, no secrets) |
+| `Caddyfile` | Proxy + TLS + static site config (public-safe, no secrets) |
 | `docker-compose.yml` | Caddy container stack |
 | `.env.example` | Template for `SITE_DOMAIN` and `ACME_EMAIL` |
 | `logs/` | JSON access logs (gitignored, created at runtime) |
@@ -34,10 +34,9 @@ reason to pick a heavier proxy - Caddy emits structured JSON access logs here.
 
 | Surface | Exposure |
 |---|---|
-| `https://stayz3ro.dev` and `www` | Cloudflare Pages blog, not served by this VPS |
-| `status.stayz3ro.dev` | Public Uptime Kuma service behind Caddy |
-| `ntfy.chrisalorenzo.com` | Public ntfy service behind Caddy, live since 2026-09-28 |
-| `analytics` / `apps` / `api` subdomains | Staged in `Caddyfile`, not yet live |
+| `https://stayz3ro.dev` | Public - static landing page only |
+| `https://www.stayz3ro.dev` | Public - 308 redirect to apex |
+| `apps` / `status` / `api` subdomains | Staged in `Caddyfile`, disabled until Phase 4 |
 | Backend application ports | Never published - internal `web` Docker network only |
 | Caddy admin API | Disabled (`admin off`) |
 
@@ -52,17 +51,13 @@ On the VPS, over Tailscale SSH:
     # edit .env - set ACME_EMAIL to a real inbox
     mkdir -p logs
     docker compose up -d
-    sudo grep -i certificate logs/access.log | tail -n 20
+    docker compose logs -f caddy   # watch for "certificate obtained successfully"
 
 ## Update config
 
-Edit the bind-mounted `Caddyfile` in place, then validate and restart. The
-restart briefly interrupts the public edge because the admin API is disabled.
-
-    docker exec caddy caddy validate --config /etc/caddy/Caddyfile --adapter caddyfile
-    docker restart caddy
-
-Check the existing public service and the changed route after the restart.
+    # after editing Caddyfile
+    docker compose exec caddy caddy validate --config /etc/caddy/Caddyfile
+    docker compose exec caddy caddy reload --config /etc/caddy/Caddyfile
 
 ## Certificate persistence
 
