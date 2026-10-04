@@ -71,7 +71,7 @@ adding, not after):
 
 ## Step 2 - Create the Environment File
 
-    cd configs/umami
+    cd ../umami || exit 1
     cp .env.example .env
     nano .env
     chmod 600 .env
@@ -181,7 +181,8 @@ Validate with the same throwaway-container pattern as Phase 3:
       --env-file .env \
       caddy:2-alpine caddy validate --config /etc/caddy/Caddyfile
 
-Expected: `Valid configuration`.
+Expected: `Valid configuration`. If validation fails, stop and correct the
+Caddyfile. Do not restart the proxy.
 
 Restart the live proxy. Its admin API is disabled, so `caddy reload` cannot
 work. The restart briefly interrupts all public routes on this VPS:
@@ -233,7 +234,10 @@ Expected: `80` and `443` open; everything else closed/filtered.
 
 ## Step 10 - Add an Uptime Kuma Monitor
 
-In `https://status.stayz3ro.dev`, add a new monitor:
+Open the tailnet-only Kuma admin UI through the existing `tailscale serve`
+endpoint on port 8443, then add a new monitor. The public status page at
+`https://status.chrisalorenzo.com/status/main` cannot create monitors; public
+admin paths return 404.
 
 | Setting | Value |
 |---|---|
@@ -290,13 +294,16 @@ Disable the public route first, then stop the stack:
 
     # 1. comment the analytics block back out in place, validate, then restart:
     cd /opt/stayz3ro/proxy/configs/caddy
-    docker exec caddy caddy validate --config /etc/caddy/Caddyfile --adapter caddyfile
-    docker restart caddy
-    # 2. stop the app:
-    cd ../umami && docker compose down
+    docker exec caddy caddy validate --config /etc/caddy/Caddyfile --adapter caddyfile &&
+      docker restart caddy
 
-The Caddy restart briefly interrupts the existing public routes. Confirm
-they recover before stopping the Umami stack.
+Confirm the existing public routes recovered before stopping Umami:
+
+    cd ../umami || exit 1
+    docker compose down
+
+The Caddy restart briefly interrupts the existing public routes. If validation
+or restart fails, leave Umami running until the public route is safely removed.
 
 The `umami_db_data` volume is kept unless `-v` is added - analytics data
 survives rollback. Firewall, DNS, and SSH posture are unchanged by this

@@ -69,7 +69,8 @@ Completed:
 - Restricted SSH to Tailscale
 - Captured redacted DNS and security screenshots
 
-Example future subdomain plan:
+Phase 2 subdomain plan (historical snapshot; current hosts are in
+[Current Status](CURRENT-STATUS.md)):
 
 | Subdomain | Intended Purpose |
 |---|---|
@@ -148,6 +149,8 @@ Completed:
 Remaining:
 
 - Independent offsite check for full VPS outages
+- Verify the moved Blog, status-page and HTTPS Edge targets and add the
+  `blog-redirect` monitor for the old blog host's 301
 - VPS host-health and screenshot work, if scoped separately
 
 ---

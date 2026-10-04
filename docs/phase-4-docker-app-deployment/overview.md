@@ -56,9 +56,9 @@ answers the question the whole lab exists to answer:
 > Can this VPS run a real, stateful, publicly reachable service, and recover,
 > document, and monitor it like production?
 
-The first stateful service also creates the first real backup target
-(Phase 6) and the first real monitored workload (Phase 5), so what gets
-deployed here shapes the next two phases.
+When deployed, Umami would create the first real app backup target for Phase 6
+and another workload for the already-live Phase 5 watcher. Its design shapes
+the backup plan and the new monitor.
 
 ---
 
@@ -274,13 +274,14 @@ Add or uncomment the site block, importing `security_headers`:
 Validate and restart. `admin off` prevents a live reload, and the restart
 briefly interrupts the existing public routes:
 
-    cd /opt/stayz3ro/proxy/configs/caddy
+    cd /opt/stayz3ro/proxy/configs/caddy || exit 1
     # validate, same throwaway-container pattern as Phase 3
     docker run --rm -v "$PWD/Caddyfile:/etc/caddy/Caddyfile:ro" \
       --env-file .env \
-      caddy:2-alpine caddy validate --config /etc/caddy/Caddyfile
-    # then restart the live proxy (edit the bind-mounted file in place)
-    docker restart caddy
+      caddy:2-alpine caddy validate --config /etc/caddy/Caddyfile &&
+      docker restart caddy
+
+If validation fails, stop; the proxy must keep the current configuration.
 
 ### 4. Secure Before Public
 
@@ -311,7 +312,8 @@ following the standing redaction rules (public IPs, Tailscale IPs, emails).
 | Surface | Exposure |
 |---|---|
 | HTTP / HTTPS | Public (unchanged) |
-| `status.stayz3ro.dev` (Uptime Kuma) | Public (unchanged) |
+| `status.chrisalorenzo.com/status/main` (Kuma status page) | Public; admin paths return 404 |
+| Kuma admin | Tailnet-only through `tailscale serve` on port 8443 |
 | New app subdomain | Public behind Caddy + auth |
 | App + database containers | Internal `web` network only, no published ports |
 | App state (volumes) | On-host named volumes; backup story is Phase 6 |

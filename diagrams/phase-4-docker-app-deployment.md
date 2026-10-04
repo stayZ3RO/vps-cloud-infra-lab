@@ -33,7 +33,7 @@ but has not been deployed. It would sit behind the Phase 3 HTTPS edge at
          ├── automatic Let's Encrypt cert (analytics.stayz3ro.dev)
          ├── JSON access log  -> /var/log/caddy/access.log
          |
-         ├── status.stayz3ro.dev    ->  reverse_proxy  uptime-kuma:3001  (Phase 3)
+         ├── status.chrisalorenzo.com -> public Kuma status page only
          └── analytics.stayz3ro.dev ->  reverse_proxy  umami:3000        (Phase 4)
                     |
                     v
@@ -61,7 +61,7 @@ Blog (separate project, Cloudflare Pages)
 
 ---
 
-## Administrative Access (unchanged from Phase 2/3)
+## Administrative Access
 
     Admin Workstation
          |
@@ -69,9 +69,9 @@ Blog (separate project, Cloudflare Pages)
          v
      Netcup VPS Tailscale IP
          |
-         | SSH  (and, pre-exposure, SSH local-forward to the umami
-         |       container's internal IP to claim the admin account
-         v       before the certificate made the hostname public)
+         | SSH; Kuma admin through tailscale serve on port 8443
+         | Umami pre-exposure admin claim through an SSH local-forward
+         v
      netcup-prod-01
 
 ---
@@ -82,6 +82,7 @@ Blog (separate project, Cloudflare Pages)
 |---|---|
 | HTTP (80) | Public - redirects to HTTPS, serves ACME challenge |
 | HTTPS (443) | Public - `status` + `analytics` behind Caddy |
+| Kuma admin | Tailnet-only through `tailscale serve`; public admin paths return 404 |
 | `analytics.stayz3ro.dev` (Umami) | Public, single authenticated admin, no signup |
 | Umami app port (3000) | Internal Docker network only, never published |
 | PostgreSQL (5432) | Internal-only network, unreachable from `web` or the host |

@@ -8,8 +8,8 @@
 #   - Terminate TLS in one place, automatically (Let's Encrypt + auto-renew)
 #   - Reverse-proxy real services at subdomains (status.<domain> etc.)
 #   - Emit structured JSON access logs
-#   - The apex + www are NOT served here - stayz3ro.dev's apex is the blog,
-#     hosted on Cloudflare Pages. This VPS only fronts service subdomains.
+#   - The apex + www are NOT served here. Cloudflare redirects them to the
+#     blog at blog.chrisalorenzo.com. This VPS fronts service subdomains.
 {
 	# ACME account contact. Set ACME_EMAIL in configs/caddy/.env
 	email {$ACME_EMAIL}
@@ -45,7 +45,7 @@
 }
 
 # ---------------------------------------------------------------------------
-# status.<domain> -> Uptime Kuma
+# status.chrisalorenzo.com -> public Uptime Kuma status page
 # ---------------------------------------------------------------------------
 # Public status page under the consolidated domain. Public surface only: the
 # status page and what it loads (Kuma 1.23.17 routes). Admin is tailnet-only
@@ -73,7 +73,7 @@ status.{$SITE_DOMAIN} {
 # analytics.<domain> -> Umami web analytics (Phase 4).
 # Staged until the Umami stack (configs/umami) is running on the `web`
 # network - enable it in step-by-step.md Step 7 (uncomment, validate,
-# reload). Requires an `analytics` A record in the LIVE zone (Cloudflare,
+# restart). Requires an `analytics` A record in the LIVE zone (Cloudflare,
 # not Porkbun - see Lessons Learned, Phase 3).
 # ---------------------------------------------------------------------------
 # analytics.{$SITE_DOMAIN} {

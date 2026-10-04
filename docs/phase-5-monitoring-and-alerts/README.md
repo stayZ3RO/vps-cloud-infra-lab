@@ -6,12 +6,19 @@
 
 ## Phase Summary
 
-Phase 5 makes the public edge observable. Uptime Kuma is deployed on
-`netcup-prod-01` and reachable at `https://status.stayz3ro.dev`. As of
-2026-09-28 it monitors the public sites, the HTTPS edge, and public DNS for
-`stayz3ro.dev` and `chrisalorenzo.com`, with certificate-expiry notices, and
-sends alerts to a dedicated Discord provider and to a self-hosted ntfy server
-on the same VPS (`ntfy.chrisalorenzo.com`).
+Phase 5 makes the public edge observable. Since 2026-09-28, Kuma on
+`netcup-prod-01` has watched public sites, HTTPS, and public DNS, with
+certificate-expiry notices and alerts through Discord and self-hosted ntfy
+(`ntfy.chrisalorenzo.com`). The public page is now at
+`https://status.chrisalorenzo.com/status/main`; Kuma administration is
+tailnet-only through `tailscale serve` on port 8443. Public admin paths return
+404.
+
+The five display-name changes and retained `id` tags are recorded in
+[Current Status](../../CURRENT-STATUS.md#monitoring-and-alerts). Verification
+of the Blog, status-page and HTTPS Edge targets against the new hosts, plus a
+`blog-redirect` monitor for the old blog host's 301, remain pending. Do not
+count that redirect monitor as live yet.
 
 The design rule for the phase is narrow: monitor only what is public, from
 outside the LAN. Nothing in this phase monitors a private or admin endpoint,
@@ -56,7 +63,10 @@ Out of scope:
 - an inbound path from the VPS into the LAN
 - heartbeat (Push) monitors and the Caddy access-log prerequisite
 - changes to the LAN-side monitoring and alerting stack
-- a public status page and an independent offsite dead-man monitor
+- an independent offsite dead-man monitor
+
+The public status page was added with the 2026-10-04 domain move, after the
+initial 2026-09-28 alert-wiring work.
 
 ---
 

@@ -321,11 +321,13 @@ Admin dashboards, databases, Portainer, and monitoring tools should not be direc
 
 ---
 
-## Next Phase
+## Current Focus
 
-Next up: **Phase 4 - Docker App Deployment**
+**Phase 4 - Docker App Deployment** is in progress.
 
-This phase deploys Umami (privacy-first web analytics) behind Caddy at `analytics.stayz3ro.dev`. The compose stack and deployment runbook are staged; the live deployment is pending.
+The planned Umami deployment would put web analytics behind Caddy at
+`analytics.stayz3ro.dev`. The compose stack and deployment runbook are staged;
+the live deployment is pending.
 
 ---
 
