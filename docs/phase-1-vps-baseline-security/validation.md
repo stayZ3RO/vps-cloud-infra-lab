@@ -74,7 +74,7 @@ Phase 1 is complete because:
 
 Confirms the VPS hostname is configured cleanly as netcup-prod-01.
 
-![Hostname validation](../../screenshots/phase-1-vps-baseline-security/02-hostnamectl.png)
+![Hostname validation](../../screenshots-redacted/phase-1-vps-baseline-security/02-hostnamectl.png)
 
 ---
 
@@ -82,7 +82,7 @@ Confirms the VPS hostname is configured cleanly as netcup-prod-01.
 
 Documents the Ubuntu Linux version used for the VPS baseline.
 
-![OS version](../../screenshots/phase-1-vps-baseline-security/03-os-version.png)
+![OS version](../../screenshots-redacted/phase-1-vps-baseline-security/03-os-version.png)
 
 ---
 
@@ -90,7 +90,7 @@ Documents the Ubuntu Linux version used for the VPS baseline.
 
 Confirms the SSH service is active and running.
 
-![SSH service status](../../screenshots/phase-1-vps-baseline-security/05-ssh-service-status.png)
+![SSH service status](../../screenshots-redacted/phase-1-vps-baseline-security/05-ssh-service-status.png)
 
 ---
 
@@ -98,7 +98,7 @@ Confirms the SSH service is active and running.
 
 Confirms the SSH configuration syntax passed validation before reload.
 
-![SSH config validation](../../screenshots/phase-1-vps-baseline-security/06-ssh-config-validation.png)
+![SSH config validation](../../screenshots-redacted/phase-1-vps-baseline-security/06-ssh-config-validation.png)
 
 ---
 
@@ -106,7 +106,7 @@ Confirms the SSH configuration syntax passed validation before reload.
 
 Confirms UFW is enabled and only the intended baseline ports are allowed.
 
-![UFW firewall status](../../screenshots/phase-1-vps-baseline-security/07-ufw-firewall-status.png)
+![UFW firewall status](../../screenshots-redacted/phase-1-vps-baseline-security/07-ufw-firewall-status.png)
 
 ---
 
@@ -114,7 +114,7 @@ Confirms UFW is enabled and only the intended baseline ports are allowed.
 
 Confirms Fail2Ban is active for SSH protection.
 
-![Fail2Ban status](../../screenshots/phase-1-vps-baseline-security/08-fail2ban-status.png)
+![Fail2Ban status](../../screenshots-redacted/phase-1-vps-baseline-security/08-fail2ban-status.png)
 
 ---
 
@@ -122,7 +122,7 @@ Confirms Fail2Ban is active for SSH protection.
 
 Confirms unattended upgrades are enabled for automatic security updates.
 
-![Unattended upgrades](../../screenshots/phase-1-vps-baseline-security/09-unattended-upgrades-status.png)
+![Unattended upgrades](../../screenshots-redacted/phase-1-vps-baseline-security/09-unattended-upgrades-status.png)
 
 ---
 
@@ -130,7 +130,7 @@ Confirms unattended upgrades are enabled for automatic security updates.
 
 Confirms system memory and swap status after baseline configuration.
 
-![Swap and memory check](../../screenshots/phase-1-vps-baseline-security/10-swap-memory-check.png)
+![Swap and memory check](../../screenshots-redacted/phase-1-vps-baseline-security/10-swap-memory-check.png)
 
 ---
 
@@ -138,7 +138,7 @@ Confirms system memory and swap status after baseline configuration.
 
 Confirms Docker and Docker Compose are installed and available.
 
-![Docker validation](../../screenshots/phase-1-vps-baseline-security/11-docker-version.png)
+![Docker validation](../../screenshots-redacted/phase-1-vps-baseline-security/11-docker-version.png)
 
 ---
 
@@ -146,7 +146,7 @@ Confirms Docker and Docker Compose are installed and available.
 
 Confirms the VPS is connected to Tailscale for private administrative access.
 
-![Tailscale status](../../screenshots/phase-1-vps-baseline-security/12-tailscale-status-redacted.png)
+![Tailscale status](../../screenshots-redacted/phase-1-vps-baseline-security/12-tailscale-status-redacted.png)
 
 ---
 
@@ -154,7 +154,7 @@ Confirms the VPS is connected to Tailscale for private administrative access.
 
 Confirms the /opt/stayz3ro folder structure was created for future services.
 
-![VPS folder structure](../../screenshots/phase-1-vps-baseline-security/13-folder-structure.png)
+![VPS folder structure](../../screenshots-redacted/phase-1-vps-baseline-security/13-folder-structure.png)
 
 ---
 
@@ -162,7 +162,7 @@ Confirms the /opt/stayz3ro folder structure was created for future services.
 
 Confirms listening services were reviewed before public app deployment.
 
-![Listening ports](../../screenshots/phase-1-vps-baseline-security/14-listening-ports-redacted.png)
+![Listening ports](../../screenshots-redacted/phase-1-vps-baseline-security/14-listening-ports-redacted.png)
 
 ---
 

@@ -14,7 +14,7 @@ The project starts with a secure Linux baseline, then layers on DNS, HTTPS, cont
 | Phase 2 - Domain DNS & Public Routing | ✅ Complete | Connected stayz3ro.dev to the VPS |
 | Phase 3 - Reverse Proxy & HTTPS | ✅ Complete | Route services through HTTPS |
 | Phase 4 - Docker App Deployment | 🚧 In Progress | Deploy public containerized services (app chosen: Umami) |
-| Phase 5 - Monitoring & Alerts | ⏳ Planned | Add uptime and service visibility |
+| Phase 5 - Monitoring & Alerts | ✅ Public edge live | Seven Kuma monitors and Discord plus self-hosted ntfy alerts since 2026-09-28; offsite check planned |
 | Phase 6 - Backups & Disaster Recovery | ⏳ Planned | Build recovery and backup strategy |
 | Phase 7 - Secondary VPS / Staging | ⏳ Planned | Use RackNerd for staging, monitoring, and backups |
 | Phase 8 - AI Agent / Homelab Ops Bot | ⏳ Planned | Experiment with infrastructure assistant workflows |
@@ -132,28 +132,23 @@ Planned tasks:
 
 ## Phase 5 - Monitoring & Alerts
 
-Status: ⏳ Planned
+Status: ✅ Public edge live since 2026-09-28; offsite check still planned
 
 Purpose:
 
-Add visibility into service availability and VPS health.
+Watch public sites, HTTPS, DNS, and ntfy health from Uptime Kuma on the VPS.
 
-Planned tasks:
+Completed:
 
-- Add uptime monitoring
-- Monitor public endpoints
-- Monitor system health
-- Add alerts
-- Document response process
-- Capture monitoring screenshots
+- Six public-edge monitors and one ntfy-health monitor
+- Discord and self-hosted ntfy notification paths
+- Real synthetic DOWN/UP test for the Discord path
+- Final wiring recorded without secrets
 
-Possible tools:
+Remaining:
 
-- Uptime Kuma
-- Prometheus
-- Grafana
-- Beszel
-- Netdata
+- Independent offsite check for full VPS outages
+- VPS host-health and screenshot work, if scoped separately
 
 ---
 

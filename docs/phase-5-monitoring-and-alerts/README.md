@@ -1,6 +1,6 @@
 # Phase 5 - Monitoring & Alerts 🔔
 
-![Status](https://img.shields.io/badge/status-packet%20ready-blue)
+![Status](https://img.shields.io/badge/status-public%20edge%20live-brightgreen)
 ![Service](https://img.shields.io/badge/service-Uptime%20Kuma-orange)
 ![Scope](https://img.shields.io/badge/scope-public%20edge-purple)
 
@@ -23,7 +23,7 @@ and nothing opens a path from the VPS into the home LAN.
 
 | Area | Demonstrated Skill |
 |---|---|
-| External monitoring | Availability checks from a separate failure domain than the services |
+| External monitoring | Public endpoints checked by Kuma on the VPS; an offsite check is still planned |
 | Alert design | Severity expressed through provider choice, retries, and resend intervals |
 | Secret handling | Provider credentials entered only in the service UI, never in Git |
 | Failure-domain reasoning | Separating external public-edge alerts from internal infrastructure alerts |
@@ -35,7 +35,8 @@ and nothing opens a path from the VPS into the home LAN.
 
 | Page | Description |
 |---|---|
-| [Alert Wiring Execution Packet](alert-wiring-execution-packet.md) | Ready-to-run steps for providers, monitors, testing, and rollback |
+| [Alert Wiring Execution Packet](alert-wiring-execution-packet.md) | Executed 2026-09-28; records the monitor and Discord test |
+| [Self-hosted ntfy Execution Packet](ntfy-self-hosted-execution-packet.md) | Executed 2026-09-28; records the live ntfy service and provider switch |
 
 ---
 

@@ -21,7 +21,7 @@ Each phase is organized like a small infrastructure case study:
 | Phase 2 - Domain DNS & Public Routing | ✅ Complete | [View Phase 2](phase-2-domain-dns-public-routing/) |
 | Phase 3 - Reverse Proxy & HTTPS | ✅ Complete | [View Phase 3](phase-3-reverse-proxy-https/) |
 | Phase 4 - Docker App Deployment | 🚧 In Progress | [View Phase 4](phase-4-docker-app-deployment/) |
-| Phase 5 - Monitoring & Alerts | 📝 Packet ready | [View Phase 5](phase-5-monitoring-and-alerts/) |
+| Phase 5 - Monitoring & Alerts | ✅ Public edge live | [View Phase 5](phase-5-monitoring-and-alerts/) |
 | Phase 6 - Backups & Disaster Recovery | ⏳ Planned | Coming soon |
 | Phase 7 - Secondary VPS / Staging | ⏳ Planned | Coming soon |
 | Phase 8 - AI Agent / Homelab Ops Bot | ⏳ Planned | Coming soon |

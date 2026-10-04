@@ -442,6 +442,16 @@ file, not in `docker compose logs`.
 
 ---
 
+## The Watcher Shares the VPS Failure Domain
+
+Kuma checks public sites, DNS, and HTTPS, but it runs on the same VPS as Caddy
+and ntfy. A full VPS outage stops the watcher and its local push path, so none
+of those seven monitors can originate an alert. The synthetic DOWN/UP test
+proved the Discord path while Kuma was running; it did not prove alerting for
+a failed VPS. An independent offsite check remains planned for that case.
+
+---
+
 ## Main Takeaway
 
 Phase 1 made the VPS safe to manage.
@@ -453,6 +463,9 @@ surfaced that "public" and "publicly discoverable" arrive on different
 timelines (DNS/cert issuance vs. Certificate Transparency logs), and that
 troubleshooting DNS requires confirming *which* DNS is actually live before
 trusting any answer from it.
+
+Phase 5 made the public edge observable and added two alert paths, while
+leaving full-VPS failure detection to an independent offsite check.
 
 The important lesson:
 

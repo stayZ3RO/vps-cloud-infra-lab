@@ -1,6 +1,6 @@
 # Screenshots 📸
 
-This folder contains redacted screenshots used as validation evidence for the VPS Cloud Infrastructure Lab.
+Phase 3 screenshots remain here. Redacted Phase 1 and 2 evidence is in [screenshots-redacted/](../screenshots-redacted/).
 
 Screenshots are included to show that each phase was configured, tested, and verified.
 
@@ -10,8 +10,8 @@ Screenshots are included to show that each phase was configured, tested, and ver
 
 | Phase | Status | Folder |
 |---|---:|---|
-| Phase 1 - VPS Baseline & Security Hardening | ✅ Complete | [View Evidence](phase-1-vps-baseline-security/) |
-| Phase 2 - Domain DNS & Public Routing | ✅ Complete | [View Evidence](phase-2-domain-dns-public-routing/) |
+| Phase 1 - VPS Baseline & Security Hardening | ✅ Complete | [View Evidence](../screenshots-redacted/phase-1-vps-baseline-security/) |
+| Phase 2 - Domain DNS & Public Routing | ✅ Complete | [View Evidence](../screenshots-redacted/phase-2-domain-dns-public-routing/) |
 | Phase 3 - Reverse Proxy & HTTPS | ✅ Complete | [View Evidence](phase-3-reverse-proxy-https/) |
 | Phase 4 - Docker App Deployment | ⏳ Planned | Coming soon |
 

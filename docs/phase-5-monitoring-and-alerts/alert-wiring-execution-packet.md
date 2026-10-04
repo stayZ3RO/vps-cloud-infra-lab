@@ -1,6 +1,8 @@
 # Uptime Kuma alert wiring execution packet
 
-Date prepared: 2026-09-28 (America/New_York). Status: ready to run.
+Date prepared: 2026-09-28 (America/New_York). Executed 2026-09-28.
+Preflight statements below describe the state before execution; the final
+result is recorded in Stage 6 and `CURRENT-STATUS.md`.
 Estimated hands-on time: 60 to 90 minutes, including the DOWN/UP test.
 Scope: public-edge availability and certificate alerts only.
 
@@ -11,10 +13,9 @@ only in the Uptime Kuma UI and never written to this repo.
 
 ## 1. Purpose and scope
 
-Uptime Kuma on `netcup-prod-01` is deployed and reachable at
-`https://status.stayz3ro.dev`, but it currently has no monitors and no
-notification providers configured. A monitor going down today would change a
-dashboard state and nothing else. This packet wires:
+At preparation time, Uptime Kuma was deployed and reachable at
+`https://status.stayz3ro.dev`, but it had no monitors or notification
+providers. This packet wired:
 
 - two notification providers: ntfy (push) and Discord (history)
 - public-edge monitors only: public sites, the HTTPS edge, public DNS, and TLS
@@ -24,7 +25,7 @@ dashboard state and nothing else. This packet wires:
 Out of scope and explicitly not done here:
 
 - no private, admin, or LAN endpoint monitor. Proxmox, Pi-hole, Grafana,
-  Portainer, the Omada controller, Docker admin ports, and every Kuma
+  Portainer, network-management interfaces, Docker admin ports, and every Kuma
   admin/API route stay unmonitored from this VPS.
 - no inbound path from this VPS into the home LAN.
 - no heartbeat (Push) monitor. The Caddy access-log exclusion that a Push
@@ -363,7 +364,8 @@ Live state on 2026-09-28, recorded without secrets:
 - A synthetic DOWN/UP test passed on 2026-09-28: the monitor went DOWN after
   the retry threshold and one recovery message arrived. The synthetic monitor
   was removed afterwards.
-- ntfy is pending the self-hosted server on the VPS.
+- ntfy was pending at this stage; the separate ntfy packet was executed later
+  on 2026-09-28.
 
 Record only non-secret values. Never record the ntfy topic or token, the
 Discord webhook, or any account identifier. Update `CURRENT-STATUS.md` and the

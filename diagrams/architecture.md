@@ -11,7 +11,7 @@ flowchart TD
     CF["Cloudflare: authoritative DNS for stayz3ro.dev"]
     PAGES["Cloudflare Pages: Astro blog<br/>stayz3ro.dev (apex) + www"]
     CADDY["Caddy on the VPS<br/>terminates TLS (Let's Encrypt) · routes by hostname<br/>only 80/443 public · JSON access logs"]
-    VPS["Netcup VPS 1000 G12, Debian · netcup-prod-01<br/>SSH keys only · UFW · fail2ban · unattended-upgrades"]
+    VPS["Netcup VPS 1000 G12, Ubuntu<br/>SSH keys only · UFW · fail2ban · unattended-upgrades"]
     SVCS["public services at subdomains<br/>e.g. status.stayz3ro.dev"]
     ADMIN["admin workstation"]
 

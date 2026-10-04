@@ -7,9 +7,9 @@
 
 ## Purpose
 
-This diagram represents the first application deployment behind the Phase 3
-HTTPS edge: Umami web analytics at `analytics.stayz3ro.dev`, with its own
-PostgreSQL database isolated on an internal-only Docker network.
+This is the target state for Phase 4, not the live deployment. Umami is staged
+but has not been deployed. It would sit behind the Phase 3 HTTPS edge at
+`analytics.stayz3ro.dev`, with PostgreSQL on an internal-only Docker network.
 
 ---
 
@@ -110,6 +110,5 @@ Blog (separate project, Cloudflare Pages)
 
 **Phase 5 - Monitoring & Alerts**
 
-Umami is now a real stateful workload: traffic worth charting, data worth
-backing up, and a hostname already monitored in Uptime Kuma - the input
-Phase 5 needs.
+After deployment, Umami would be a stateful workload to monitor and back up.
+The separate public-edge monitoring work in Phase 5 is already live.

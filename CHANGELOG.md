@@ -18,6 +18,21 @@ This changelog tracks major documentation and infrastructure milestones for the 
 | Phase 2 - Domain DNS & Public Routing | ✅ Complete |
 | Phase 3 - Reverse Proxy & HTTPS | ✅ Complete |
 | Phase 4 - Docker App Deployment | 🚧 In Progress |
+| Phase 5 - Monitoring & Alerts | ✅ Public edge live since 2026-09-28 |
+
+---
+
+## 2026-09-28 to 2026-10-04
+
+- [#21](https://github.com/stayZ3RO/vps-lab/pull/21) added the public-edge
+  monitor and Discord alert execution packet. Six primary monitors and a real
+  synthetic DOWN/UP test were recorded on 2026-09-28.
+- [#22](https://github.com/stayZ3RO/vps-lab/pull/22) added the self-hosted ntfy
+  execution packet; [#23](https://github.com/stayZ3RO/vps-lab/pull/23) recorded
+  ntfy live on the VPS, its Kuma provider, and the seventh `ntfy-health`
+  monitor.
+- [#24](https://github.com/stayZ3RO/vps-lab/pull/24) rewrote documentation in
+  plain voice without changing the deployed services.
 
 ---
 

@@ -6,7 +6,8 @@
 
 ## Project State
 
-The Netcup VPS has been provisioned, secured, connected to `stayz3ro.dev`, and is now serving a public HTTPS service (`status.stayz3ro.dev`, Uptime Kuma behind Caddy).
+The Netcup VPS is secured and serves Uptime Kuma at `status.stayz3ro.dev`
+and self-hosted ntfy at `ntfy.chrisalorenzo.com` through Caddy HTTPS.
 
 The project has completed Phase 3 and is now in:
 
@@ -28,16 +29,11 @@ Alerts below); Phase 4 remains in progress.
     Internet
        |
        v
-    Cloudflare DNS - stayz3ro.dev
-    (registrar: Porkbun; DNS hosting: Cloudflare. The domain's
-     nameservers point to Cloudflare, not Porkbun's own DNS panel)
-       |
-       v
-    Netcup VPS - netcup-prod-01
-       |
-       ├── Caddy (reverse proxy, automatic HTTPS) - 80/443 tcp
-       │      └── status.stayz3ro.dev -> Uptime Kuma (internal only)
-       └── Private SSH - tailscale0 only
+    Cloudflare DNS - stayz3ro.dev (Porkbun registrar)
+       ├── apex and www -> Cloudflare Pages blog
+       └── public service subdomains -> Netcup VPS
+                                      ├── Caddy HTTPS -> Uptime Kuma and ntfy
+                                      └── private SSH over Tailscale only
 
     Admin Workstation
        |
@@ -66,7 +62,7 @@ Alerts below); Phase 4 remains in progress.
 | Docker installed | ✅ Complete |
 | Docker Compose installed | ✅ Complete |
 | Tailscale installed and connected | ✅ Complete |
-| Porkbun DNS configured | ✅ Complete |
+| Cloudflare authoritative DNS configured (Porkbun registrar) | ✅ Complete |
 | Root domain record configured | ✅ Complete |
 | `www` record configured | ✅ Complete |
 | `apps` record configured | ✅ Complete |

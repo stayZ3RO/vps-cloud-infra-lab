@@ -13,10 +13,9 @@ Phase 3 Caddy reverse proxy.
 
 Run it on the VPS over Tailscale SSH.
 
-**Prerequisite**: capture the 9 outstanding Phase 3 evidence screenshots
+**Prerequisite**: review the captured, redacted Phase 3 evidence
 ([screenshots/phase-3-reverse-proxy-https/README.md](../../screenshots/phase-3-reverse-proxy-https/README.md))
-before starting - this run changes the live deployment, and that evidence
-window closes when it does.
+before changing the live deployment.
 
 ---
 
@@ -30,7 +29,7 @@ window closes when it does.
 | 4 | Bring up the Umami stack | ⏳ Pending |
 | 5 | Claim the admin account over an SSH tunnel (before exposure) | ⏳ Pending |
 | 6 | Add the `analytics` DNS record in Cloudflare (the live zone) | ⏳ Pending |
-| 7 | Enable the Caddy route (uncomment, validate, reload) | ⏳ Pending |
+| 7 | Enable the Caddy route (uncomment, validate, restart) | ⏳ Pending |
 | 8 | Validate HTTPS externally | ⏳ Pending |
 | 9 | Confirm backend and database ports are not public | ⏳ Pending |
 | 10 | Add an Uptime Kuma monitor for the new host | ⏳ Pending |
@@ -42,10 +41,19 @@ window closes when it does.
 ## Step 1 - Confirm Prerequisites
 
 The Phase 3 proxy stack must be running, since it creates the `web` network
-this app joins:
+this app joins. The live checkout predates a history rewrite, so do not run
+`git pull` there. From a clean workstation clone at the approved merged commit,
+stage only the Umami files this run needs, using the existing Tailscale SSH
+alias:
 
-    cd /opt/stayz3ro/proxy   # or wherever the repo is checked out
-    git pull
+    VPS_ALIAS=your-existing-tailscale-ssh-alias
+    ssh "$VPS_ALIAS" 'mkdir -p /opt/stayz3ro/proxy/configs/umami'
+    scp configs/umami/docker-compose.yml configs/umami/.env.example \
+      "$VPS_ALIAS:/opt/stayz3ro/proxy/configs/umami/"
+
+Then on the VPS:
+
+    cd /opt/stayz3ro/proxy   # or wherever the live deployment is checked out
     cd configs/caddy && docker compose ps
 
 Expected: `caddy` and `uptime-kuma` running.
@@ -162,22 +170,23 @@ Expected: both return the VPS public IP.
 
 ## Step 7 - Enable the Caddy Route
 
-Uncomment the `analytics.{$SITE_DOMAIN}` block in
-`configs/caddy/Caddyfile` (staged there for exactly this step).
+Uncomment the `analytics.{$SITE_DOMAIN}` block in the live
+`configs/caddy/Caddyfile` in place (staged there for exactly this step). Do not
+replace the bind-mounted file with a new inode.
 
 Validate with the same throwaway-container pattern as Phase 3:
 
     cd ../caddy
     docker run --rm -v "$PWD/Caddyfile:/etc/caddy/Caddyfile:ro" \
-      -e SITE_DOMAIN -e ACME_EMAIL \
+      --env-file .env \
       caddy:2-alpine caddy validate --config /etc/caddy/Caddyfile
 
 Expected: `Valid configuration`.
 
-Reload the live proxy without downtime (the Caddyfile is bind-mounted
-read-only into the container):
+Restart the live proxy. Its admin API is disabled, so `caddy reload` cannot
+work. The restart briefly interrupts all public routes on this VPS:
 
-    docker exec caddy caddy reload --config /etc/caddy/Caddyfile
+    docker restart caddy
 
 Caddy obtains the certificate for `analytics.stayz3ro.dev` on first request.
 Because Step 5 already replaced the default credentials, CT-log scanners
@@ -279,10 +288,15 @@ the ACME email before committing.
 
 Disable the public route first, then stop the stack:
 
-    # 1. comment the analytics block back out, then:
-    docker exec caddy caddy reload --config /etc/caddy/Caddyfile
+    # 1. comment the analytics block back out in place, validate, then restart:
+    cd /opt/stayz3ro/proxy/configs/caddy
+    docker exec caddy caddy validate --config /etc/caddy/Caddyfile --adapter caddyfile
+    docker restart caddy
     # 2. stop the app:
     cd ../umami && docker compose down
+
+The Caddy restart briefly interrupts the existing public routes. Confirm
+they recover before stopping the Umami stack.
 
 The `umami_db_data` volume is kept unless `-v` is added - analytics data
 survives rollback. Firewall, DNS, and SSH posture are unchanged by this

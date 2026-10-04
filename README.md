@@ -19,12 +19,13 @@
 | Architecture Diagrams | [diagrams/](diagrams/) |
 | Config Examples | [configs/](configs/) |
 | Screenshots | [screenshots/](screenshots/) |
+| Live Portfolio | [chrisalorenzo.com](https://chrisalorenzo.com/) |
 
 ---
 
 ## Building a Production-Style VPS Cloud Lab
 
-This repository documents my process of building a real VPS-based cloud infrastructure lab using Linux, Docker, domain DNS, reverse proxying, HTTPS, monitoring, backups, and secure remote administration.
+This repository documents my VPS lab: Linux and Docker hosting, public DNS, Caddy HTTPS, uptime monitoring, and private administration. Backup and restore work is still planned.
 
 The goal is to move beyond local-only homelab infrastructure and build practical experience with public cloud-style hosting, Linux server hardening, DNS routing, containerized deployments, and production-minded documentation.
 
@@ -67,7 +68,8 @@ This VPS lab gives me a place to practice:
           |
           ├── Docker Engine
           │     ├── Caddy (reverse proxy, automatic HTTPS)
-          │     └── Uptime Kuma (status.stayz3ro.dev, internal only)
+          │     ├── Uptime Kuma (status.stayz3ro.dev, backend internal only)
+          │     └── ntfy (ntfy.chrisalorenzo.com, backend internal only)
           |
           ├── Tailscale
           │     └── Private administrative access
@@ -113,7 +115,7 @@ This VPS lab gives me a place to practice:
 | Phase 2 - Domain DNS & Public Routing | ✅ Complete | stayz3ro.dev DNS records and Tailscale-only SSH |
 | Phase 3 - Reverse Proxy & HTTPS | ✅ Complete | Public routing and TLS |
 | Phase 4 - Docker App Deployment | 🚧 In Progress | First public containerized services (app chosen: Umami) |
-| Phase 5 - Monitoring & Alerts | ⏳ Planned | Uptime and service visibility |
+| Phase 5 - Monitoring & Alerts | ✅ Public edge live | Seven Kuma monitors, Discord and self-hosted ntfy alerts since 2026-09-28 |
 | Phase 6 - Backups & Disaster Recovery | ⏳ Planned | Recovery strategy |
 | Phase 7 - Secondary VPS / Staging | ⏳ Planned | RackNerd staging and backup node |
 | Phase 8 - AI Agent / Homelab Ops Bot | ⏳ Planned | Infrastructure assistant experiments |
@@ -170,6 +172,14 @@ Highlights:
 - Validated security headers and the JSON access log
 - Confirmed backend ports are not public with an external probe
 - Captured redacted validation screenshots
+
+### Phase 5 - Monitoring & Alerts
+
+Since 2026-09-28, Uptime Kuma has watched six public-edge targets plus
+`ntfy-health`. Discord carries alerts for all six primary monitors; the
+self-hosted ntfy provider also reaches a phone. A synthetic DOWN/UP test
+validated the Discord path. An independent offsite check remains planned
+because Kuma and the services share the VPS.
 
 ---
 
@@ -304,5 +314,5 @@ This repository is part of a broader infrastructure lab portfolio.
 | Repository | Focus | Relationship |
 |---|---|---|
 | [Home Network Infrastructure Lab](https://github.com/stayZ3RO/dns) | HA DNS, Pi-hole, Unbound, monitoring, Tailscale, Proxmox, RustDesk | Demonstrates the local infrastructure foundation and HA service layer |
-| [Home Network Managed Infrastructure Lab](https://github.com/stayZ3RO/netlab) | Managed router, switching, VLANs, firewall policy, network segmentation | Demonstrates managed networking and segmentation architecture |
-| [VPS Cloud Infrastructure Lab](https://github.com/stayZ3RO/vps-lab) | Linux VPS hardening, Docker, DNS, HTTPS, monitoring, backups, secure access | Demonstrates cloud-hosted infrastructure and service operations |
+| [Home Network Managed Infrastructure Lab](https://github.com/stayZ3RO/netlab) | Live UniFi routing and switching; VLAN/firewall segmentation planned | Demonstrates a managed core and documented next steps |
+| [AWS Network Automation Lab](https://github.com/stayZ3RO/cloud-netlab) | CI-validated Terraform/OpenTofu VPC module and Python drift check; no cloud resources applied | Extends infrastructure practice into a scoped cloud learning lab |

@@ -6,7 +6,9 @@
 
 ## Objective
 
-Connect `stayz3ro.dev` to the Netcup VPS using Porkbun DNS and validate that the root domain and planned subdomains resolve publicly.
+Phase 2 connected `stayz3ro.dev` to the Netcup VPS using the Porkbun DNS
+workspace and validated the then-current records. Cloudflare is authoritative
+now, with Porkbun as registrar; the apex serves the blog from Cloudflare Pages.
 
 This phase also tightened administrative access by restricting SSH to the Tailscale private network.
 
@@ -33,7 +35,7 @@ This phase creates the foundation for:
 
 | Record | Type | Purpose |
 |---|---|---|
-| stayz3ro.dev | A | Root domain pointing to Netcup VPS |
+| stayz3ro.dev | A | Phase 2 root route to Netcup VPS; now Cloudflare Pages |
 | www.stayz3ro.dev | CNAME | Alias to root domain |
 | apps.stayz3ro.dev | A | Future public app entry point |
 | status.stayz3ro.dev | A | Future status page |
@@ -79,7 +81,7 @@ Public SSH is blocked.
 
 At the end of this phase:
 
-- Porkbun DNS records point to the Netcup VPS
+- Phase 2 records were configured in Porkbun; Cloudflare is authoritative now
 - Root domain and subdomains resolve publicly
 - Public DNS resolvers validate the records
 - SSH is restricted to Tailscale

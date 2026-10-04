@@ -72,7 +72,7 @@ Full comparison, tradeoffs, and recommendation:
 | Compose service layout committed (app + database, `web` network, no published ports) | ✅ Complete |
 | `.env.example` committed; real `.env` gitignored | ✅ Complete |
 | DNS record added in the live zone and validated | ⏳ Pending |
-| Caddy route enabled and validated (`caddy validate` + reload) | ⏳ Pending |
+| Caddy route enabled and validated (`caddy validate` + container restart) | ⏳ Pending |
 | App deployed and reachable externally over HTTPS | ⏳ Pending |
 | Admin account secured over a private path before exposure | ⏳ Pending |
 | Backend/database ports confirmed not publicly reachable | ⏳ Pending |

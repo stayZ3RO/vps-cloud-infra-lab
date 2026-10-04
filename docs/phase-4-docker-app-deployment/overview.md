@@ -203,12 +203,12 @@ for the parallel infra/certs/content tracks.
 
 ---
 
-## Considered and Deferred
+## Considered for Phase 4
 
 | Option | Why not now |
 |---|---|
-| Grafana / Prometheus | That is Phase 5's scope; deploying it now empties the next phase |
-| Gitea / Forgejo | Git is already anchored on GitHub; self-hosted git adds merge overhead, not value |
+| Grafana / Prometheus | Public-edge monitoring is already live with Kuma; this phase does not add an internal metrics stack. |
+| Forgejo | Not a Phase 4 VPS app. Forgejo as the primary Git remote was approved on 2026-09-27 for a separate build; it is not deployed yet. |
 | Nextcloud | Too heavy for this VPS class alongside Caddy + Kuma |
 | Memos / linkding / FreshRSS | Light and viable, but weak ties to the portfolio/blog goals, the criteria they'd win on don't rank |
 | Another static site | Static content belongs on Cloudflare Pages, not on a stateful VPS |
@@ -271,14 +271,16 @@ Add or uncomment the site block, importing `security_headers`:
         reverse_proxy umami:3000
     }
 
-Validate and reload without downtime:
+Validate and restart. `admin off` prevents a live reload, and the restart
+briefly interrupts the existing public routes:
 
+    cd /opt/stayz3ro/proxy/configs/caddy
     # validate, same throwaway-container pattern as Phase 3
     docker run --rm -v "$PWD/Caddyfile:/etc/caddy/Caddyfile:ro" \
-      -e SITE_DOMAIN -e ACME_EMAIL \
+      --env-file .env \
       caddy:2-alpine caddy validate --config /etc/caddy/Caddyfile
-    # then reload the live proxy (Caddyfile is bind-mounted read-only)
-    docker exec caddy caddy reload --config /etc/caddy/Caddyfile
+    # then restart the live proxy (edit the bind-mounted file in place)
+    docker restart caddy
 
 ### 4. Secure Before Public
 

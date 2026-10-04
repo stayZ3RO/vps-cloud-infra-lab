@@ -55,7 +55,7 @@ The goal was to confirm that `stayz3ro.dev` resolves to the Netcup VPS and that 
 
 Confirms DNS records were configured for the root domain and planned service subdomains.
 
-![Porkbun DNS records](../../screenshots/phase-2-domain-dns-public-routing/01-porkbun-dns-records-redacted.png)
+![Porkbun DNS records](../../screenshots-redacted/phase-2-domain-dns-public-routing/01-porkbun-dns-records-redacted.png)
 
 ---
 
@@ -63,7 +63,7 @@ Confirms DNS records were configured for the root domain and planned service sub
 
 Confirms local `dig +short` lookups resolve the domain and subdomains.
 
-![DNS resolution](../../screenshots/phase-2-domain-dns-public-routing/02-dns-resolution-dig-short-redacted.png)
+![DNS resolution](../../screenshots-redacted/phase-2-domain-dns-public-routing/02-dns-resolution-dig-short-redacted.png)
 
 ---
 
@@ -71,7 +71,7 @@ Confirms local `dig +short` lookups resolve the domain and subdomains.
 
 Confirms public resolvers return the expected DNS records.
 
-![Public resolver validation](../../screenshots/phase-2-domain-dns-public-routing/03-public-resolver-validation-redacted.png)
+![Public resolver validation](../../screenshots-redacted/phase-2-domain-dns-public-routing/03-public-resolver-validation-redacted.png)
 
 ---
 
@@ -79,7 +79,7 @@ Confirms public resolvers return the expected DNS records.
 
 Shows the firewall state before removing public SSH rules.
 
-![UFW before cleanup](../../screenshots/phase-2-domain-dns-public-routing/04-ufw-before-tailscale-only-ssh-redacted.png)
+![UFW before cleanup](../../screenshots-redacted/phase-2-domain-dns-public-routing/04-ufw-before-tailscale-only-ssh-redacted.png)
 
 ---
 
@@ -87,7 +87,7 @@ Shows the firewall state before removing public SSH rules.
 
 Confirms the SSH service listening state before final validation.
 
-![SSH listening port](../../screenshots/phase-2-domain-dns-public-routing/05-ssh-listening-port-redacted.png)
+![SSH listening port](../../screenshots-redacted/phase-2-domain-dns-public-routing/05-ssh-listening-port-redacted.png)
 
 ---
 
@@ -95,7 +95,7 @@ Confirms the SSH service listening state before final validation.
 
 Confirms SSH works over the VPS Tailscale IP.
 
-![Tailscale SSH success](../../screenshots/phase-2-domain-dns-public-routing/06-ssh-tailscale-access-success-redacted.png)
+![Tailscale SSH success](../../screenshots-redacted/phase-2-domain-dns-public-routing/06-ssh-tailscale-access-success-redacted.png)
 
 ---
 
@@ -103,7 +103,7 @@ Confirms SSH works over the VPS Tailscale IP.
 
 Confirms SSH is allowed only over the Tailscale interface while HTTP and HTTPS remain public.
 
-![Final UFW state](../../screenshots/phase-2-domain-dns-public-routing/07-ufw-tailscale-only-ssh-redacted.png)
+![Final UFW state](../../screenshots-redacted/phase-2-domain-dns-public-routing/07-ufw-tailscale-only-ssh-redacted.png)
 
 ---
 
@@ -111,7 +111,7 @@ Confirms SSH is allowed only over the Tailscale interface while HTTP and HTTPS r
 
 Confirms SSH to the public VPS IP fails.
 
-![Public SSH blocked](../../screenshots/phase-2-domain-dns-public-routing/08-public-ssh-blocked-redacted.png)
+![Public SSH blocked](../../screenshots-redacted/phase-2-domain-dns-public-routing/08-public-ssh-blocked-redacted.png)
 
 ---
 
