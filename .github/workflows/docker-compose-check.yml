@@ -2,9 +2,9 @@ name: Docker Compose Check
 
 on:
   pull_request:
-    branches: [main]
+    branches: [master]
   push:
-    branches: [main]
+    branches: [master]
 
 jobs:
   docker-compose-check:
@@ -17,25 +17,12 @@ jobs:
 
       - name: Check Docker Compose configuration
         run: |
-          shopt -s nullglob
-
-          COMPOSE_FILES=(
-            docker-compose.yml
-            docker-compose.yaml
-            compose.yml
-            compose.yaml
-          )
-
-          FOUND=0
-
-          for file in "${COMPOSE_FILES[@]}"; do
-            if [ -f "$file" ]; then
-              FOUND=1
-              echo "Validating $file"
-              docker compose -f "$file" config
+          for file in configs/*/docker-compose.yml; do
+            dir="${file%/*}"
+            if [ -f "$dir/.env.example" ]; then
+              docker compose --env-file "$dir/.env.example" -f "$file" config --quiet
+            else
+              docker compose -f "$file" config --quiet
             fi
+            echo "Validated $file"
           done
-
-          if [ "$FOUND" -eq 0 ]; then
-            echo "No root-level Compose file found. Skipping Compose validation."
-          fi

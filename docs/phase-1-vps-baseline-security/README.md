@@ -60,7 +60,7 @@ The goal was to turn a fresh public VPS into a controlled Linux server with hard
 
 Redacted validation screenshots are stored here:
 
-[View Screenshot Evidence](../../screenshots/phase-1-vps-baseline-security/)
+[View Redacted Screenshot Evidence](../../screenshots-redacted/phase-1-vps-baseline-security/)
 
 ---
 

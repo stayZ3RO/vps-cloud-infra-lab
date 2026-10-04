@@ -18,6 +18,26 @@ This changelog tracks major documentation and infrastructure milestones for the 
 | Phase 2 - Domain DNS & Public Routing | ✅ Complete |
 | Phase 3 - Reverse Proxy & HTTPS | ✅ Complete |
 | Phase 4 - Docker App Deployment | 🚧 In Progress |
+| Phase 5 - Monitoring & Alerts | ✅ Public edge live since 2026-09-28 |
+
+---
+
+## 2026-09-28 to 2026-10-04
+
+- The 2026-10-04 domain move put the blog at `blog.chrisalorenzo.com`, the
+  public Kuma page at `status.chrisalorenzo.com/status/main`, and Kuma admin
+  behind tailnet-only `tailscale serve`. Five monitor display names changed;
+  old names remain as `id` tags. New-host target checks and a `blog-redirect`
+  monitor remain pending.
+- [#21](https://github.com/stayZ3RO/vps-lab/pull/21) added the public-edge
+  monitor and Discord alert execution packet. Six primary monitors and a real
+  synthetic DOWN/UP test were recorded on 2026-09-28.
+- [#22](https://github.com/stayZ3RO/vps-lab/pull/22) added the self-hosted ntfy
+  execution packet; [#23](https://github.com/stayZ3RO/vps-lab/pull/23) recorded
+  ntfy live on the VPS, its Kuma provider, and the seventh `ntfy-health`
+  monitor.
+- [#24](https://github.com/stayZ3RO/vps-lab/pull/24) rewrote documentation in
+  plain voice without changing the deployed services.
 
 ---
 
@@ -211,8 +231,9 @@ target for Phase 6), and the smallest abuse surface for a first public app.
   (commented until the runbook enables it)
 - Phase 4 step-by-step runbook: SSH-tunnel admin claim before exposure
   (default-credential race, per the Phase 3 CT-log lesson), Cloudflare-zone
-  DNS record (DNS-only), Caddy validate + zero-downtime reload, external
-  validation, port probes, Uptime Kuma monitor, blog-embed coordination
+  DNS record (DNS-only), Caddy validation and restart with a brief edge
+  interruption, external validation, port probes, Uptime Kuma monitor, and
+  blog-embed coordination
 - Phase 4 validation checklist (pending execution)
 - Phase 4 architecture diagram (`diagrams/phase-4-docker-app-deployment.md`)
 

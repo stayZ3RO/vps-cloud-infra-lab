@@ -56,9 +56,9 @@ answers the question the whole lab exists to answer:
 > Can this VPS run a real, stateful, publicly reachable service, and recover,
 > document, and monitor it like production?
 
-The first stateful service also creates the first real backup target
-(Phase 6) and the first real monitored workload (Phase 5), so what gets
-deployed here shapes the next two phases.
+When deployed, Umami would create the first real app backup target for Phase 6
+and another workload for the already-live Phase 5 watcher. Its design shapes
+the backup plan and the new monitor.
 
 ---
 
@@ -203,12 +203,12 @@ for the parallel infra/certs/content tracks.
 
 ---
 
-## Considered and Deferred
+## Considered for Phase 4
 
 | Option | Why not now |
 |---|---|
-| Grafana / Prometheus | That is Phase 5's scope; deploying it now empties the next phase |
-| Gitea / Forgejo | Git is already anchored on GitHub; self-hosted git adds merge overhead, not value |
+| Grafana / Prometheus | Public-edge monitoring is already live with Kuma; this phase does not add an internal metrics stack. |
+| Forgejo | Not a Phase 4 VPS app. Forgejo as the primary Git remote was approved on 2026-09-27 for a separate build; it is not deployed yet. |
 | Nextcloud | Too heavy for this VPS class alongside Caddy + Kuma |
 | Memos / linkding / FreshRSS | Light and viable, but weak ties to the portfolio/blog goals, the criteria they'd win on don't rank |
 | Another static site | Static content belongs on Cloudflare Pages, not on a stateful VPS |
@@ -271,14 +271,17 @@ Add or uncomment the site block, importing `security_headers`:
         reverse_proxy umami:3000
     }
 
-Validate and reload without downtime:
+Validate and restart. `admin off` prevents a live reload, and the restart
+briefly interrupts the existing public routes:
 
+    cd /opt/stayz3ro/proxy/configs/caddy || exit 1
     # validate, same throwaway-container pattern as Phase 3
     docker run --rm -v "$PWD/Caddyfile:/etc/caddy/Caddyfile:ro" \
-      -e SITE_DOMAIN -e ACME_EMAIL \
-      caddy:2-alpine caddy validate --config /etc/caddy/Caddyfile
-    # then reload the live proxy (Caddyfile is bind-mounted read-only)
-    docker exec caddy caddy reload --config /etc/caddy/Caddyfile
+      --env-file .env \
+      caddy:2-alpine caddy validate --config /etc/caddy/Caddyfile &&
+      docker restart caddy
+
+If validation fails, stop; the proxy must keep the current configuration.
 
 ### 4. Secure Before Public
 
@@ -309,7 +312,8 @@ following the standing redaction rules (public IPs, Tailscale IPs, emails).
 | Surface | Exposure |
 |---|---|
 | HTTP / HTTPS | Public (unchanged) |
-| `status.stayz3ro.dev` (Uptime Kuma) | Public (unchanged) |
+| `status.chrisalorenzo.com/status/main` (Kuma status page) | Public; admin paths return 404 |
+| Kuma admin | Tailnet-only through `tailscale serve` on port 8443 |
 | New app subdomain | Public behind Caddy + auth |
 | App + database containers | Internal `web` network only, no published ports |
 | App state (volumes) | On-host named volumes; backup story is Phase 6 |

@@ -7,9 +7,9 @@
 
 ## Purpose
 
-This diagram represents the first application deployment behind the Phase 3
-HTTPS edge: Umami web analytics at `analytics.stayz3ro.dev`, with its own
-PostgreSQL database isolated on an internal-only Docker network.
+This is the target state for Phase 4, not the live deployment. Umami is staged
+but has not been deployed. It would sit behind the Phase 3 HTTPS edge at
+`analytics.stayz3ro.dev`, with PostgreSQL on an internal-only Docker network.
 
 ---
 
@@ -33,7 +33,7 @@ PostgreSQL database isolated on an internal-only Docker network.
          ├── automatic Let's Encrypt cert (analytics.stayz3ro.dev)
          ├── JSON access log  -> /var/log/caddy/access.log
          |
-         ├── status.stayz3ro.dev    ->  reverse_proxy  uptime-kuma:3001  (Phase 3)
+         ├── status.chrisalorenzo.com -> public Kuma status page only
          └── analytics.stayz3ro.dev ->  reverse_proxy  umami:3000        (Phase 4)
                     |
                     v
@@ -61,7 +61,7 @@ Blog (separate project, Cloudflare Pages)
 
 ---
 
-## Administrative Access (unchanged from Phase 2/3)
+## Administrative Access
 
     Admin Workstation
          |
@@ -69,9 +69,9 @@ Blog (separate project, Cloudflare Pages)
          v
      Netcup VPS Tailscale IP
          |
-         | SSH  (and, pre-exposure, SSH local-forward to the umami
-         |       container's internal IP to claim the admin account
-         v       before the certificate made the hostname public)
+         | SSH; Kuma admin through tailscale serve on port 8443
+         | Umami pre-exposure admin claim through an SSH local-forward
+         v
      netcup-prod-01
 
 ---
@@ -82,6 +82,7 @@ Blog (separate project, Cloudflare Pages)
 |---|---|
 | HTTP (80) | Public - redirects to HTTPS, serves ACME challenge |
 | HTTPS (443) | Public - `status` + `analytics` behind Caddy |
+| Kuma admin | Tailnet-only through `tailscale serve`; public admin paths return 404 |
 | `analytics.stayz3ro.dev` (Umami) | Public, single authenticated admin, no signup |
 | Umami app port (3000) | Internal Docker network only, never published |
 | PostgreSQL (5432) | Internal-only network, unreachable from `web` or the host |
@@ -110,6 +111,5 @@ Blog (separate project, Cloudflare Pages)
 
 **Phase 5 - Monitoring & Alerts**
 
-Umami is now a real stateful workload: traffic worth charting, data worth
-backing up, and a hostname already monitored in Uptime Kuma - the input
-Phase 5 needs.
+After deployment, Umami would be a stateful workload to monitor and back up.
+The separate public-edge monitoring work in Phase 5 is already live.

@@ -14,7 +14,7 @@
 
 ---
 
-![Status](https://img.shields.io/badge/status-in%20progress-yellow)
+![Status](https://img.shields.io/badge/status-complete-brightgreen)
 ![Proxy](https://img.shields.io/badge/proxy-Caddy-blue)
 ![TLS](https://img.shields.io/badge/tls-Let's%20Encrypt-success)
 ![Domain](https://img.shields.io/badge/domain-stayz3ro.dev-purple)

@@ -34,18 +34,22 @@ reason to pick a heavier proxy - Caddy emits structured JSON access logs here.
 
 | Surface | Exposure |
 |---|---|
-| `https://stayz3ro.dev` | Public - static landing page only |
-| `https://www.stayz3ro.dev` | Public - 308 redirect to apex |
-| `apps` / `status` / `api` subdomains | Staged in `Caddyfile`, disabled until Phase 4 |
-| Backend application ports | Internal `web` Docker network; Kuma also publishes IPv4 loopback port 3001 for Stage 0b |
+| `https://stayz3ro.dev` and `https://www.stayz3ro.dev` | Cloudflare 301 redirects to the blog at `blog.chrisalorenzo.com`; not served by this VPS |
+| `https://status.chrisalorenzo.com/status/main` | Public Kuma status page; root returns 302 here and public admin paths return 404 |
+| `https://status.stayz3ro.dev` | Caddy 301 redirect to the new status host, preserving path and query |
+| `https://ntfy.chrisalorenzo.com` | Public HTTPS edge for self-hosted ntfy |
+| `analytics` / `apps` / `api` subdomains | Staged in `Caddyfile`, disabled pending their app deployments |
+| Kuma admin | Tailnet-only through `tailscale serve` on port 8443 |
+| Backend application ports | Internal Docker network; Kuma also binds IPv4 loopback port 3001 |
 | Caddy admin API | Disabled (`admin off`) |
 
 ---
 
-## Stage 0b: deployment gates
+## Stage 0b: deployment gates (2026-10-04 cutover record)
 
-Run these checks during the live session, before Stage 3b restricts the public
-status routes. Before enabling the Kuma loopback mapping, check the Docker
+These checks were the gates before Stage 3b restricted the public status
+routes. The recorded current state uses Docker 29.8.1 and has no push monitors.
+Before enabling the Kuma loopback mapping on a new deployment, check the Docker
 server version on the VPS:
 
 ```bash
@@ -90,22 +94,28 @@ push clients exist, record that after checking. Any unverified client blocks
 Stage 3b: the public host will reject `/api/push/*`, including requests redirected
 from the old status hostname.
 
-## Run
+## Initial setup on a new host
 
 On the VPS, over Tailscale SSH:
 
     cd <repo>/configs/caddy
-    cp .env.example .env
+    test -e .env || cp .env.example .env
     # edit .env - set ACME_EMAIL to a real inbox
     mkdir -p logs
     docker compose up -d
-    docker compose logs -f caddy   # watch for "certificate obtained successfully"
+    docker compose ps
 
 ## Update config
 
-    # after editing Caddyfile
-    docker compose exec caddy caddy validate --config /etc/caddy/Caddyfile
-    docker compose exec caddy caddy reload --config /etc/caddy/Caddyfile
+Edit the bind-mounted Caddyfile in place, then validate and restart. The admin
+API is disabled, so `caddy reload` cannot work. The restart briefly interrupts
+public routes on this VPS:
+
+    cd /opt/stayz3ro/proxy/configs/caddy || exit 1
+    docker compose exec caddy caddy validate --config /etc/caddy/Caddyfile --adapter caddyfile &&
+      docker restart caddy
+
+If validation fails, stop and correct the Caddyfile; do not restart.
 
 ## Certificate persistence
 

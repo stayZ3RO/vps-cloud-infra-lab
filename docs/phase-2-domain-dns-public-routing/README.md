@@ -2,13 +2,16 @@
 
 ![Status](https://img.shields.io/badge/status-complete-brightgreen)
 ![Domain](https://img.shields.io/badge/domain-stayz3ro.dev-blue)
-![DNS](https://img.shields.io/badge/dns-Porkbun-orange)
+![DNS](https://img.shields.io/badge/dns-Cloudflare-blue)
 ![VPS](https://img.shields.io/badge/vps-Netcup-purple)
 ![SSH](https://img.shields.io/badge/ssh-Tailscale%20Only-success)
 
 ## Phase Summary
 
-Phase 2 connected the `stayz3ro.dev` domain to the Netcup VPS and established the DNS foundation for future public services.
+Phase 2 connected the `stayz3ro.dev` domain to the Netcup VPS and established
+the DNS foundation for future public services. Porkbun was the DNS workspace
+used then; Cloudflare is authoritative now, with Porkbun as registrar. The
+apex now serves the blog from Cloudflare Pages rather than this VPS.
 
 This phase did not deploy applications yet. It focused on DNS records, public resolution, planned subdomains, and a stronger administrative access model where SSH is reachable only through Tailscale.
 
@@ -18,7 +21,7 @@ This phase did not deploy applications yet. It focused on DNS records, public re
 
 | Area | Demonstrated Skill |
 |---|---|
-| Domain management | Porkbun DNS record configuration |
+| Domain management | Phase 2 Porkbun record work; Cloudflare authoritative now |
 | Public DNS routing | Root domain and subdomain resolution |
 | DNS validation | Local and public resolver checks |
 | Security hardening | Public SSH blocked |
@@ -31,7 +34,7 @@ This phase did not deploy applications yet. It focused on DNS records, public re
 
 | Type | Host | Purpose |
 |---|---|---|
-| A | `@` | Root domain pointing to Netcup VPS |
+| A | `@` | Phase 2 root domain route to the Netcup VPS; now Cloudflare Pages |
 | CNAME | `www` | Web alias for root domain |
 | A | `apps` | Future public application entry point |
 | A | `status` | Future status page |
@@ -66,7 +69,7 @@ This phase did not deploy applications yet. It focused on DNS records, public re
 
 Redacted validation screenshots are stored here:
 
-[View Screenshot Evidence](../../screenshots/phase-2-domain-dns-public-routing/)
+[View Redacted Screenshot Evidence](../../screenshots-redacted/phase-2-domain-dns-public-routing/)
 
 ---
 

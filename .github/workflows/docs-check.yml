@@ -20,6 +20,11 @@ jobs:
           echo "Markdown files found:"
           find . -name "*.md" | sort || true
 
+      - name: Check tracked relative Markdown links
+        run: |
+          python3 scripts/check-relative-links.py --self-test
+          python3 scripts/check-relative-links.py
+
       - name: Check for obvious sensitive files
         run: |
           echo "Checking for files that should not be committed..."

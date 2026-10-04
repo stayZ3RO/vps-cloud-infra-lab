@@ -1,6 +1,8 @@
 # Self-hosted ntfy execution packet
 
-Date prepared: 2026-09-28 (America/New_York). Status: ready to run.
+Date prepared: 2026-09-28 (America/New_York). Executed 2026-09-28.
+Preflight results below are a historical snapshot from before ntfy went live;
+the current outcome is recorded in `CURRENT-STATUS.md`.
 Estimated hands-on time: 60 to 75 minutes, plus a few minutes for DNS and the
 first certificate.
 
@@ -332,9 +334,8 @@ second path for edge alerts.
 
 ## 9. Follow-up for the home lab (describe only, not part of this packet)
 
-- The home lab's workflow automation deployment currently bundles its own ntfy
-  container. With this server live, that bundled container is no longer
-  needed. Point the automation's ntfy base URL at
+- If workflow automation still has an old ntfy sender configuration, point its
+  ntfy base URL at
   `https://ntfy.chrisalorenzo.com`, set its token to the `automation` token
   (from the password manager, in that deployment's secret store), publish to
   `lab-alerts`, and remove the bundled ntfy service. Phones then use one

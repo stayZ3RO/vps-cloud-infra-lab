@@ -8,15 +8,15 @@
 
 ## Phase Summary
 
-Phase 4 deploys the first application container behind the Phase 3 Caddy
+Phase 4 is preparing the first application container behind the Phase 3 Caddy
 reverse proxy, on a public subdomain, with no backend port published to the
-host. Uptime Kuma (`status.stayz3ro.dev`) proved the proxy pattern; this phase
-proves the repeatable app-onboarding pattern: compose service, env template,
-Caddy route, DNS record, validation, evidence.
+host. Phase 3's Kuma deployment proved the proxy pattern; deploying Umami
+would test the repeatable app-onboarding pattern: compose service, env
+template, Caddy route, DNS record, validation, evidence.
 
 **App selected (2026-08-30): Umami**, privacy-first web analytics, at
-`analytics.stayz3ro.dev`, real visitor analytics for the blog and portfolio,
-and the VPS's first stateful service (Umami + PostgreSQL). Candidate
+`analytics.stayz3ro.dev`. It would provide visitor analytics for the blog and
+portfolio as the VPS's first stateful app (Umami + PostgreSQL). Candidate
 comparison and rationale: [overview.md](overview.md).
 
 ---
@@ -72,7 +72,7 @@ Full comparison, tradeoffs, and recommendation:
 | Compose service layout committed (app + database, `web` network, no published ports) | ✅ Complete |
 | `.env.example` committed; real `.env` gitignored | ✅ Complete |
 | DNS record added in the live zone and validated | ⏳ Pending |
-| Caddy route enabled and validated (`caddy validate` + reload) | ⏳ Pending |
+| Caddy route enabled and validated (`caddy validate` + container restart) | ⏳ Pending |
 | App deployed and reachable externally over HTTPS | ⏳ Pending |
 | Admin account secured over a private path before exposure | ⏳ Pending |
 | Backend/database ports confirmed not publicly reachable | ⏳ Pending |
@@ -92,16 +92,13 @@ evidence layout.
 
 ## Before This Phase Deploys
 
-The Phase 3 screenshot checklist
-([screenshots/phase-3-reverse-proxy-https/README.md](../../screenshots/phase-3-reverse-proxy-https/README.md),
-9 items) is still unfilled. The Phase 3 stack is live right now. Capture that
-evidence **before** Phase 4 changes anything about the running deployment.
+Review the captured, redacted Phase 3 evidence in
+[screenshots/phase-3-reverse-proxy-https/](../../screenshots/phase-3-reverse-proxy-https/)
+before changing the live deployment.
 
 ---
 
-## Next Phase
+## Monitoring context
 
-Next: **Phase 5 - Monitoring & Alerts**
-
-The app deployed here becomes a real monitored workload, and its traffic/state
-gives Phase 5 something meaningful to watch.
+Phase 5 public-edge monitoring is already live. After Umami is deployed, add
+its public hostname as a Kuma monitor through the tailnet-only admin UI.
