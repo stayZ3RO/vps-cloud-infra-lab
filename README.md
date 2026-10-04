@@ -20,6 +20,8 @@
 | Config Examples | [configs/](configs/) |
 | Screenshots | [screenshots/](screenshots/) |
 | Live Portfolio | [chrisalorenzo.com](https://chrisalorenzo.com/) |
+| Blog | [blog.chrisalorenzo.com](https://blog.chrisalorenzo.com/) |
+| Public Status | [status.chrisalorenzo.com](https://status.chrisalorenzo.com/status/main) |
 
 ---
 
@@ -68,11 +70,11 @@ This VPS lab gives me a place to practice:
           |
           ├── Docker Engine
           │     ├── Caddy (reverse proxy, automatic HTTPS)
-          │     ├── Uptime Kuma (status.stayz3ro.dev, backend internal only)
+          │     ├── Uptime Kuma (status.chrisalorenzo.com, public status page only)
           │     └── ntfy (ntfy.chrisalorenzo.com, backend internal only)
           |
           ├── Tailscale
-          │     └── Private administrative access
+          │     └── Private SSH and tailnet-only Kuma admin via tailscale serve
           |
           └── /opt/stayz3ro
                 ├── apps
@@ -88,7 +90,7 @@ This VPS lab gives me a place to practice:
     Internet
        |
        v
-    stayz3ro.dev DNS
+    Cloudflare DNS (chrisalorenzo.com and stayz3ro.dev)
        |
        v
     Netcup VPS - Production/Public Services
@@ -161,7 +163,7 @@ Highlights:
 
 ### Phase 3 - Reverse Proxy & HTTPS
 
-Phase 3 put Caddy in front of the VPS so a real public service, `status.stayz3ro.dev` (Uptime Kuma), is served over HTTPS while backend ports stay private.
+Phase 3 put Caddy in front of the VPS and served Uptime Kuma at `status.stayz3ro.dev` over HTTPS while backend ports stayed private. The 2026-10-04 domain move below records the current host.
 
 Highlights:
 
@@ -180,6 +182,26 @@ Since 2026-09-28, Uptime Kuma has watched six public-edge targets plus
 self-hosted ntfy provider also reaches a phone. A synthetic DOWN/UP test
 validated the Discord path. An independent offsite check remains planned
 because Kuma and the services share the VPS.
+
+### Domain move (2026-10-04)
+
+The blog now runs at `blog.chrisalorenzo.com` on Cloudflare Pages. The public
+status page is `status.chrisalorenzo.com/status/main`, with `Sites` and `Infra`
+groups. Its root returns 302 to `/status/main`; public admin paths return 404.
+Kuma has tailnet-only admin via `tailscale serve` on port 8443, backed by IPv4
+loopback port 3001. Docker is 29.8.1.
+
+Caddy returns 301 from `status.stayz3ro.dev` to `status.chrisalorenzo.com`.
+Cloudflare returns 301 from `stayz3ro.dev` and `www.stayz3ro.dev` to
+`blog.chrisalorenzo.com`. Both preserve the path and query. The two old blog
+hosts were removed from the Pages custom domains and use redirect-only DNS
+records.
+
+The renamed monitor displays are `Blog`, `Portfolio`, `HTTPS Edge`,
+`DNS (stayz3ro.dev)` and `DNS (chrisalorenzo.com)`. Their old names remain as
+`id` tags; [Current Status](CURRENT-STATUS.md#monitoring-and-alerts) records the
+mapping and remaining target checks. TLS expiry warnings are set to 14 days.
+There are no push monitors.
 
 ---
 
@@ -257,7 +279,7 @@ because Kuma and the services share the VPS.
 | Intrusion Protection | Fail2Ban |
 | Updates | Unattended Upgrades |
 | Containers | Docker, Docker Compose |
-| Domain | stayz3ro.dev |
+| Domains | chrisalorenzo.com public services; stayz3ro.dev legacy redirects |
 | DNS Provider | Cloudflare (Porkbun is the registrar) |
 | Reverse Proxy | Caddy |
 | HTTPS | Let's Encrypt, automatic via Caddy |

@@ -6,8 +6,11 @@
 
 ## Project State
 
-The Netcup VPS is secured and serves Uptime Kuma at `status.stayz3ro.dev`
-and self-hosted ntfy at `ntfy.chrisalorenzo.com` through Caddy HTTPS.
+As of 2026-10-04, the Netcup VPS serves the public Uptime Kuma status page at
+`status.chrisalorenzo.com` and self-hosted ntfy at `ntfy.chrisalorenzo.com`
+through Caddy HTTPS. The blog is at `blog.chrisalorenzo.com` on Cloudflare
+Pages. Kuma has tailnet-only admin via `tailscale serve` on port 8443,
+backed by IPv4 loopback port 3001.
 
 The project has completed Phase 3 and is now in:
 
@@ -29,11 +32,12 @@ Alerts below); Phase 4 remains in progress.
     Internet
        |
        v
-    Cloudflare DNS - stayz3ro.dev (Porkbun registrar)
-       ├── apex and www -> Cloudflare Pages blog
-       └── public service subdomains -> Netcup VPS
-                                      ├── Caddy HTTPS -> Uptime Kuma and ntfy
-                                      └── private SSH over Tailscale only
+    Cloudflare DNS
+       ├── blog.chrisalorenzo.com -> Cloudflare Pages
+       ├── stayz3ro.dev and www -> 301 to blog.chrisalorenzo.com
+       └── status.chrisalorenzo.com and ntfy.chrisalorenzo.com -> Netcup VPS
+                                      ├── Caddy HTTPS -> public status page and ntfy
+                                      └── private SSH and Kuma admin over Tailscale
 
     Admin Workstation
        |
@@ -41,7 +45,7 @@ Alerts below); Phase 4 remains in progress.
     Tailscale
        |
        v
-    SSH to Netcup VPS
+    SSH to Netcup VPS and tailscale serve to Kuma admin
 
 ---
 
@@ -73,8 +77,8 @@ Alerts below); Phase 4 remains in progress.
 | Public SSH blocked | ✅ Complete |
 | SSH over Tailscale validated | ✅ Complete |
 | Caddy reverse proxy deployed | ✅ Complete |
-| Uptime Kuma deployed (private, proxied only) | ✅ Complete |
-| Let's Encrypt certificate issued for `status.stayz3ro.dev` | ✅ Complete |
+| Uptime Kuma deployed (public status page, tailnet-only admin) | ✅ Complete |
+| Let's Encrypt certificate issued for `status.chrisalorenzo.com` | ✅ Complete |
 | HTTPS validated externally | ✅ Complete |
 | Security headers validated | ✅ Complete |
 | Backend ports confirmed not public | ✅ Complete |
@@ -91,14 +95,14 @@ Alerts below); Phase 4 remains in progress.
 | Hostname | netcup-prod-01 |
 | Role | Primary production/public services VPS |
 | Operating System | Ubuntu Linux |
-| Domain | stayz3ro.dev |
+| Domains | chrisalorenzo.com public services; stayz3ro.dev legacy redirects |
 | Domain Registrar | Porkbun |
 | DNS Hosting (actual, authoritative) | Cloudflare. Porkbun's own DNS panel is not consulted by the live domain, see Lessons Learned |
 | Access Method | SSH over Tailscale |
 | Firewall | UFW |
 | Intrusion Protection | Fail2Ban |
-| Container Runtime | Docker and Docker Compose |
-| Public Exposure | HTTPS via Caddy (`status.stayz3ro.dev` -> Uptime Kuma); apex/`www` served separately by Cloudflare Pages, not this VPS |
+| Container Runtime | Docker 29.8.1 and Docker Compose |
+| Public Exposure | HTTPS via Caddy (`status.chrisalorenzo.com` -> public Kuma status page, `ntfy.chrisalorenzo.com` -> ntfy); blog and its legacy redirects run on Cloudflare |
 
 ---
 
@@ -111,19 +115,31 @@ Current access and exposure model:
 - SSH is blocked on the public VPS IP
 - SSH is allowed through Tailscale only
 - HTTP is open, redirects to HTTPS via Caddy
-- HTTPS is open, serves `status.stayz3ro.dev` (Uptime Kuma) via Caddy
+- HTTPS is open, serves the public status page at `status.chrisalorenzo.com` via Caddy
 - Direct application ports (`3000`, `3001`) are not exposed, confirmed by
   external probe
 - Databases are not exposed
-- Admin dashboards are not exposed publicly; Uptime Kuma's admin account
-  was created over a private SSH tunnel before the certificate made the
-  hostname publicly discoverable
+- Kuma has tailnet-only admin via `tailscale serve` on port 8443; its backend
+  binds IPv4 loopback port 3001
+- Public Kuma admin paths return 404. Trust Proxy is on and Primary Base URL
+  is set to the private admin URL
+
+### Domain move (2026-10-04)
+
+- `status.chrisalorenzo.com` uses a DNS-only A record. Its root returns 302
+  to `/status/main`; the public page has `Sites` and `Infra` groups.
+- `status.stayz3ro.dev` returns 301 to `status.chrisalorenzo.com`, preserving
+  the path and query.
+- `stayz3ro.dev` and `www.stayz3ro.dev` return 301 to
+  `blog.chrisalorenzo.com`, preserving the path and query through a Cloudflare
+  Single Redirect. They were removed from the Pages custom domains and now
+  use proxied redirect-only DNS records.
 
 ---
 
 ## Monitoring and Alerts
 
-Uptime Kuma on `netcup-prod-01` watches the public edge. As of 2026-09-28:
+Uptime Kuma watches the public edge. The initial 2026-09-28 configuration was:
 
 - Six monitors: `public-blog` (`stayz3ro.dev`), `public-portfolio`
   (`chrisalorenzo.com`), and `public-status-edge` (`status.stayz3ro.dev`),
@@ -139,6 +155,25 @@ Uptime Kuma on `netcup-prod-01` watches the public edge. As of 2026-09-28:
   all six monitors and tested to the phone on 2026-09-28.
 - `ntfy-health` (keyword `healthy` on `https://ntfy.chrisalorenzo.com/v1/health`)
   alerts through Discord only, so a broken ntfy still pages.
+
+On 2026-10-04, five display names changed. Each old name remains in the
+monitor's `id` tag:
+
+| Display name | `id` tag |
+|---|---|
+| Blog | `public-blog` |
+| Portfolio | `public-portfolio` |
+| HTTPS Edge | `public-edge-https` |
+| DNS (stayz3ro.dev) | `dns-stayz3ro` |
+| DNS (chrisalorenzo.com) | `dns-chrisalorenzo` |
+
+`public-status-edge` and `ntfy-health` retain their names. TLS expiry warning
+is set to 14 days. There are no push monitors.
+
+The remaining monitoring follow-up is to verify the Blog, status-page and
+HTTPS Edge targets use the new hosts, and add a `blog-redirect` monitor that
+expects 301 without following redirects. These live changes are not recorded
+as complete here.
 
 ### ntfy (live 2026-09-28)
 
