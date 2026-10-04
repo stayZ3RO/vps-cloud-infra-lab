@@ -38,8 +38,9 @@ flowchart TD
 Cloudflare is authoritative for both zones; Porkbun remains the registrar for
 `stayz3ro.dev`. The blog runs on Cloudflare Pages at
 `blog.chrisalorenzo.com`, while the old apex and `www` return 301 to it.
-`status.stayz3ro.dev` returns 301 to the new status host. Caddy serves only
+`status.stayz3ro.dev` returns 301 to the new status host. Caddy serves
 the public status page at `status.chrisalorenzo.com/status/main` and ntfy at
 `ntfy.chrisalorenzo.com`; public Kuma admin paths return 404. Kuma admin is
 tailnet-only through `tailscale serve` on port 8443. Only ports 80/443 are
-public. Backend app containers are not published directly.
+public. Backend ports are not publicly exposed; Kuma also binds IPv4 loopback
+port 3001 for the private admin path.
