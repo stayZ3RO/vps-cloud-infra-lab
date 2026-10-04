@@ -36,7 +36,9 @@ services:
     image: louislam/uptime-kuma:1
     container_name: uptime-kuma
     restart: unless-stopped
-    # No published ports - reached only via Caddy on the `web` network.
+    # Loopback only, for the tailnet admin path (tailscale serve). Not public.
+    ports:
+      - "127.0.0.1:3001:3001"
     volumes:
       - uptime_kuma_data:/app/data
     networks:

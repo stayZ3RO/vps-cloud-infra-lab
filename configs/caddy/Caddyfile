@@ -47,9 +47,26 @@
 # ---------------------------------------------------------------------------
 # status.<domain> -> Uptime Kuma
 # ---------------------------------------------------------------------------
-status.{$SITE_DOMAIN} {
+# Public status page under the consolidated domain. Public surface only: the
+# status page and what it loads (Kuma 1.23.17 routes). Admin is tailnet-only
+# (Stage 0b), so the dashboard, settings, socket.io, push, badges and metrics
+# answer 404 here.
+status.chrisalorenzo.com {
 	import security_headers
-	reverse_proxy uptime-kuma:3001
+	# The bare root lands on the status page, never on the Kuma login.
+	redir / /status/main 302
+	@public path /status/main /api/status-page/main /api/status-page/heartbeat/main /api/status-page/main/manifest.json /assets/* /upload/* /icon.svg /icon.png /icon-192x192.png /icon-512x512.png /favicon.ico /apple-touch-icon.png /apple-touch-icon-precomposed.png /manifest.json /robots.txt
+	handle @public {
+		reverse_proxy uptime-kuma:3001
+	}
+	handle {
+		respond 404
+	}
+}
+
+# Old host: permanent redirect to the consolidated domain.
+status.{$SITE_DOMAIN} {
+	redir https://status.chrisalorenzo.com{uri} permanent
 }
 
 # ---------------------------------------------------------------------------
