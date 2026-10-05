@@ -440,6 +440,40 @@ returns nothing.** The fix here was checking the log file directly
 access-log evidence lives. Both steps' real evidence sits in the same
 file, not in `docker compose logs`.
 
+## UFW Does Not See Docker's Published Ports
+
+A public-exposure review flagged two of this VPS's public DNS records
+(`status`, `ntfy`) as resolving directly to the VPS's own IP instead of
+through the Cloudflare proxy, and flagged that the origin IP's reverse DNS
+revealed the hosting provider by name. The fix looked simple: proxy both
+records in Cloudflare, then restrict the host firewall (UFW) to allow
+80/443 only from Cloudflare's published IP ranges, so a client that knew
+the real IP couldn't reach the service directly.
+
+UFW's own rule table updated correctly and showed only the Cloudflare
+ranges. Direct-IP access still worked anyway, completely unaffected.
+
+The cause: Caddy publishes 80/443 through Docker (`-p 80:80 -p 443:443`
+style publishing, bound to `0.0.0.0`). Docker manages its own `iptables`
+rules for published container ports, in a `DOCKER-USER` chain that the
+kernel evaluates before UFW's own `INPUT` chain gets a say for forwarded
+container traffic. UFW's rules were never wrong; they were simply never
+in the path. This is a known interaction, not a bug in either tool: UFW
+filters host-destined traffic, Docker's own forwarding rules handle
+traffic destined for a published container port, and the two don't talk
+to each other unless something explicitly bridges them.
+
+The real fix lives in the `DOCKER-USER` chain itself, which Docker
+reserves specifically for operator-added rules that run ahead of its own:
+an `ESTABLISHED,RELATED` accept, an explicit accept for each Cloudflare
+IP range on 80/443 (tcp) and 443 (udp, for HTTP/3), and a final deny for
+everything else on those ports. `iptables-persistent` was not installed,
+so without it this rule set would have silently reverted on the next
+reboot; it was installed and the rules saved before calling this done.
+Verification that actually proves the fix: not reading the rule table,
+but a live request forced at the raw IP from outside, confirming it times
+out while the normal domain keeps working.
+
 ---
 
 ## The Watcher Shares the VPS Failure Domain

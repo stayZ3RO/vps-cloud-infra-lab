@@ -253,3 +253,33 @@ target for Phase 6), and the smallest abuse surface for a first public app.
 
 - Execute the runbook on `netcup-prod-01`
 - Wire the embed script into the Astro blog (separate repo)
+
+---
+
+## 2026-10-05: Public-edge firewall fix (Cloudflare-only access)
+
+Prompted by an external attack-surface review that found `status` and
+`ntfy` resolving directly to the VPS's own IP instead of through the
+Cloudflare proxy.
+
+## Completed
+
+- Confirmed ntfy's `auth-default-access: deny-all` is correctly enforced
+  (live test: both an anonymous read and an anonymous publish returned
+  403). The review's "no auth gate" read came from the open CORS header
+  alone, not an actual authenticated-endpoint test.
+- Enabled Cloudflare proxying for the `status` and `ntfy` DNS records.
+- Replaced UFW's broad 80/443 allow rules with per-range Cloudflare-only
+  allow rules, then found UFW was never actually in the traffic path:
+  Caddy publishes 80/443 through Docker, which filters forwarded
+  container traffic through its own `DOCKER-USER` chain ahead of UFW's
+  `INPUT` chain. Added the real fix directly to `DOCKER-USER`: an
+  `ESTABLISHED,RELATED` accept, an accept for each Cloudflare IP range on
+  80/443 tcp and 443 udp, and a final deny for everything else on those
+  ports.
+- Installed `iptables-persistent` (not previously present) and saved the
+  rule set so it survives a reboot.
+- Verified with a live request forced at the raw IP from outside: it
+  times out, while the normal domain keeps answering correctly.
+- See `LESSONS-LEARNED.md`, "UFW Does Not See Docker's Published Ports,"
+  for the full root-cause writeup.
